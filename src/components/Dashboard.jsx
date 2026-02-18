@@ -160,41 +160,43 @@ const Dashboard = ({ user, onLogout }) => {
 
                 {/* Premium Main Content Area */}
                 <main className="dashboard-main w-full" style={{ paddingLeft: '0' }}>
-                    <header className="flex items-center justify-between gap-4 mb-8 fade-in sticky top-0 bg-slate-50/90 backdrop-blur-md z-40 py-4 px-6 border-b border-slate-200">
-                        <div className="flex items-center gap-4">
-                            {/* Menu Toggle - ALWAYS VISIBLE now */}
-                            <button
-                                className="p-2 bg-white border rounded-xl text-slate-600 shadow-sm hover:bg-slate-50 cursor-pointer"
-                                onClick={() => setIsSidebarOpen(true)}
-                            >
-                                <Menu size={20} />
-                            </button>
+                    <header className="sticky top-0 bg-slate-50/90 backdrop-blur-md z-40 border-b border-slate-200">
+                        <div className="flex items-center justify-between gap-4 py-4 px-6 max-w-7xl mx-auto w-full">
+                            <div className="flex items-center gap-4">
+                                {/* Menu Toggle - ALWAYS VISIBLE now */}
+                                <button
+                                    className="p-2 bg-white border rounded-xl text-slate-600 shadow-sm hover:bg-slate-50 cursor-pointer"
+                                    onClick={() => setIsSidebarOpen(true)}
+                                >
+                                    <Menu size={20} />
+                                </button>
 
-                            <div>
-                                <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
+                                <div>
+                                    <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                            <div className="relative hide-mobile">
-                                <Search className="absolute left-3 top-1/2" size={16} style={{ transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    className="px-10 py-2 w-48 bg-white border rounded-xl text-sm focus:w-64 transition-all"
-                                />
+                            <div className="flex items-center gap-3">
+                                <div className="relative hide-mobile">
+                                    <Search className="absolute left-3 top-1/2" size={16} style={{ transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                    <input
+                                        type="text"
+                                        placeholder="Search..."
+                                        className="px-10 py-2 w-48 bg-white border rounded-xl text-sm focus:w-64 transition-all"
+                                    />
+                                </div>
+                                <button className="relative w-10 h-10 flex items-center justify-center bg-white border rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer">
+                                    <Bell size={18} />
+                                    <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                                </button>
+                                <button className="btn-premium px-4 py-2 text-sm flex gap-2 items-center">
+                                    <IndianRupee size={16} /> <span className="hide-mobile">Funding</span>
+                                </button>
                             </div>
-                            <button className="relative w-10 h-10 flex items-center justify-center bg-white border rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer">
-                                <Bell size={18} />
-                                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 border-2 border-white rounded-full"></span>
-                            </button>
-                            <button className="btn-premium px-4 py-2 text-sm flex gap-2 items-center">
-                                <IndianRupee size={16} /> <span className="hide-mobile">Funding</span>
-                            </button>
                         </div>
                     </header>
 
-                    <div className="dashboard-content fade-in p-6">
+                    <div className="dashboard-content fade-in p-6 max-w-7xl mx-auto w-full">
                         {renderContent()}
                     </div>
                 </main>
