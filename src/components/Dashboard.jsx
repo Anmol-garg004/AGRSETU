@@ -182,24 +182,24 @@ const Dashboard = ({ user, onLogout }) => {
 
                             <div className="flex items-center gap-3">
                                 <div className="relative hide-mobile group">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-800 transition-colors">
                                         <Search size={18} />
                                     </div>
                                     <input
                                         type="text"
                                         placeholder="Search..."
-                                        className="pl-10 pr-4 h-10 w-64 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:w-80 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none placeholder:text-slate-400"
+                                        className="pl-10 pr-4 h-11 w-64 bg-slate-100 border-0 rounded-full text-sm font-bold text-slate-700 focus:w-80 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all outline-none placeholder:text-slate-400 shadow-inner"
                                     />
                                 </div>
 
-                                <button className="relative w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-emerald-600 transition-all cursor-pointer shadow-sm">
+                                <button className="relative w-11 h-11 flex items-center justify-center bg-white border border-slate-100 rounded-full text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all cursor-pointer shadow-sm hover:shadow-md active:scale-95">
                                     <Bell size={20} />
-                                    <span className="absolute top-2.5 right-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
+                                    <span className="absolute top-2.5 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
                                 </button>
 
-                                <button className="h-10 px-5 text-sm font-bold flex gap-2 items-center bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
-                                    <IndianRupee size={18} />
-                                    <span className="hide-mobile">Get Funding</span>
+                                <button className="h-11 px-6 text-sm font-black flex gap-2 items-center bg-slate-900 text-white rounded-full shadow-lg shadow-slate-900/20 hover:shadow-emerald-500/20 hover:bg-emerald-600 hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95 group">
+                                    <IndianRupee size={18} className="group-hover:rotate-12 transition-transform" />
+                                    <span className="hide-mobile tracking-wide uppercase text-xs">Get Funding</span>
                                 </button>
                             </div>
                         </div>
