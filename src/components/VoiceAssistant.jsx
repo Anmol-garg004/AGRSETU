@@ -101,17 +101,38 @@ const VoiceAssistant = () => {
 
     const handleAIResponse = (userQuery) => {
         // MOCK AI LOGIC - In production, this would go to an LLM API
+        console.log("User Query:", userQuery); // Debugging
         const lowerQuery = userQuery.toLowerCase();
-        let answer = "माफ़ कीजिये, मैं समझ नहीं पाया। क्या आप दोबारा बोल सकते हैं?"; // Default fallback
 
-        if (lowerQuery.includes("loan") || lowerQuery.includes("loan") || lowerQuery.includes("पैसे") || lowerQuery.includes("लोन")) {
-            answer = "लोन के लिए आवेदन करने के लिए, कृपया 'डैशबोर्ड' पर जाएं और अपनी जमीन के दस्तावेज अपलोड करें। हम 24 घंटे में आपकी पात्रता बता देंगे।";
-        } else if (lowerQuery.includes("weather") || lowerQuery.includes("मौसम") || lowerQuery.includes("barish")) {
-            answer = "अगले 3 दिनों में अच्छी बारिश होने की संभावना है। कृपया अपनी फसल की कटाई रोक कर रखें।";
-        } else if (lowerQuery.includes("register") || lowerQuery.includes("khata") || lowerQuery.includes("account")) {
-            answer = "खाता खोलने के लिए 'Get Started' बटन दबाएं और अपना मोबाइल नंबर दर्ज करें।";
-        } else if (lowerQuery.includes("hello") || lowerQuery.includes("namaste")) {
-            answer = "नमस्ते! मैं एग्री-सेतु का वॉइस असिस्टेंट हूँ। मैं आपकी कैसे मदद कर सकता हूँ?";
+        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप अपनी समस्या दोबारा बता सकते हैं?"; // Default fallback
+
+        // 1. LOAN & FINANCE (कर्ज/लोन/पैसे)
+        if (lowerQuery.match(/(loan|paisa|paise|money|credit|udhar|karz|bank|finance|लोन|पैसे|उधार|कर्ज|बैंक|ब्याज)/i)) {
+            answer = "लोन के लिए आवेदन करने के लिए, 'डैशबोर्ड' पर जाएं और जमीन के कागज अपलोड करें। हम 24 घंटे में आपको बता देंगे।";
+        }
+        // 2. WEATHER (मौसम/बारिश)
+        else if (lowerQuery.match(/(weather|mausam|barish|rain|forecast|temp|dhup|garmi|sardi|मौसम|बारिश|धूप|पानी)/i)) {
+            answer = "अगले 3 दिनों में हल्की बारिश होने की संभावना है। कृपया अपनी कटी हुई फसल को सुरक्षित स्थान पर रखें।";
+        }
+        // 3. REGISTRATION/ACCOUNT (खाता/रजिस्टर)
+        else if (lowerQuery.match(/(register|login|signup|account|khata|profile|start|shuru|रजिस्टर|लॉगिन|खाता|जुड़ना)/i)) {
+            answer = "खाता खोलने के लिए ऊपर दिए गए 'Get Started' बटन को दबाएं और अपना मोबाइल नंबर डालें। यह बिलकुल मुफ्त है।";
+        }
+        // 4. CROPS & FARMING (फसल/खेती/बीज/खाद)
+        else if (lowerQuery.match(/(crop|farm|kheti|fasal|beej|seed|fertilizer|khaad|urea|gehu|dhan|फसल|खेती|बीज|खाद|यूरिया|गेहूं|धान)/i)) {
+            answer = "फसल की जानकारी और खाद के लिए, कृपया अपनी फसल का नाम बताएं या डैशबोर्ड में 'फसल सलाह' विकल्प चुनें।";
+        }
+        // 5. MARKET PRICES (मंडी/भाव/बाजार)
+        else if (lowerQuery.match(/(price|rate|bhav|mandi|market|bazar|cost|dam|भाव|मंडी|बाजार|कीमत|दाम)/i)) {
+            answer = "आज की मंडी के ताज़ा भाव देखने के लिए 'Market' सेक्शन में जाएं। गेहूं का भाव ₹2125 प्रति क्विंटल चल रहा है।";
+        }
+        // 6. GENERAL GREETINGS (नमस्ते/हलो)
+        else if (lowerQuery.match(/(hello|hi|namaste|pranam|ram|kaise|kaun|हलो|नमस्ते|प्रणाम|राम|कैसे|कौन)/i)) {
+            answer = "राम राम! मैं आपका एग्री-सेतु असिस्टेंट हूँ। बताईये, आज मैं आपकी खेती या लोन में कैसे मदद करूँ?";
+        }
+        // 7. CONTACT/HELP (मदद/संपर्क)
+        else if (lowerQuery.match(/(help|madad|contact|call|phone|support|number|मदद|संपर्क|फोन|नंबर)/i)) {
+            answer = "आप हमें +91 98765 43210 पर कॉल कर सकते हैं, या अपनी समस्या यहाँ बोलकर बताएं।";
         }
 
         setText(answer);
