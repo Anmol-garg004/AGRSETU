@@ -364,7 +364,6 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
   color: var(--primary-color);
   transition: var(--transition);
 }
@@ -430,11 +429,19 @@ button {
   background-color: var(--white);
 }
 
-/* Steps */
+/* Steps - Enhanced Hover Effects */
 .step-card {
   text-align: center;
   position: relative;
   z-index: 1;
+  padding: 20px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.step-card:hover {
+  background: #f0fdf4;
 }
 
 .step-number {
@@ -451,6 +458,81 @@ button {
   margin: 0 auto 24px;
   box-shadow: var(--shadow-md);
   transform: rotate(-5deg);
+  position: relative;
+  z-index: 2;
+}
+
+/* Icon Rotation Animation */
+.step-card .icon-box {
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.step-card:hover .icon-box {
+  transform: rotate(360deg) scale(1.1);
+}
+
+/* Hover Info Box */
+.step-info-box {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: 280px;
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 20;
+  text-align: left;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.step-info-box::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.step-card:hover .step-info-box {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(10px);
+}
+
+.step-info-box h4 {
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.step-info-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.step-info-box li {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.step-info-box li::before {
+  content: '•';
+  color: var(--accent-color);
+  font-weight: bold;
+  margin-right: 8px;
 }
 
 /* Footer */
