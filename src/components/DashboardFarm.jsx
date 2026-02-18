@@ -24,11 +24,15 @@ const DashboardFarm = () => {
     return (
         <div className="flex flex-col gap-6 fade-in">
             {/* Satellite & Environment Card */}
-            <div className="card p-0 overflow-hidden border-0 shadow-sm">
-                <div className="p-6 border-b flex justify-between items-center bg-white">
+            <div className="card p-0 overflow-hidden border-0 shadow-sm relative group">
+                <div className="absolute top-0 right-0 p-4 opacity-50 pointer-events-none">
+                    <CloudRain size={100} className="text-slate-100" />
+                </div>
+
+                <div className="p-6 border-b flex justify-between items-center bg-white relative z-10">
                     <h3 className="flex items-center gap-2 m-0 text-lg font-bold text-slate-800">
                         <BarChart2 className="text-emerald-600" size={20} />
-                        Farm Pulse & Satellite Data
+                        Farm Pulse & Advisory
                     </h3>
                     <div className="flex items-center gap-2">
                         <span className="flex h-2 w-2 relative">
@@ -39,44 +43,81 @@ const DashboardFarm = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-1 divide-x md:divide-x-0 md:divide-y">
-                    {/* NDVI Section */}
-                    <div className="p-6 bg-slate-50/50">
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Vegetation Index (NDVI)</p>
-                                <h4 className="text-3xl font-black text-emerald-600">{(ndvi).toFixed(2)}</h4>
-                            </div>
-                            <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
-                                <Leaf size={20} />
-                            </div>
+                <div className="grid grid-cols-12 gap-0 relative z-10 bg-white">
+                    {/* Left: Satellite Map & NDVI */}
+                    <div className="col-span-12 lg:col-span-8 border-r border-b lg:border-b-0 p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h4 className="text-sm font-black text-slate-700 uppercase tracking-widest">Satellite Imagery</h4>
+                            <button className="text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors">
+                                View Full Map
+                            </button>
                         </div>
-                        <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
-                            <div className="bg-emerald-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${ndvi * 100}%` }}></div>
-                        </div>
-                        <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                            <span className="text-emerald-600 font-bold">Healthy Growth</span> • No stress detected
-                        </p>
-                    </div>
 
-                    {/* Soil & Weather Section */}
-                    <div className="p-6">
-                        <div className="grid grid-cols-2 gap-6">
-                            <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Soil Moisture</p>
-                                <div className="flex items-end gap-2">
-                                    <h4 className="text-2xl font-black text-blue-600">{soilMoisture.toFixed(0)}%</h4>
-                                    <span className="text-xs text-slate-400 font-bold mb-1">Volumetric</span>
+                        {/* Mock Satellite Map View */}
+                        <div className="h-48 w-full bg-slate-100 rounded-xl mb-6 relative overflow-hidden group/map cursor-pointer border border-slate-200">
+                            {/* Placeholder Map Image/Gradient */}
+                            <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/82.9739,25.3176,13,0/600x300?access_token=pk.eyJ1IjoidGVtcCIsImEiOiJjbHExcCJ9')] bg-cover bg-center opacity-80 group-hover/map:opacity-100 transition-opacity"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent flex items-end p-4">
+                                <div>
+                                    <p className="text-white font-bold text-sm">Village Rampur, Varanasi</p>
+                                    <p className="text-emerald-400 text-[10px] font-black uppercase tracking-wider">Latest Pass: 2 Hours Ago</p>
                                 </div>
                             </div>
-                            <div>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Varanasi Weather</p>
-                                <div className="flex items-center gap-3">
-                                    <Sun size={24} className="text-amber-500" />
-                                    <div>
-                                        <span className="block text-lg font-black text-slate-800 leading-none">{weather.temp}</span>
-                                        <span className="text-[10px] text-slate-400 font-bold">{weather.rain} Rain</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Vegetation Index (NDVI)</p>
+                                <div className="flex items-end gap-2">
+                                    <h4 className="text-2xl font-black text-emerald-600">{(ndvi).toFixed(2)}</h4>
+                                    <span className="text-xs text-emerald-600 font-bold mb-1">Healthy</span>
+                                </div>
+                                <div className="w-full bg-slate-200 rounded-full h-1.5 mt-2">
+                                    <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: `${ndvi * 100}%` }}></div>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Soil Moisture</p>
+                                <div className="flex items-end gap-2">
+                                    <h4 className="text-2xl font-black text-blue-600">{soilMoisture.toFixed(0)}%</h4>
+                                    <span className="text-xs text-blue-600 font-bold mb-1">Adequate</span>
+                                </div>
+                                <div className="w-full bg-slate-200 rounded-full h-1.5 mt-2">
+                                    <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${soilMoisture}%` }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right: Advisory & Weather */}
+                    <div className="col-span-12 lg:col-span-4 p-6 bg-slate-50/50">
+                        {/* Daily Advisory */}
+                        <div className="mb-6">
+                            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-amber-500"></span> Daily Action Plan
+                            </h4>
+                            <div className="bg-white p-4 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                                <p className="text-xs font-bold text-amber-600 mb-1">Today's Priority</p>
+                                <p className="text-sm font-bold text-slate-700 leading-tight mb-2">
+                                    Irrigate Wheat field (Sector B). Top-dress Urea due to expected rain in 2 days.
+                                </p>
+                                <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-amber-600 underline">View Full Advisory</button>
+                            </div>
+                        </div>
+
+                        {/* 15 Days Weather Preview (Scrollable) */}
+                        <div>
+                            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">15-Day Forecast</h4>
+                            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className="min-w-[70px] bg-white p-2 rounded-xl border text-center flex-shrink-0">
+                                        <p className="text-[10px] font-bold text-slate-400">{i === 0 ? 'Today' : `Day ${i + 1}`}</p>
+                                        <div className="my-1 text-amber-500 flex justify-center"><Sun size={18} /></div>
+                                        <p className="text-sm font-black text-slate-700">{32 - i}°</p>
                                     </div>
+                                ))}
+                                <div className="min-w-[70px] bg-slate-100 p-2 rounded-xl border border-dashed flex flex-col justify-center items-center text-slate-400 cursor-pointer">
+                                    <span className="text-[10px] font-bold">More</span>
                                 </div>
                             </div>
                         </div>
