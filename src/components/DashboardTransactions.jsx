@@ -110,6 +110,35 @@ const DashboardTransactions = () => {
         return matchesSearch && matchesCategory && matchesDate;
     });
 
+    const handleExport = () => {
+        const headers = ["ID", "Date", "Source", "Category", "Method", "Amount", "Status", "Type"];
+        const rows = filteredTransactions.map(t => [
+            t.id,
+            t.date,
+            `"${t.source}"`,
+            `"${t.category}"`,
+            t.method,
+            t.amount,
+            t.status,
+            t.type
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(r => r.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `transactions_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className="fade-in space-y-6">
             <div className="flex justify-between items-end mb-4">
@@ -117,7 +146,10 @@ const DashboardTransactions = () => {
                     <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">Transaction Ledger</h2>
                     <p className="text-slate-500 font-medium">Unified view of Gov payments and Cashbox income</p>
                 </div>
-                <button className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold hover:bg-black transition-all">
+                <button
+                    onClick={handleExport}
+                    className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold hover:bg-black transition-all cursor-pointer border-0"
+                >
                     <Download size={18} /> Export Statement
                 </button>
             </div>
