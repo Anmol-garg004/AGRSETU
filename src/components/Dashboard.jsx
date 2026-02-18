@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
-import DashboardFinancials from './DashboardFinancials';
+
 import DashboardTransactions from './DashboardTransactions';
 import AgriTrustScore from './AgriTrustScore';
 import DashboardFunding from './DashboardFunding';
@@ -42,7 +42,7 @@ const Dashboard = ({ user, onLogout }) => {
                     <div className="grid grid-cols-12 gap-8 lg-grid-cols-1">
                         <div className="col-span-8 lg-col-span-12 space-y-8">
                             <DashboardFarm />
-                            <DashboardFinancials />
+
                         </div>
                         <div className="col-span-4 lg-col-span-12 space-y-8">
                             <AgriTrustScore />
@@ -54,8 +54,7 @@ const Dashboard = ({ user, onLogout }) => {
                 return <DashboardProfile user={user} />;
             case 'Farm Data':
                 return <DashboardFarm />;
-            case 'Financials':
-                return <DashboardFinancials />;
+
             case 'Trust Score':
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
             case 'Transactions':
@@ -126,7 +125,7 @@ const Dashboard = ({ user, onLogout }) => {
                             { id: 'Overview', icon: Layout },
                             { id: 'Profile', icon: Users },
                             { id: 'Farm Data', icon: MapPin },
-                            { id: 'Financials', icon: IndianRupee },
+
                             { id: 'Funding', icon: Landmark },
                             { id: 'Trust Score', icon: Award },
                             { id: 'Transactions', icon: History }
