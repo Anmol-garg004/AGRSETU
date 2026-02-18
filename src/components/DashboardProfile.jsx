@@ -92,8 +92,8 @@ const DashboardProfile = ({ user, onUpdate }) => {
                 <div className="h-32 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden">
                     <div className="absolute inset-0 bg-mesh opacity-20"></div>
                     <div className="absolute -bottom-16 left-8 p-1.5 bg-white rounded-2xl shadow-xl">
-                        <div className="w-28 h-28 bg-emerald-600 rounded-xl flex items-center justify-center text-4xl font-black text-emerald-50 drop-shadow-md">
-                            {profile.name.split(' ').map(n => n[0]).join('')}
+                        <div className="w-28 h-28 bg-emerald-600 rounded-xl flex items-center justify-center text-emerald-50 drop-shadow-md">
+                            <User size={48} />
                         </div>
                     </div>
                 </div>
@@ -116,12 +116,7 @@ const DashboardProfile = ({ user, onUpdate }) => {
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Trust Score</p>
                             <p className="text-2xl font-black text-emerald-600 leading-none">94/100</p>
                         </div>
-                        <button
-                            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm active:scale-95 cursor-pointer ${isEditing ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-white border-2 border-slate-100 text-slate-600 hover:border-slate-300'}`}
-                        >
-                            {isEditing ? <><Save size={16} /> Save Changes</> : <><Edit2 size={16} /> Edit Profile</>}
-                        </button>
+
                     </div>
                 </div>
             </div>
