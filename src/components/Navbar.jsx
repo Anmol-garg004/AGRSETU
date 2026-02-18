@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sprout } from 'lucide-react';
 import '../index.css';
 
 const Navbar = ({ onLoginClick }) => {
@@ -21,16 +21,21 @@ const Navbar = ({ onLoginClick }) => {
     return (
         <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
             <div className="container nav-content">
-                <div className="logo">
-                    AGR<span>SETU</span>
-                </div>
+                <a href="#" className="logo-container" onClick={(e) => { e.preventDefault(); window.scrollTo(0, 0); }}>
+                    <div className="logo-icon">
+                        <Sprout size={24} color="white" strokeWidth={2.5} />
+                    </div>
+                    <div className="logo-text">
+                        AGR<span>SETU</span>
+                    </div>
+                </a>
 
                 {/* Desktop Menu */}
                 <div className="nav-links desktop-only">
                     <a href="#hero">Home</a>
                     <a href="#features">Features</a>
+                    <a href="#solution">How it Works</a>
                     <a href="#partners">Partners</a>
-                    <a href="#impact">Impact</a>
                     <a href="#contact">Contact</a>
                 </div>
 
@@ -40,7 +45,7 @@ const Navbar = ({ onLoginClick }) => {
 
                 {/* Mobile Menu Button */}
                 <div className="mobile-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    {isOpen ? <X size={28} color="#166534" /> : <Menu size={28} color="#166534" />}
                 </div>
             </div>
 
@@ -49,8 +54,8 @@ const Navbar = ({ onLoginClick }) => {
                 <div className="mobile-menu">
                     <a href="#hero" onClick={() => setIsOpen(false)}>Home</a>
                     <a href="#features" onClick={() => setIsOpen(false)}>Features</a>
+                    <a href="#solution" onClick={() => setIsOpen(false)}>How it Works</a>
                     <a href="#partners" onClick={() => setIsOpen(false)}>Partners</a>
-                    <a href="#impact" onClick={() => setIsOpen(false)}>Impact</a>
                     <a href="#contact" onClick={() => setIsOpen(false)}>Contact</a>
                     <button className="btn btn-primary w-full" onClick={() => { setIsOpen(false); onLoginClick(); }}>Get Started</button>
                 </div>

@@ -13,11 +13,11 @@ const Hero = ({ onLoginClick }) => {
                 <p>Empowering farmers with verified income, AI risk scoring, and fair access to finance. Bridging the gap between agriculture and banking.</p>
 
                 <div className="hero-buttons">
-                    <button className="btn btn-primary" onClick={onLoginClick} style={{ backgroundColor: '#2E7D32', border: 'none', padding: '16px 32px', fontSize: '1.2rem' }}>
+                    <button className="btn btn-primary" onClick={onLoginClick}>
                         Get Started <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
-                    <button className="btn btn-white" style={{ padding: '16px 32px', fontSize: '1.2rem' }}>
-                        Partner With Us <ChevronRight size={20} />
+                    <button className="btn btn-white">
+                        Partner With Us <ChevronRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
                 </div>
 
