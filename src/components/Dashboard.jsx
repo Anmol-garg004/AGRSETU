@@ -3,14 +3,14 @@ import {
     Users,
     MapPin,
     Leaf,
-    CheckCircle,
-    BarChart,
     Award,
     Settings,
     Bell,
     LogOut,
     IndianRupee,
-    Layout
+    Layout,
+    Search,
+    ChevronRight
 } from 'lucide-react';
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
@@ -25,12 +25,12 @@ const Dashboard = ({ user, onLogout }) => {
         switch (activeTab) {
             case 'Overview':
                 return (
-                    <div className="grid grid-3 gap-6">
-                        <div className="col-span-2 space-y-6">
+                    <div className="grid grid-3 gap-8">
+                        <div className="col-span-2 space-y-8">
                             <DashboardFarm />
                             <DashboardFinancials />
                         </div>
-                        <div className="col-span-1 space-y-6">
+                        <div className="col-span-1 space-y-8">
                             <AgriTrustScore />
                             <DashboardProfile user={user} />
                         </div>
@@ -45,133 +45,113 @@ const Dashboard = ({ user, onLogout }) => {
             case 'Trust Score':
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
             default:
-                return <div className="text-center p-12 text-gray-400">Section Under Development</div>;
+                return (
+                    <div className="flex flex-col items-center justify-center p-20 text-center card bg-slate-50 border-dashed">
+                        <div className="p-4 bg-white rounded-full shadow-sm mb-4">
+                            <Settings className="text-slate-300 animate-spin-slow" size={40} />
+                        </div>
+                        <h3 className="text-slate-400">Section Under Development</h3>
+                        <p className="text-slate-400 text-sm">We're working hard to bring this feature to you soon.</p>
+                    </div>
+                );
         }
     };
 
     return (
-        <div className="dashboard-container" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F8FAFC' }}>
-            {/* Sidebar */}
-            <aside style={{ width: '280px', backgroundColor: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflowY: 'auto' }}>
-                <div
-                    className="logo mb-8"
-                    onClick={() => setActiveTab('Overview')}
-                    style={{
-                        fontSize: '1.5rem',
-                        fontWeight: 'bold',
-                        color: '#166534',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    <div className="logo-icon" style={{
-                        backgroundColor: '#166534', // Added background for white icon visibility
-                        borderRadius: '8px',
-                        padding: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Leaf size={24} color="white" />
-                    </div>
-                    <div className="logo-text">
-                        AGR<span style={{ color: '#1565C0' }}>SETU</span>
+        <div className="dashboard-container flex">
+            {/* Professional Sidebar */}
+            <aside className="dashboard-sidebar w-[300px] h-screen bg-white border-r border-slate-100 flex flex-col fixed left-0 top-0 z-50">
+                <div className="p-8">
+                    <div
+                        className="flex items-center gap-3 cursor-pointer group"
+                        onClick={() => setActiveTab('Overview')}
+                    >
+                        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
+                            <Leaf size={22} color="white" />
+                        </div>
+                        <span className="text-2xl font-black tracking-tighter text-slate-800">
+                            AGR<span className="text-emerald-600">SETU</span>
+                        </span>
                     </div>
                 </div>
 
-                <nav style={{ flex: 1 }}>
-                    <ul style={{ listStyle: 'none' }}>
-                        {[
-                            { id: 'Overview', icon: <Layout size={20} /> },
-                            { id: 'Profile', icon: <Users size={20} /> },
-                            { id: 'Farm Data', icon: <MapPin size={20} /> },
-                            { id: 'Financials', icon: <IndianRupee size={20} /> }, // Changed from CheckCircle to Rupee
-                            { id: 'Trust Score', icon: <Award size={20} /> },
-                            { id: 'Settings', icon: <Settings size={20} /> }
-                        ].map((item) => (
-                            <li key={item.id} style={{ marginBottom: '0.5rem' }}>
-                                <button
-                                    onClick={() => setActiveTab(item.id)}
-                                    style={{
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        padding: '12px 16px',
-                                        borderRadius: '8px',
-                                        backgroundColor: activeTab === item.id ? '#F0FDF4' : 'transparent',
-                                        color: activeTab === item.id ? '#166534' : '#64748B',
-                                        fontWeight: activeTab === item.id ? '600' : '500',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                        transition: 'all 0.2s',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    {item.icon}
-                                    {item.id}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
+                <nav className="flex-1 px-4 py-4 space-y-1">
+                    {[
+                        { id: 'Overview', icon: Layout },
+                        { id: 'Profile', icon: Users },
+                        { id: 'Farm Data', icon: MapPin },
+                        { id: 'Financials', icon: IndianRupee },
+                        { id: 'Trust Score', icon: Award },
+                        { id: 'Settings', icon: Settings }
+                    ].map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold transition-all duration-200 ${activeTab === item.id
+                                    ? 'bg-emerald-50 text-emerald-700 shadow-sm shadow-emerald-100'
+                                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <item.icon size={20} strokeWidth={activeTab === item.id ? 2.5 : 2} />
+                                {item.id}
+                            </div>
+                            {activeTab === item.id && <ChevronRight size={14} className="opacity-50" />}
+                        </button>
+                    ))}
                 </nav>
 
-                <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '1.5rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#DCFCE7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                <div className="p-6 mt-auto border-t border-slate-50">
+                    <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-4 mb-4">
+                        <div className="w-12 h-12 rounded-full bg-white border-2 border-emerald-500 overflow-hidden shadow-sm flex items-center justify-center font-black text-emerald-600">
                             KK
                         </div>
-                        <div>
-                            <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0F172A' }}>Kishan Kumar</div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Verified Farmer</div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-black text-slate-800 truncate">Kishan Kumar</p>
+                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-widest">Verified</span>
                         </div>
                     </div>
                     <button
                         onClick={onLogout}
-                        style={{
-                            width: '100%',
-                            padding: '10px',
-                            borderRadius: '8px',
-                            border: '1px solid #FECACA',
-                            backgroundColor: '#FEF2F2',
-                            color: '#EF4444',
-                            fontWeight: '500',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                        onMouseOver={(e) => e.target.style.backgroundColor = '#FEE2E2'}
-                        onMouseOut={(e) => e.target.style.backgroundColor = '#FEF2F2'}
+                        className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-black transition-all shadow-md active:scale-95"
                     >
                         <LogOut size={18} /> Logout
                     </button>
                 </div>
             </aside>
 
-            {/* Main Content */}
-            <main style={{ flex: 1, padding: '2rem', marginLeft: '280px', maxWidth: '1600px' }}>
-                <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            {/* Premium Main Content Area */}
+            <main className="flex-1 ml-[300px] min-h-screen bg-slate-50/50 p-10 overflow-x-hidden">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 fade-in">
                     <div>
-                        <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#1E293B', marginBottom: '0.25rem' }}>{activeTab}</h1>
-                        <p style={{ color: '#64748B' }}>Real-time insights for your agricultural success.</p>
+                        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
+                            Dashboard <ChevronRight size={10} /> {activeTab}
+                        </div>
+                        <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
                     </div>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                        <button style={{ padding: '12px', borderRadius: '50%', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#64748B', cursor: 'pointer', position: 'relative' }}>
-                            <Bell size={20} />
-                            <span style={{ position: 'absolute', top: '8px', right: '8px', width: '8px', height: '8px', backgroundColor: '#EF4444', borderRadius: '50%' }}></span>
-                        </button>
-                        <button className="btn btn-primary shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
-                            + Add New Crop Log
-                        </button>
+
+                    <div className="flex items-center gap-4">
+                        <div className="relative hidden lg:block">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search analytics..."
+                                className="pl-12 pr-4 py-3 bg-white border border-slate-100 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none w-64 transition-all"
+                            />
+                        </div>
+                        <div className="flex gap-3">
+                            <button className="relative w-12 h-12 flex items-center justify-center bg-white border border-slate-100 rounded-2xl text-slate-500 hover:bg-slate-50 transition-colors">
+                                <Bell size={20} />
+                                <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                            </button>
+                            <button className="btn-premium flex items-center gap-2">
+                                <IndianRupee size={18} /> Apply for Funding
+                            </button>
+                        </div>
                     </div>
                 </header>
 
-                {/* Dynamic Content Area */}
-                <div className="dashboard-content fade-up">
+                <div className="dashboard-content fade-in">
                     {renderContent()}
                 </div>
             </main>
@@ -180,3 +160,4 @@ const Dashboard = ({ user, onLogout }) => {
 };
 
 export default Dashboard;
+
