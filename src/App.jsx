@@ -13,18 +13,26 @@ import Dashboard from './components/Dashboard';
 import VoiceAssistant from './components/VoiceAssistant';
 
 function App() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem('agrsetu_user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
 
-  const handleLogin = (userData) => {
+  const handleLogin = (userData, rememberMe) => {
     setIsAuthenticated(true);
     setUser(userData);
+    if (rememberMe) {
+      localStorage.setItem('agrsetu_user', JSON.stringify(userData));
+    }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUser(null);
+    localStorage.removeItem('agrsetu_user');
   };
 
   if (isAuthenticated) {

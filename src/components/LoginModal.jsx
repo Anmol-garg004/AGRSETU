@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { X, Mail, Lock, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import '../index.css';
 
 import { createPortal } from 'react-dom';
@@ -9,6 +9,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const [rememberMe, setRememberMe] = useState(false);
 
     if (!isOpen) return null;
 
@@ -20,7 +22,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         // Simulate network delay
         setTimeout(() => {
             if (email === 'agrsetu@gmail.com' && password === 'agrsetu@2026') {
-                onLogin({ email, name: 'Admin User' });
+                onLogin({ email, name: 'Admin User' }, rememberMe); // Pass rememberMe
                 onClose();
             } else {
                 setError('Invalid credentials. Please try again.');
@@ -89,6 +91,21 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 required
                             />
                         </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4">
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                            <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${rememberMe ? 'bg-emerald-600 border-emerald-600' : 'bg-white border-slate-300 group-hover:border-emerald-400'}`}>
+                                {rememberMe && <CheckCircle size={14} className="text-white" />}
+                            </div>
+                            <input
+                                type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="hidden"
+                            />
+                            <span className="text-sm font-bold text-slate-500 group-hover:text-emerald-700 transition-colors">Remember Me</span>
+                        </label>
                     </div>
 
                     <button
