@@ -8,6 +8,7 @@ import {
     Bell,
     LogOut,
     IndianRupee,
+    History,
     Layout,
     Search,
     ChevronRight,
@@ -17,6 +18,7 @@ import {
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
 import DashboardFinancials from './DashboardFinancials';
+import DashboardTransactions from './DashboardTransactions';
 import AgriTrustScore from './AgriTrustScore';
 import '../index.css';
 
@@ -54,6 +56,8 @@ const Dashboard = ({ user, onLogout }) => {
                 return <DashboardFinancials />;
             case 'Trust Score':
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
+            case 'Transactions':
+                return <DashboardTransactions />;
             default:
                 return (
                     <div className="flex flex-col items-center justify-center p-20 text-center card bg-slate-50 border-dashed">
@@ -120,7 +124,7 @@ const Dashboard = ({ user, onLogout }) => {
                             { id: 'Farm Data', icon: MapPin },
                             { id: 'Financials', icon: IndianRupee },
                             { id: 'Trust Score', icon: Award },
-                            { id: 'Settings', icon: Settings }
+                            { id: 'Transactions', icon: History }
                         ].map((item) => (
                             <button
                                 key={item.id}
