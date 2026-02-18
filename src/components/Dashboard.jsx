@@ -177,20 +177,25 @@ const Dashboard = ({ user, onLogout }) => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <div className="relative hide-mobile">
-                                    <Search className="absolute left-3 top-1/2" size={16} style={{ transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                <div className="relative hide-mobile group">
+                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors">
+                                        <Search size={18} />
+                                    </div>
                                     <input
                                         type="text"
                                         placeholder="Search..."
-                                        className="px-10 py-2 w-48 bg-white border rounded-xl text-sm focus:w-64 transition-all"
+                                        className="pl-10 pr-4 h-10 w-64 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:w-80 focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none placeholder:text-slate-400"
                                     />
                                 </div>
-                                <button className="relative w-10 h-10 flex items-center justify-center bg-white border rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer">
-                                    <Bell size={18} />
-                                    <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 border-2 border-white rounded-full"></span>
+
+                                <button className="relative w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-emerald-600 transition-all cursor-pointer shadow-sm">
+                                    <Bell size={20} />
+                                    <span className="absolute top-2.5 right-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
                                 </button>
-                                <button className="btn-premium px-4 py-2 text-sm flex gap-2 items-center">
-                                    <IndianRupee size={16} /> <span className="hide-mobile">Funding</span>
+
+                                <button className="h-10 px-5 text-sm font-bold flex gap-2 items-center bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
+                                    <IndianRupee size={18} />
+                                    <span className="hide-mobile">Get Funding</span>
                                 </button>
                             </div>
                         </div>

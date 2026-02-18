@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, TrendingUp, CheckCircle, ArrowRight, Zap } from 'lucide-react';
+import { ShieldCheck, TrendingUp, CheckCircle, ArrowRight, Zap, Award, Activity } from 'lucide-react';
 
 const AgriTrustScore = () => {
     const [score, setScore] = useState(0);
@@ -23,45 +23,42 @@ const AgriTrustScore = () => {
     }, []);
 
     const getScoreCategory = (s) => {
-        if (s >= 750) return { label: 'Excellent', color: '#10b981', bg: '#ecfdf5' };
-        if (s >= 650) return { label: 'Good', color: '#f59e0b', bg: '#fffbeb' };
-        return { label: 'Fair', color: '#ef4444', bg: '#fef2f2' };
+        if (s >= 750) return { label: 'Excellent', color: 'text-emerald-500', bg: 'bg-emerald-50', border: 'border-emerald-200' };
+        if (s >= 650) return { label: 'Good', color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200' };
+        return { label: 'Fair', color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-200' };
     };
 
     const category = getScoreCategory(score);
 
     return (
-        <div className="card p-8 fade-in">
-            <div className="flex justify-between items-center mb-10">
-                <h3 className="m-0 text-slate-900 font-bold flex items-center gap-2">
-                    <Zap size={20} className="text-amber-500 fill-amber-500" /> Agri-Trust Score
+        <div className="card p-0 overflow-hidden border-0 shadow-lg bg-white relative group">
+            <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-slate-900 to-slate-800 text-white">
+                <h3 className="m-0 text-lg font-bold flex items-center gap-2">
+                    <Zap size={20} className="text-amber-400 fill-amber-400" /> Agri-Trust Score
                 </h3>
-                <span className="status-badge bg-slate-100 text-slate-500 border-0">V. 2026</span>
+                <span className="text-[10px] font-bold bg-white/10 px-2 py-1 rounded-lg border border-white/10 uppercase tracking-widest">v2026.1</span>
             </div>
 
-            <div className="flex flex-col items-center mb-10">
-                <div className="relative w-48 h-48 flex items-center justify-center">
-                    {/* Background Progress Circle */}
+            <div className="p-8 flex flex-col items-center relative overflow-hidden">
+                {/* Background Glow */}
+                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none`}></div>
+
+                <div className="relative w-56 h-56 flex items-center justify-center mb-6">
+                    {/* SVG Gauge */}
                     <svg className="w-full h-full transform -rotate-[220deg]" viewBox="0 0 224 224">
-                        <circle
-                            cx="112" cy="112" r="95"
-                            stroke="#f1f5f9"
-                            strokeWidth="16"
-                            strokeLinecap="round"
-                            fill="transparent"
-                            strokeDasharray="440 600"
-                        />
-                        {/* Gradient Score Circle */}
+                        {/* Track */}
+                        <circle cx="112" cy="112" r="90" stroke="#f1f5f9" strokeWidth="12" strokeLinecap="round" fill="transparent" strokeDasharray="440 600" />
+                        {/* Progress */}
                         <defs>
                             <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#059669" />
-                                <stop offset="100%" stopColor="#10b981" />
+                                <stop offset="0%" stopColor="#10b981" />
+                                <stop offset="100%" stopColor="#059669" />
                             </linearGradient>
                         </defs>
                         <circle
-                            cx="112" cy="112" r="95"
+                            cx="112" cy="112" r="90"
                             stroke="url(#scoreGradient)"
-                            strokeWidth="16"
+                            strokeWidth="12"
                             strokeLinecap="round"
                             fill="transparent"
                             strokeDasharray="440 600"
@@ -70,36 +67,33 @@ const AgriTrustScore = () => {
                         />
                     </svg>
 
-                    <div className="absolute flex flex-col items-center text-center">
-                        <span className="text-5xl font-black text-slate-900 tracking-tighter leading-none">{score}</span>
-                        <div style={{ backgroundColor: category.bg, color: category.color }} className="text-[10px] font-black px-3 py-1 rounded-full mt-3 uppercase tracking-widest">
+                    <div className="absolute flex flex-col items-center text-center inset-0 justify-center pt-4">
+                        <span className="text-6xl font-black text-slate-800 tracking-tighter leading-none mb-1">{score}</span>
+                        <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${category.bg} ${category.color} ${category.border}`}>
                             {category.label}
                         </div>
                     </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-4 font-bold text-center">Top 5% of regional productivity</p>
-            </div>
 
-            <div className="grid grid-cols-1 gap-4">
-                {[
-                    { label: 'Stability', icon: TrendingUp, title: 'Yield Consistency', desc: 'High performance over 5 seasons.', color: 'emerald' },
-                    { label: 'Verification', icon: CheckCircle, title: 'Satellite Verified', desc: '100% match with orbital imagery.', color: 'blue' }
-                ].map((factor, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-transparent hover:border-slate-200 transition-all">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{factor.label}</span>
-                            <factor.icon size={14} className={`text-${factor.color}-500`} />
-                        </div>
-                        <h5 className="text-sm font-bold text-slate-800 mb-1">{factor.title}</h5>
-                        <p className="text-[11px] text-slate-500 leading-tight">{factor.desc}</p>
+                <div className="grid grid-cols-2 gap-3 w-full">
+                    <div className="p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center hover:bg-white hover:shadow-md transition-all">
+                        <TrendingUp size={16} className="mx-auto text-emerald-500 mb-1" />
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Consistency</p>
+                        <p className="text-sm font-black text-slate-700">Top 5%</p>
                     </div>
-                ))}
+                    <div className="p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center hover:bg-white hover:shadow-md transition-all">
+                        <ShieldCheck size={16} className="mx-auto text-blue-500 mb-1" />
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified</p>
+                        <p className="text-sm font-black text-slate-700">100%</p>
+                    </div>
+                </div>
             </div>
 
-            <button className="btn-premium w-full mt-8 justify-center gap-2 group">
-                Full Credit Report
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            <div className="p-4 bg-slate-50 border-t">
+                <button className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-900/10 hover:shadow-slate-900/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                    View Full Credit Report <ArrowRight size={14} />
+                </button>
+            </div>
         </div>
     );
 };
