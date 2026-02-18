@@ -30,7 +30,7 @@ const Navbar = ({ onLoginClick }) => {
                         letterSpacing: '-1px',
                         color: 'var(--primary-dark)'
                     }}>
-                        AGR
+                        AGRSE
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -44,7 +44,7 @@ const Navbar = ({ onLoginClick }) => {
                         }}>
                             <Sprout size={22} color="white" strokeWidth={2.5} style={{ transform: 'translateY(1px)' }} />
                         </div>
-                        <span style={{ color: 'var(--secondary-main)' }}>ETU</span>
+                        <span style={{ color: 'var(--secondary-main)' }}>U</span>
                     </div>
                 </a>
 
