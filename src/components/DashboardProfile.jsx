@@ -99,15 +99,15 @@ const DashboardProfile = ({ user, onUpdate }) => {
                 </div>
 
                 <div className="pt-20 pb-8 flex justify-between items-end flex-wrap gap-6 px-8 select-none">
-                    <div className="pt-4 pl-32 sm:pl-36 md:pl-40 lg:pl-44 xl:pl-48">
+                    <div className="pt-2 pl-36">
                         <div className="flex items-center gap-3 mb-1 min-w-[300px]">
                             <h1 className="text-3xl font-black text-slate-900 tracking-tight whitespace-nowrap">{profile.name}</h1>
                             <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200 whitespace-nowrap">
                                 <CheckCircle size={10} /> Verified Farmer
                             </span>
                         </div>
-                        <p className="text-xs font-bold text-slate-500 flex items-center gap-2">
-                            Unique Farmer ID: <span className="font-mono text-slate-900 bg-slate-100 px-1.5 rounded">{profile.landId}</span>
+                        <p className="text-xs font-black text-emerald-700 uppercase tracking-widest flex items-center gap-2 mt-2">
+                            Unique Farmer ID: <span className="font-mono text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{profile.landId}</span>
                         </p>
                     </div>
 
