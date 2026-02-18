@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sprout } from 'lucide-react';
+import { Sprout } from 'lucide-react';
 import '../index.css';
 
 const Navbar = ({ onLoginClick }) => {
@@ -72,23 +72,9 @@ const Navbar = ({ onLoginClick }) => {
                     <button className="btn btn-primary btn-sm" onClick={onLoginClick}>Get Started</button>
                 </div>
 
-                {/* Mobile Menu Button */}
-                <div className="mobile-menu-btn" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={28} color="#166534" /> : <Menu size={28} color="#166534" />}
-                </div>
+                {/* Mobile Menu Logic handled via CSS or hidden as requested */}
             </div>
 
-            {/* Mobile Menu */}
-            {isOpen && (
-                <div className="mobile-menu">
-                    <a href="#hero" onClick={() => setIsOpen(false)}>Home</a>
-                    <a href="#features" onClick={() => setIsOpen(false)}>Features</a>
-                    <a href="#solution" onClick={() => setIsOpen(false)}>How it Works</a>
-                    <a href="#partners" onClick={() => setIsOpen(false)}>Partners</a>
-                    <a href="#contact" onClick={() => setIsOpen(false)}>Contact</a>
-                    <button className="btn btn-primary w-full" onClick={() => { setIsOpen(false); onLoginClick(); }}>Get Started</button>
-                </div>
-            )}
         </nav>
     );
 };
