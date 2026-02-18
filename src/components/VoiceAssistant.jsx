@@ -14,6 +14,9 @@ const VoiceAssistant = () => {
     const synthesisRef = useRef(null);
 
     useEffect(() => {
+        // Initialize Speech Synthesis
+        synthesisRef.current = window.speechSynthesis;
+
         // Initialize Speech Recognition
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -32,33 +35,38 @@ const VoiceAssistant = () => {
                     .map(result => result[0].transcript)
                     .join('');
                 setTranscript(transcriptText);
+
+                // If final result, handle it immediately
+                if (event.results[0].isFinal) {
+                    handleAIResponse(transcriptText);
+                    stopListening();
+                }
             };
 
             recognitionRef.current.onend = () => {
                 setIsListening(false);
-                if (transcript) {
-                    handleAIResponse(transcript);
-                } else {
-                    setText("कुछ सुनाई नहीं दिया। कृपया फिर से बोलें। (Use the mic to speak)");
-                }
+                // We rely on isFinal check above to trigger response, 
+                // or manual stop. 
             };
 
             recognitionRef.current.onerror = (event) => {
                 console.error("Speech recognition error", event.error);
                 setIsListening(false);
-                setText("कोई त्रुटि हुई। कृपया पुन: प्रयास करें। (Error occurred)");
+                if (event.error !== 'no-speech') {
+                    setText("कोई त्रुटि हुई। कृपया पुन: प्रयास करें। (Error occurred)");
+                }
             };
         }
-
-        // Initialize Speech Synthesis
-        synthesisRef.current = window.speechSynthesis;
 
         return () => {
             if (synthesisRef.current) {
                 synthesisRef.current.cancel();
             }
+            if (recognitionRef.current) {
+                // recognitionRef.current.stop(); // Don't aggressive stop on unmount to avoid errors if already stopped
+            }
         };
-    }, [transcript]);
+    }, []); // Empty dependency array to run only once!
 
     const startListening = () => {
         if (synthesisRef.current.speaking) synthesisRef.current.cancel();
