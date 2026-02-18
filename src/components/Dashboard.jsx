@@ -5,62 +5,88 @@ import {
     Leaf,
     CheckCircle,
     BarChart,
-    Calendar,
+    Award,
     Settings,
     Bell,
-    LogOut
+    LogOut,
+    IndianRupee,
+    Layout
 } from 'lucide-react';
+import DashboardProfile from './DashboardProfile';
+import DashboardFarm from './DashboardFarm';
+import DashboardFinancials from './DashboardFinancials';
+import AgriTrustScore from './AgriTrustScore';
 import '../index.css';
 
 const Dashboard = ({ user, onLogout }) => {
     const [activeTab, setActiveTab] = useState('Overview');
 
-    const stats = [
-        { label: "My Farms", value: "2", icon: <MapPin size={24} />, color: "#2E7D32" },
-        { label: "Crop Health", value: "98%", icon: <Leaf size={24} />, color: "#4CAF50" },
-        { label: "Trust Score", value: "780", icon: <CheckCircle size={24} />, color: "#1565C0" },
-    ];
-
-    const recentActivity = [
-        { date: "Feb 18, 2026", action: "Loan Approved", amount: "₹50,000", status: "Completed" },
-        { date: "Feb 15, 2026", action: "Soil Test Report", amount: "-", status: "Verified" },
-        { date: "Feb 10, 2026", action: "Harvest Logged", amount: "Wheat", status: "Pending" },
-    ];
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'Overview':
+                return (
+                    <div className="grid grid-3 gap-6">
+                        <div className="col-span-2 space-y-6">
+                            <DashboardFarm />
+                            <DashboardFinancials />
+                        </div>
+                        <div className="col-span-1 space-y-6">
+                            <AgriTrustScore />
+                            <DashboardProfile user={user} />
+                        </div>
+                    </div>
+                );
+            case 'Profile':
+                return <DashboardProfile user={user} />;
+            case 'Farm Data':
+                return <DashboardFarm />;
+            case 'Financials':
+                return <DashboardFinancials />;
+            case 'Trust Score':
+                return <div className="flex justify-center"><AgriTrustScore /></div>;
+            default:
+                return <div className="text-center p-12 text-gray-400">Section Under Development</div>;
+        }
+    };
 
     return (
         <div className="dashboard-container" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F8FAFC' }}>
             {/* Sidebar */}
-            <aside style={{ width: '280px', backgroundColor: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                <div className="logo mb-8" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2E7D32', display: 'flex', alignItems: 'center' }}>
-                    AGR<span style={{ color: '#1565C0' }}>SETU</span>
+            <aside style={{ width: '280px', backgroundColor: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflowY: 'auto' }}>
+                <div className="logo mb-8" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Leaf size={24} /> AGR<span style={{ color: '#1565C0' }}>SETU</span>
                 </div>
 
                 <nav style={{ flex: 1 }}>
                     <ul style={{ listStyle: 'none' }}>
-                        {['Overview', 'Farm Data', 'Financials', 'Marketplace', 'Settings'].map((item) => (
-                            <li key={item} style={{ marginBottom: '0.5rem' }}>
+                        {[
+                            { id: 'Overview', icon: <Layout size={20} /> },
+                            { id: 'Profile', icon: <Users size={20} /> },
+                            { id: 'Farm Data', icon: <MapPin size={20} /> },
+                            { id: 'Financials', icon: <IndianRupee size={20} /> }, // Changed from CheckCircle to Rupee
+                            { id: 'Trust Score', icon: <Award size={20} /> },
+                            { id: 'Settings', icon: <Settings size={20} /> }
+                        ].map((item) => (
+                            <li key={item.id} style={{ marginBottom: '0.5rem' }}>
                                 <button
-                                    onClick={() => setActiveTab(item)}
+                                    onClick={() => setActiveTab(item.id)}
                                     style={{
                                         width: '100%',
                                         textAlign: 'left',
                                         padding: '12px 16px',
                                         borderRadius: '8px',
-                                        backgroundColor: activeTab === item ? '#F0FDF4' : 'transparent',
-                                        color: activeTab === item ? '#15803D' : '#64748B',
-                                        fontWeight: activeTab === item ? '600' : '500',
+                                        backgroundColor: activeTab === item.id ? '#F0FDF4' : 'transparent',
+                                        color: activeTab === item.id ? '#166534' : '#64748B',
+                                        fontWeight: activeTab === item.id ? '600' : '500',
                                         display: 'flex',
                                         alignItems: 'center',
                                         gap: '12px',
-                                        transition: 'all 0.2s'
+                                        transition: 'all 0.2s',
+                                        cursor: 'pointer'
                                     }}
                                 >
-                                    {item === 'Overview' && <BarChart size={20} />}
-                                    {item === 'Farm Data' && <MapPin size={20} />}
-                                    {item === 'Financials' && <CheckCircle size={20} />}
-                                    {item === 'Marketplace' && <Users size={20} />}
-                                    {item === 'Settings' && <Settings size={20} />}
-                                    {item}
+                                    {item.icon}
+                                    {item.id}
                                 </button>
                             </li>
                         ))}
@@ -70,11 +96,11 @@ const Dashboard = ({ user, onLogout }) => {
                 <div style={{ borderTop: '1px solid #E2E8F0', paddingTop: '1.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#DCFCE7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                            AG
+                            KK
                         </div>
                         <div>
-                            <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0F172A' }}>AGR User</div>
-                            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Farmer</div>
+                            <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0F172A' }}>Kishan Kumar</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Verified Farmer</div>
                         </div>
                     </div>
                     <button
@@ -83,16 +109,19 @@ const Dashboard = ({ user, onLogout }) => {
                             width: '100%',
                             padding: '10px',
                             borderRadius: '8px',
-                            border: '1px solid #E2E8F0',
-                            backgroundColor: 'white',
+                            border: '1px solid #FECACA',
+                            backgroundColor: '#FEF2F2',
                             color: '#EF4444',
                             fontWeight: '500',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '8px',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
                         }}
+                        onMouseOver={(e) => e.target.style.backgroundColor = '#FEE2E2'}
+                        onMouseOut={(e) => e.target.style.backgroundColor = '#FEF2F2'}
                     >
                         <LogOut size={18} /> Logout
                     </button>
@@ -100,71 +129,26 @@ const Dashboard = ({ user, onLogout }) => {
             </aside>
 
             {/* Main Content */}
-            <main style={{ flex: 1, padding: '2rem' }}>
+            <main style={{ flex: 1, padding: '2rem', marginLeft: '280px', maxWidth: '1600px' }}>
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '0.25rem' }}>Dashboard Overview</h1>
-                        <p style={{ color: '#64748B' }}>Welcome back, check your farm's health and credit score.</p>
+                        <h1 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#1E293B', marginBottom: '0.25rem' }}>{activeTab}</h1>
+                        <p style={{ color: '#64748B' }}>Real-time insights for your agricultural success.</p>
                     </div>
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                        <button style={{ padding: '10px', borderRadius: '50%', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#64748B', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                        <button style={{ padding: '12px', borderRadius: '50%', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#64748B', cursor: 'pointer', position: 'relative' }}>
                             <Bell size={20} />
+                            <span style={{ position: 'absolute', top: '8px', right: '8px', width: '8px', height: '8px', backgroundColor: '#EF4444', borderRadius: '50%' }}></span>
                         </button>
-                        <button className="btn btn-primary">Add New Crop</button>
+                        <button className="btn btn-primary shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                            + Add New Crop Log
+                        </button>
                     </div>
                 </header>
 
-                {/* Stats Grid */}
-                <div className="grid grid-3 mb-8" style={{ gap: '1.5rem' }}>
-                    {stats.map((stat, i) => (
-                        <div key={i} style={{ backgroundColor: 'white', padding: '1.5rem', borderRadius: '12px', border: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <div style={{ padding: '12px', borderRadius: '12px', backgroundColor: `${stat.color}15`, color: stat.color }}>
-                                {stat.icon}
-                            </div>
-                            <div>
-                                <p style={{ fontSize: '0.875rem', color: '#64748B' }}>{stat.label}</p>
-                                <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#0F172A' }}>{stat.value}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Recent Activity */}
-                <div style={{ backgroundColor: 'white', borderRadius: '16px', border: '1px solid #E2E8F0', overflow: 'hidden' }}>
-                    <div style={{ padding: '1.5rem', borderBottom: '1px solid #E2E8F0' }}>
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B' }}>Recent Activity</h3>
-                    </div>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead style={{ backgroundColor: '#F8FAFC' }}>
-                            <tr>
-                                <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748B', textTransform: 'uppercase' }}>Date</th>
-                                <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748B', textTransform: 'uppercase' }}>Action</th>
-                                <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748B', textTransform: 'uppercase' }}>Amount/Crop</th>
-                                <th style={{ padding: '1rem 1.5rem', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748B', textTransform: 'uppercase' }}>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentActivity.map((activity, i) => (
-                                <tr key={i} style={{ borderBottom: i === recentActivity.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
-                                    <td style={{ padding: '1rem 1.5rem', color: '#64748B', fontSize: '0.875rem' }}>{activity.date}</td>
-                                    <td style={{ padding: '1rem 1.5rem', color: '#1E293B', fontWeight: '500', fontSize: '0.875rem' }}>{activity.action}</td>
-                                    <td style={{ padding: '1rem 1.5rem', color: '#64748B', fontSize: '0.875rem' }}>{activity.amount}</td>
-                                    <td style={{ padding: '1rem 1.5rem' }}>
-                                        <span style={{
-                                            padding: '4px 12px',
-                                            borderRadius: '999px',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500',
-                                            backgroundColor: activity.status === 'Completed' ? '#DCFCE7' : activity.status === 'Pending' ? '#FEF3C7' : '#DBEAFE',
-                                            color: activity.status === 'Completed' ? '#166534' : activity.status === 'Pending' ? '#92400E' : '#1E40AF'
-                                        }}>
-                                            {activity.status}
-                                        </span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                {/* Dynamic Content Area */}
+                <div className="dashboard-content fade-up">
+                    {renderContent()}
                 </div>
             </main>
         </div>
