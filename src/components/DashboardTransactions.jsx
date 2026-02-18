@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Search,
     Download,
@@ -10,11 +10,34 @@ import {
     ChevronDown,
     IndianRupee,
     Laptop,
-    Box
+    Box,
+    Check
 } from 'lucide-react';
 
 const DashboardTransactions = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('All');
+    const [selectedDate, setSelectedDate] = useState('Feb 2026');
+    const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const [showDateDropdown, setShowDateDropdown] = useState(false);
+
+    const categoryRef = useRef(null);
+    const dateRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+                setShowCategoryDropdown(false);
+            }
+            if (dateRef.current && !dateRef.current.contains(event.target)) {
+                setShowDateDropdown(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [categoryRef, dateRef]);
 
     // Unified transaction data
     const transactions = [
@@ -70,10 +93,22 @@ const DashboardTransactions = () => {
         }
     ];
 
-    const filteredTransactions = transactions.filter(t =>
-        t.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const categories = ['All', 'Direct Market Sale', 'Govt. Direct Benefit (DBT)', 'Govt. Directly (KCC)', 'Govt. Directly (DBT)'];
+    const dates = ['All Time', 'Feb 2026', 'Jan 2026'];
+
+    const filteredTransactions = transactions.filter(t => {
+        const matchesSearch = t.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            t.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory;
+
+        // Simple date filtering logic (mock)
+        const matchesDate = selectedDate === 'All Time' ||
+            (selectedDate === 'Feb 2026' && t.date.includes('2026-02')) ||
+            (selectedDate === 'Jan 2026' && t.date.includes('2026-01'));
+
+        return matchesSearch && matchesCategory && matchesDate;
+    });
 
     return (
         <div className="fade-in space-y-6">
@@ -138,14 +173,59 @@ const DashboardTransactions = () => {
                         />
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-all border-0 cursor-pointer">
-                            <Filter size={14} /> Category
-                            <ChevronDown size={14} />
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-all border-0 cursor-pointer">
-                            <Calendar size={14} /> Feb 2026
-                            <ChevronDown size={14} />
-                        </button>
+                        <div className="relative" ref={categoryRef}>
+                            <button
+                                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border-0 cursor-pointer ${showCategoryDropdown ? 'bg-slate-100 text-slate-900' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                            >
+                                <Filter size={14} /> {selectedCategory === 'All' ? 'Category' : selectedCategory.split(' ')[0] + '...'}
+                                <ChevronDown size={14} className={`transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+                            </button>
+                            {showCategoryDropdown && (
+                                <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-100 z-10 overflow-hidden">
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => {
+                                                setSelectedCategory(cat);
+                                                setShowCategoryDropdown(false);
+                                            }}
+                                            className="w-full text-left px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors flex items-center justify-between"
+                                        >
+                                            {cat}
+                                            {selectedCategory === cat && <Check size={14} className="text-emerald-600" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="relative" ref={dateRef}>
+                            <button
+                                onClick={() => setShowDateDropdown(!showDateDropdown)}
+                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all border-0 cursor-pointer ${showDateDropdown ? 'bg-slate-100 text-slate-900' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                            >
+                                <Calendar size={14} /> {selectedDate}
+                                <ChevronDown size={14} className={`transition-transform ${showDateDropdown ? 'rotate-180' : ''}`} />
+                            </button>
+                            {showDateDropdown && (
+                                <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 z-10 overflow-hidden">
+                                    {dates.map((date) => (
+                                        <button
+                                            key={date}
+                                            onClick={() => {
+                                                setSelectedDate(date);
+                                                setShowDateDropdown(false);
+                                            }}
+                                            className="w-full text-left px-4 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors flex items-center justify-between"
+                                        >
+                                            {date}
+                                            {selectedDate === date && <Check size={14} className="text-emerald-600" />}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -161,45 +241,53 @@ const DashboardTransactions = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
-                            {filteredTransactions.map((item) => (
-                                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                                    <td className="px-6 py-5">
-                                        <p className="text-sm font-bold text-slate-900 mb-0.5">{item.date}</p>
-                                        <p className="text-[10px] font-black text-slate-400 tracking-tighter">{item.id}</p>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`p-2.5 rounded-xl ${item.type === 'Digital' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                                                {item.type === 'Digital' ? <Building2 size={18} /> : <Banknote size={18} />}
+                            {filteredTransactions.length > 0 ? (
+                                filteredTransactions.map((item) => (
+                                    <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                                        <td className="px-6 py-5">
+                                            <p className="text-sm font-bold text-slate-900 mb-0.5">{item.date}</p>
+                                            <p className="text-[10px] font-black text-slate-400 tracking-tighter">{item.id}</p>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className={`p-2.5 rounded-xl ${item.type === 'Digital' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                                    {item.type === 'Digital' ? <Building2 size={18} /> : <Banknote size={18} />}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-black text-slate-800 leading-none mb-1">{item.source}</p>
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.category}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <p className="text-sm font-black text-slate-800 leading-none mb-1">{item.source}</p>
-                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.category}</p>
+                                        </td>
+                                        <td className="px-6 py-5 text-center">
+                                            <div className="flex flex-col items-start">
+                                                <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg ${item.method === 'Bank Account' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700'}`}>
+                                                    {item.method}
+                                                </span>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5 text-center">
-                                        <div className="flex flex-col items-start">
-                                            <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg ${item.method === 'Bank Account' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700'}`}>
-                                                {item.method}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5 text-center">
-                                        <div className="flex items-center justify-center gap-1">
-                                            <span className="text-lg font-black text-slate-900 tracking-tighter">₹ {item.amount.toLocaleString()}</span>
-                                            <ArrowDownLeft size={16} className="text-emerald-500" />
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex justify-center">
-                                            <span className={`status-badge ${item.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-50 text-amber-700'} border-0`}>
-                                                {item.status}
-                                            </span>
-                                        </div>
+                                        </td>
+                                        <td className="px-6 py-5 text-center">
+                                            <div className="flex items-center justify-center gap-1">
+                                                <span className="text-lg font-black text-slate-900 tracking-tighter">₹ {item.amount.toLocaleString()}</span>
+                                                <ArrowDownLeft size={16} className="text-emerald-500" />
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-5">
+                                            <div className="flex justify-center">
+                                                <span className={`status-badge ${item.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-50 text-amber-700'} border-0`}>
+                                                    {item.status}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-12 text-center text-slate-400">
+                                        <p className="font-medium">No transactions found matching your filters.</p>
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
