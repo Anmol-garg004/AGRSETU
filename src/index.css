@@ -1370,7 +1370,7 @@ button {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 900;
   padding: 16px 0;
   transition: var(--transition);
 }
@@ -2055,4 +2055,16 @@ button {
 body::after {
   content: none !important;
   display: none !important;
+}
+
+/* Ensure Login Modal is ALWAYS on top */
+.fixed.z-\[9999\] {
+  z-index: 2147483647 !important;
+}
+
+/* Ensure Hero is below Modal */
+#hero,
+.hero-section {
+  z-index: 10;
+  position: relative;
 }
