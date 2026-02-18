@@ -22,50 +22,52 @@ const DashboardProfile = ({ user, onUpdate }) => {
     };
 
     return (
-        <div className="grid grid-2">
+        <div className="grid grid-cols-1 gap-8 fade-in">
             {/* Identity Card */}
-            <div className="card">
-                <div className="flex" style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                    <h3>Digital Identity</h3>
-                    <span className={`status-badge ${profile.kycStatus === 'Verified' ? 'status-success' : 'status-pending'}`}>
-                        <CheckCircle size={14} style={{ marginRight: '4px' }} />
+            <div className="card p-8">
+                <div className="flex justify-between items-start mb-8">
+                    <h3 className="m-0 text-xl font-bold">Digital Identity</h3>
+                    <span className={`status-badge ${profile.kycStatus === 'Verified' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                        <CheckCircle size={14} />
                         {profile.kycStatus}
                     </span>
                 </div>
 
-                <div className="profile-header flex items-center gap-4 mb-6">
-                    <div className="avatar-large">
-                        <User size={40} />
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="avatar-initials text-xl">
+                        {profile.name.split(' ').map(n => n[0]).join('')}
                     </div>
-                    <div>
-                        <h2 style={{ fontSize: '1.5rem', marginBottom: '4px' }}>{profile.name}</h2>
-                        <p style={{ margin: 0, fontSize: '0.9rem' }}>Farmer ID: AGR-2026-8876</p>
+                    <div className="truncate">
+                        <h2 className="text-xl font-black text-slate-900 leading-none mb-2 truncate">{profile.name}</h2>
+                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Farmer ID: AGR-26-8876</p>
                     </div>
                 </div>
 
-                <div className="form-grid">
+                <div className="space-y-6">
                     <div className="form-group">
-                        <label>Phone Number</label>
-                        <div className="input-display">
-                            <span className="icon"><PhoneIcon /></span>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Phone Number</label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><PhoneIcon /></span>
                             <input
                                 type="text"
                                 name="phone"
                                 value={profile.phone}
                                 disabled={!isEditing}
+                                className="w-full pl-12"
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
                     <div className="form-group">
-                        <label>Address</label>
-                        <div className="input-display">
-                            <span className="icon"><MapPin size={18} /></span>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Primary Address</label>
+                        <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><MapPin size={18} /></span>
                             <input
                                 type="text"
                                 name="address"
                                 value={profile.address}
                                 disabled={!isEditing}
+                                className="w-full pl-12"
                                 onChange={handleChange}
                             />
                         </div>
@@ -74,46 +76,56 @@ const DashboardProfile = ({ user, onUpdate }) => {
             </div>
 
             {/* Land Details */}
-            <div className="card">
-                <div className="flex" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h3>Land Records</h3>
+            <div className="card p-8">
+                <div className="flex justify-between items-center mb-8">
+                    <h3 className="m-0 text-xl font-bold">Land Records</h3>
                     {!isEditing ? (
-                        <button className="btn-icon" onClick={() => setIsEditing(true)}><Edit2 size={18} /></button>
+                        <button className="p-2 border rounded-xl hover:bg-slate-50 transition-all bg-transparent" onClick={() => setIsEditing(true)}>
+                            <Edit2 size={18} className="text-slate-600" />
+                        </button>
                     ) : (
-                        <button className="btn-icon text-primary" onClick={handleSave}><Save size={18} /></button>
+                        <button className="p-2 bg-emerald-600 text-white rounded-xl shadow-md border-0" onClick={handleSave}>
+                            <Save size={18} />
+                        </button>
                     )}
                 </div>
 
-                <div className="land-card mb-4">
+                <div className="bg-slate-50 p-6 rounded-2xl border mb-6 group hover:bg-white hover:border-slate-200 transition-all">
                     <div className="flex items-start gap-4">
-                        <div className="land-icon">
-                            <FileText size={24} />
+                        <div className="p-3 bg-white rounded-xl border">
+                            <FileText size={24} className="text-slate-400" />
                         </div>
-                        <div style={{ flex: 1 }}>
-                            <label>Total Land Size</label>
+                        <div className="flex-1 min-w-0">
+                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Land Size</label>
                             <input
-                                className="input-transparent"
+                                className="w-full bg-transparent border-none p-0 text-lg font-black text-slate-800"
                                 name="landSize"
                                 value={profile.landSize}
                                 disabled={!isEditing}
                                 onChange={handleChange}
                             />
-                            <div className="meta-text mt-2">
-                                Land ID: <span className="font-mono">{profile.landId}</span>
+                            <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-2">
+                                Land ID: {profile.landId}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="verification-box">
-                    <h4><CheckCircle size={16} color="#166534" /> Government Records Verified</h4>
-                    <p>Linked with Bhulekh UP Land Records Database.</p>
-                    <div className="progress-bar-container">
-                        <div className="progress-label">Data Match Score</div>
-                        <div className="progress-bar">
-                            <div className="progress-fill" style={{ width: '100%' }}></div>
+                <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
+                    <h4 className="flex items-center gap-2 text-xs font-black text-emerald-700 uppercase tracking-widest mb-4">
+                        <CheckCircle size={16} /> Verified
+                    </h4>
+                    <p className="text-xs text-slate-600 font-medium leading-relaxed mb-6">
+                        System automatically cross-referenced with Bhulekh UP Govt. records.
+                    </p>
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Match Score</span>
+                            <span className="text-xs font-black text-emerald-600">100%</span>
                         </div>
-                        <div className="progress-value">100%</div>
+                        <div className="metric-progress">
+                            <div className="metric-fill bg-emerald-600" style={{ width: '100%' }}></div>
+                        </div>
                     </div>
                 </div>
             </div>

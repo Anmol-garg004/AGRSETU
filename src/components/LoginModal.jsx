@@ -28,104 +28,59 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     };
 
     return (
-        <div className="modal-overlay" style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2000,
-            backdropFilter: 'blur(5px)'
-        }}>
-            <div className="modal-content" style={{
-                backgroundColor: 'white',
-                padding: '2rem',
-                borderRadius: '16px',
-                width: '100%',
-                maxWidth: '400px',
-                position: 'relative',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-            }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fade-in" style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(12px)' }}>
+            <div className="card p-10 w-full shadow-2xl relative" style={{ maxWidth: '440px' }}>
                 <button
                     onClick={onClose}
-                    style={{
-                        position: 'absolute',
-                        top: '1rem',
-                        right: '1rem',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: '#64748B'
-                    }}
+                    className="absolute top-6 right-6 p-2 rounded-xl hover:bg-slate-50 transition-all border-0 bg-transparent text-slate-400 hover:text-slate-900 cursor-pointer"
                 >
-                    <X size={24} />
+                    <X size={22} />
                 </button>
 
-                <div className="text-center mb-8">
-                    <h2 style={{ color: '#2E7D32', marginBottom: '0.5rem' }}>Welcome Back</h2>
-                    <p style={{ color: '#64748B' }}>Login to access your dashboard</p>
+                <div className="text-center mb-10">
+                    <div className="avatar-initials mx-auto mb-6 bg-emerald-600 text-white border-0 shadow-lg w-16 h-16 text-2xl font-black">
+                        AS
+                    </div>
+                    <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Welcome Back</h2>
+                    <p className="text-slate-500 font-medium">Elevating rural finance with tech</p>
                 </div>
 
                 {error && (
-                    <div style={{
-                        backgroundColor: '#FEE2E2',
-                        color: '#991B1B',
-                        padding: '0.75rem',
-                        borderRadius: '8px',
-                        marginBottom: '1.5rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        fontSize: '0.875rem'
-                    }}>
-                        <AlertCircle size={18} style={{ marginRight: '8px' }} />
+                    <div className="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-sm font-bold mb-8">
+                        <AlertCircle size={18} />
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label style={{ display: 'block', marginBottom: '0.5rem', color: '#1E293B', fontWeight: '500' }}>Email Address</label>
-                        <div style={{ position: 'relative' }}>
-                            <Mail size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="form-group">
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Official Email</label>
+                        <div className="relative">
+                            <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Enter your email"
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 12px 12px 40px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #E2E8F0',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
+                                placeholder="name@agrsetu.com"
+                                className="w-full pl-12 h-14 bg-slate-50 border-slate-100 focus:bg-white transition-all font-medium"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="mb-8">
-                        <label style={{ display: 'block', marginBottom: '0.5rem', color: '#1E293B', fontWeight: '500' }}>Password</label>
-                        <div style={{ position: 'relative' }}>
-                            <Lock size={20} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
+                    <div className="form-group">
+                        <div className="flex justify-between items-center mb-2 ml-1">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Secret Key</label>
+                            <a href="#" className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:underline">Forgot?</a>
+                        </div>
+                        <div className="relative">
+                            <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
-                                style={{
-                                    width: '100%',
-                                    padding: '12px 12px 12px 40px',
-                                    borderRadius: '12px',
-                                    border: '1px solid #E2E8F0',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
+                                placeholder="••••••••"
+                                className="w-full pl-12 h-14 bg-slate-50 border-slate-100 focus:bg-white transition-all"
                                 required
                             />
                         </div>
@@ -133,20 +88,21 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
                     <button
                         type="submit"
-                        className="btn btn-primary"
-                        style={{ width: '100%', justifyContent: 'center' }}
+                        className="btn-premium w-full justify-center h-14 text-lg mt-4"
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Logging in...' : (
+                        {isLoading ? 'Decrypting Access...' : (
                             <>
-                                Login <ArrowRight size={20} style={{ marginLeft: '8px' }} />
+                                Authenticate <ArrowRight size={20} className="ml-2" />
                             </>
                         )}
                     </button>
                 </form>
 
-                <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#64748B' }}>
-                    Don't have an account? <a href="#" style={{ color: '#2E7D32', fontWeight: '600' }}>Sign up</a>
+                <div className="mt-8 text-center">
+                    <p className="text-sm text-slate-400 font-medium">
+                        New to AGRSETU? <a href="#" className="text-emerald-600 font-black hover:underline">Partner with us</a>
+                    </p>
                 </div>
             </div>
         </div>

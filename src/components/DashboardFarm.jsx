@@ -22,97 +22,98 @@ const DashboardFarm = () => {
     ];
 
     return (
-        <div className="grid grid-2 gap-6 fade-in">
+        <div className="grid grid-cols-2 gap-8 lg-grid-cols-1 fade-in">
             {/* Satellite & Weather Validation */}
-            <div className="card shadow-sm border-0">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="m-0"><BarChart2 className="text-emerald-600" size={20} /> Satellite Insights</h3>
-                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full uppercase tracking-wider">Live View</span>
+            <div className="card p-8">
+                <div className="flex justify-between items-center mb-8">
+                    <h3 className="flex items-center gap-2 m-0 text-xl font-bold">
+                        <BarChart2 className="text-emerald-600" size={24} />
+                        Satellite Insights
+                    </h3>
+                    <span className="status-badge bg-emerald-50 text-emerald-600">Live View</span>
                 </div>
 
-                <div className="satellite-metrics mb-8">
-                    <div className="mb-6">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                <Leaf size={16} className="text-emerald-500" /> NDVI (Crop Health)
+                <div className="space-y-8">
+                    <div className="metric-group">
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                                <Leaf size={16} className="text-emerald-600" /> NDVI (Crop Health)
                             </span>
-                            <span className="text-sm font-bold text-emerald-600">{(ndvi * 100).toFixed(0)}%</span>
+                            <span className="text-sm font-black text-emerald-600">{(ndvi * 100).toFixed(0)}%</span>
                         </div>
-                        <div className="metric-progress">
-                            <div className="progress-fill bg-emerald-500" style={{ width: `${ndvi * 100}%` }}></div>
+                        <div className="metric-progress mb-2">
+                            <div className="metric-fill bg-emerald-600" style={{ width: `${ndvi * 100}%` }}></div>
                         </div>
-                        <p className="text-xs text-emerald-600 font-medium">High Vegetation Health Detected</p>
+                        <p className="text-xs text-emerald-600 font-bold uppercase tracking-wider">High Vegetation Health Detected</p>
                     </div>
 
-                    <div>
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                <CloudRain size={16} className="text-blue-500" /> Soil Moisture
+                    <div className="metric-group">
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                                <CloudRain size={16} className="text-blue-600" /> Soil Moisture
                             </span>
-                            <span className="text-sm font-bold text-blue-600">{soilMoisture.toFixed(0)}%</span>
+                            <span className="text-sm font-black text-blue-600">{soilMoisture.toFixed(0)}%</span>
                         </div>
-                        <div className="metric-progress">
-                            <div className="progress-fill bg-blue-500" style={{ width: `${soilMoisture}%` }}></div>
+                        <div className="metric-progress mb-2">
+                            <div className="metric-fill bg-blue-600" style={{ width: `${soilMoisture}%` }}></div>
                         </div>
-                        <p className="text-xs text-blue-600 font-medium">Optimal Hydration Level</p>
+                        <p className="text-xs text-blue-600 font-bold uppercase tracking-wider">Optimal Hydration Level</p>
                     </div>
                 </div>
 
-                <div className="weather-stats-premium mt-8 bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <div className="flex justify-between items-center mb-4">
-                        <h4 className="text-sm font-bold text-slate-800 uppercase tracking-tight">Weather: Varanasi</h4>
+                <div className="mt-10 bg-slate-50 p-6 rounded-2xl border">
+                    <div className="flex justify-between items-center mb-5">
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Weather: Varanasi</h4>
                         <div className="flex items-center gap-2 text-amber-500">
-                            <Sun className="animate-spin-slow" size={24} />
+                            <Sun size={24} />
                         </div>
                     </div>
                     <div className="flex gap-4">
-                        <div className="weather-badge flex-1">
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Temp</span>
-                            <span className="text-lg font-bold text-slate-800">{weather.temp}</span>
-                        </div>
-                        <div className="weather-badge flex-1">
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Rain</span>
-                            <span className="text-lg font-bold text-slate-800">{weather.rain}</span>
-                        </div>
-                        <div className="weather-badge flex-1">
-                            <span className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Humid</span>
-                            <span className="text-lg font-bold text-slate-800">{weather.humidity}</span>
-                        </div>
+                        {[
+                            { label: 'Temp', value: weather.temp },
+                            { label: 'Rain', value: weather.rain },
+                            { label: 'Humid', value: weather.humidity }
+                        ].map((w, idx) => (
+                            <div key={idx} className="flex-1 bg-white p-3 rounded-xl border text-center">
+                                <span className="block text-[10px] text-slate-400 uppercase font-black mb-1">{w.label}</span>
+                                <span className="text-base font-black text-slate-800">{w.value}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
 
             {/* Crop Data Aggregation */}
-            <div className="card shadow-sm border-0">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="m-0">Active Crops</h3>
-                    <button className="btn-sm bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">
+            <div className="card p-8">
+                <div className="flex justify-between items-center mb-8">
+                    <h3 className="m-0 text-xl font-bold">Active Crops</h3>
+                    <button className="btn-premium py-2 px-4 text-xs">
                         + Log New
                     </button>
                 </div>
 
-                <div className="crop-list-container">
+                <div className="space-y-4">
                     {crops.map((crop, idx) => (
-                        <div key={idx} className="crop-card-premium p-5 border rounded-xl mb-4 hover:shadow-md transition-all">
-                            <div className="flex justify-between items-center mb-4">
+                        <div key={idx} className="p-6 border rounded-2xl hover:border-emerald-200 transition-all group">
+                            <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h4 className="text-xl font-bold text-slate-900 leading-tight">{crop.name}</h4>
-                                    <span className="text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded uppercase">{crop.health} Health</span>
+                                    <h4 className="text-xl font-black text-slate-900 leading-none mb-2">{crop.name}</h4>
+                                    <span className="status-badge bg-emerald-50 text-emerald-600">{crop.health}</span>
                                 </div>
                                 <div className="text-right">
-                                    <span className="block text-[10px] text-slate-400 uppercase font-bold">Planned Yield</span>
-                                    <span className="text-sm font-bold text-slate-700">{crop.yield}</span>
+                                    <span className="block text-[10px] text-slate-400 uppercase font-black mb-1">Target Yield</span>
+                                    <span className="text-sm font-black text-slate-700">{crop.yield.split(' ')[0]} <span className="text-xs text-slate-400">{crop.yield.split(' ').slice(1).join(' ')}</span></span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-slate-50 p-3 rounded-lg">
-                                    <span className="block text-[9px] text-slate-400 uppercase font-bold mb-0.5">Planted</span>
-                                    <span className="text-sm font-semibold text-slate-700">{crop.planted}</span>
+                                <div className="bg-slate-50 p-3 rounded-xl border border-transparent group-hover:bg-white group-hover:border-slate-100 transition-all">
+                                    <span className="block text-[10px] text-slate-400 uppercase font-black mb-1">Planted</span>
+                                    <span className="text-sm font-bold text-slate-700">{crop.planted}</span>
                                 </div>
-                                <div className="bg-slate-50 p-3 rounded-lg">
-                                    <span className="block text-[9px] text-slate-400 uppercase font-bold mb-0.5">Est. Harvest</span>
-                                    <span className="text-sm font-semibold text-slate-700">{crop.harvest}</span>
+                                <div className="bg-slate-50 p-3 rounded-xl border border-transparent group-hover:bg-white group-hover:border-slate-100 transition-all">
+                                    <span className="block text-[10px] text-slate-400 uppercase font-black mb-1">Est. Harvest</span>
+                                    <span className="text-sm font-bold text-slate-700">{crop.harvest}</span>
                                 </div>
                             </div>
                         </div>
