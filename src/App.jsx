@@ -10,6 +10,7 @@ import TechTrust from './components/TechTrust';
 import Footer from './components/Footer';
 import LoginModal from './components/LoginModal';
 import Dashboard from './components/Dashboard';
+import VoiceAssistant from './components/VoiceAssistant';
 
 function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -41,6 +42,7 @@ function App() {
       <Impact />
       <TechTrust />
       <Footer />
+      <VoiceAssistant />
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
