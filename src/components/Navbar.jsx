@@ -28,7 +28,8 @@ const Navbar = ({ onLoginClick }) => {
                         display: 'flex',
                         alignItems: 'center',
                         letterSpacing: '-1px',
-                        transition: 'all 0.3s ease'
+                        transition: 'all 0.3s ease',
+                        filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                     }}>
                         <span className={scrolled ? 'logo-text-gradient-dark' : 'logo-text-gradient-light'}>
                             AGRSE

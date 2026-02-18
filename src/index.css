@@ -307,8 +307,7 @@ button {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* Mandatory for gradient text */
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: inline-block;
 }
 
 .logo-text-gradient-dark {
@@ -316,6 +315,7 @@ button {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: inline-block;
 }
 
 .logo-text-gradient-blue-light {
@@ -323,7 +323,7 @@ button {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: inline-block;
 }
 
 .logo-text-gradient-blue-dark {
@@ -331,6 +331,7 @@ button {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: inline-block;
 }
 
 .logo-icon {
