@@ -30,15 +30,9 @@ const Navbar = ({ onLoginClick }) => {
                         letterSpacing: '-1px',
                         transition: 'all 0.3s ease'
                     }}>
-                        <span style={{
-                            background: scrolled
-                                ? 'linear-gradient(135deg, #064E3B 0%, #047857 100%)'
-                                : 'linear-gradient(135deg, #FFFFFF 0%, #D1FAE5 100%)',
-                            backgroundClip: 'text',
-                            WebkitBackgroundClip: 'text',
-                            color: 'transparent',
-                            filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-                        }}>AGRSE</span>
+                        <span className={scrolled ? 'logo-text-gradient-dark' : 'logo-text-gradient-light'}>
+                            AGRSE
+                        </span>
 
                         <div style={{
                             display: 'flex',
@@ -58,15 +52,9 @@ const Navbar = ({ onLoginClick }) => {
                             <Sprout size={24} color="white" strokeWidth={2.5} style={{ transform: 'translateY(1px)' }} />
                         </div>
 
-                        <span style={{
-                            background: scrolled
-                                ? 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)'
-                                : 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)',
-                            backgroundClip: 'text',
-                            WebkitBackgroundClip: 'text',
-                            color: 'transparent',
-                            filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-                        }}>U</span>
+                        <span className={scrolled ? 'logo-text-gradient-blue-dark' : 'logo-text-gradient-blue-light'}>
+                            U
+                        </span>
                     </div>
                 </a>
 

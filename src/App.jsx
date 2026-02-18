@@ -28,7 +28,12 @@ function App() {
   };
 
   if (isAuthenticated) {
-    return <Dashboard user={user} onLogout={handleLogout} />;
+    return (
+      <>
+        <Dashboard user={user} onLogout={handleLogout} />
+        <VoiceAssistant />
+      </>
+    );
   }
 
   return (
@@ -42,7 +47,6 @@ function App() {
       <Impact />
       <TechTrust />
       <Footer />
-      <VoiceAssistant />
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
