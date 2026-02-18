@@ -65,7 +65,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@agrsetu.com"
-                                className="flex-1 bg-transparent border-none outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full"
+                                className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
+                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }} // Force override
                                 required
                             />
                         </div>
@@ -83,7 +84,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="flex-1 bg-transparent border-none outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full"
+                                className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
+                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }} // Force override
                                 required
                             />
                         </div>
