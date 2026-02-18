@@ -1,38 +1,48 @@
 import React from 'react';
-import { ArrowRight, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, Activity, TrendingUp, Users } from 'lucide-react';
 import '../index.css';
 
 const Hero = ({ onLoginClick }) => {
     return (
         <section id="hero" className="hero" style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1625246333195-58197bd47f3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")'
+            backgroundImage: 'url("https://images.unsplash.com/photo-1595838788869-59ed319de4cd?q=80&w=2670&auto=format&fit=crop")'
         }}>
             <div className="hero-overlay"></div>
             <div className="container hero-content fade-up" style={{ animationDelay: '0.2s' }}>
-                <h1>Digital Credit Identity for Farmers</h1>
-                <p>Empowering farmers with verified income, AI risk scoring, and fair access to finance. Bridging the gap between agriculture and banking.</p>
 
-                <div className="hero-buttons">
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(255,255,255,0.1)', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.2)', marginBottom: '24px', backdropFilter: 'blur(10px)' }}>
+                    <span style={{ width: '8px', height: '8px', background: '#10B981', borderRadius: '50%' }}></span>
+                    <span style={{ color: '#10B981', fontSize: '0.9rem', fontWeight: '600', letterSpacing: '0.5px' }}>NOW LIVE IN 5 STATES</span>
+                </div>
+
+                <h1>Digital Credit Identity<br />for <span style={{ color: '#10B981', textShadow: '0 0 40px rgba(16,185,129,0.4)' }}>Modern Farmers</span></h1>
+
+                <p>Empowering rural India with verified income data, AI risk scoring, and fair access to institutional finance. The bridge between soil and capital.</p>
+
+                <div className="hero-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <button className="btn btn-primary" onClick={onLoginClick}>
                         Get Started <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
-                    <button className="btn btn-white">
+                    <button className="btn btn-secondary">
                         Partner With Us <ChevronRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
                 </div>
 
-                <div style={{ marginTop: '60px', display: 'flex', gap: '40px', justifyContent: 'center', opacity: 0.8 }}>
-                    <div>
-                        <span style={{ display: 'block', fontSize: '2rem', fontWeight: 'bold' }}>10k+</span>
-                        <span style={{ fontSize: '0.9rem' }}>Farmers Onboarded</span>
+                <div className="hero-stats">
+                    <div className="stat-item">
+                        <Users size={32} style={{ marginBottom: '12px', opacity: 0.8 }} />
+                        <span className="stat-val">10k+</span>
+                        <span className="stat-label">Farmers Onboarded</span>
                     </div>
-                    <div>
-                        <span style={{ display: 'block', fontSize: '2rem', fontWeight: 'bold' }}>₹50Cr+</span>
-                        <span style={{ fontSize: '0.9rem' }}>Loans Facilitated</span>
+                    <div className="stat-item" style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: '1px solid rgba(255,255,255,0.1)', padding: '0 40px' }}>
+                        <Activity size={32} style={{ marginBottom: '12px', opacity: 0.8 }} />
+                        <span className="stat-val">₹50Cr+</span>
+                        <span className="stat-label">Loans Disbursed</span>
                     </div>
-                    <div>
-                        <span style={{ display: 'block', fontSize: '2rem', fontWeight: 'bold' }}>98%</span>
-                        <span style={{ fontSize: '0.9rem' }}>Poverty Reduction</span>
+                    <div className="stat-item">
+                        <TrendingUp size={32} style={{ marginBottom: '12px', opacity: 0.8 }} />
+                        <span className="stat-val">98%</span>
+                        <span className="stat-label">Repayment Rate</span>
                     </div>
                 </div>
             </div>
