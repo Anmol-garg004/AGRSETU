@@ -53,8 +53,32 @@ const Dashboard = ({ user, onLogout }) => {
         <div className="dashboard-container" style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F8FAFC' }}>
             {/* Sidebar */}
             <aside style={{ width: '280px', backgroundColor: '#FFFFFF', borderRight: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', position: 'fixed', height: '100vh', overflowY: 'auto' }}>
-                <div className="logo mb-8" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Leaf size={24} /> AGR<span style={{ color: '#1565C0' }}>SETU</span>
+                <div
+                    className="logo mb-8"
+                    onClick={() => setActiveTab('Overview')}
+                    style={{
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                        color: '#166534',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    <div className="logo-icon" style={{
+                        backgroundColor: '#166534', // Added background for white icon visibility
+                        borderRadius: '8px',
+                        padding: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <Leaf size={24} color="white" />
+                    </div>
+                    <div className="logo-text">
+                        AGR<span style={{ color: '#1565C0' }}>SETU</span>
+                    </div>
                 </div>
 
                 <nav style={{ flex: 1 }}>
