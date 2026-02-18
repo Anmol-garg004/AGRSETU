@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
     Users,
     MapPin,
@@ -13,13 +12,15 @@ import {
     Search,
     ChevronRight,
     Menu,
-    X
+    X,
+    Landmark
 } from 'lucide-react';
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
 import DashboardFinancials from './DashboardFinancials';
 import DashboardTransactions from './DashboardTransactions';
 import AgriTrustScore from './AgriTrustScore';
+import DashboardFunding from './DashboardFunding';
 import '../index.css';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -58,6 +59,8 @@ const Dashboard = ({ user, onLogout }) => {
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
             case 'Transactions':
                 return <DashboardTransactions />;
+            case 'Funding':
+                return <DashboardFunding />;
             default:
                 return (
                     <div className="flex flex-col items-center justify-center p-20 text-center card bg-slate-50 border-dashed">
@@ -123,6 +126,7 @@ const Dashboard = ({ user, onLogout }) => {
                             { id: 'Profile', icon: Users },
                             { id: 'Farm Data', icon: MapPin },
                             { id: 'Financials', icon: IndianRupee },
+                            { id: 'Funding', icon: Landmark },
                             { id: 'Trust Score', icon: Award },
                             { id: 'Transactions', icon: History }
                         ].map((item) => (
@@ -197,7 +201,10 @@ const Dashboard = ({ user, onLogout }) => {
                                     <span className="absolute top-2.5 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
                                 </button>
 
-                                <button className="h-11 px-6 text-sm font-black flex gap-2 items-center bg-slate-900 text-white rounded-full shadow-lg shadow-slate-900/20 hover:shadow-emerald-500/20 hover:bg-emerald-600 hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95 group">
+                                <button
+                                    onClick={() => handleTabChange('Funding')}
+                                    className="h-11 px-6 text-sm font-black flex gap-2 items-center bg-slate-900 text-white rounded-full shadow-lg shadow-slate-900/20 hover:shadow-emerald-500/20 hover:bg-emerald-600 hover:-translate-y-0.5 transition-all cursor-pointer active:scale-95 group"
+                                >
                                     <IndianRupee size={18} className="group-hover:rotate-12 transition-transform" />
                                     <span className="hide-mobile tracking-wide uppercase text-xs">Get Funding</span>
                                 </button>
