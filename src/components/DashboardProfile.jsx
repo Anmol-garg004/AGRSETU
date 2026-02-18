@@ -98,11 +98,11 @@ const DashboardProfile = ({ user, onUpdate }) => {
                     </div>
                 </div>
 
-                <div className="pt-20 px-8 pb-8 flex justify-between items-end flex-wrap gap-6 pl-[140px]">
-                    <div className="pt-2">
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-3xl font-black text-slate-900 tracking-tight">{profile.name}</h1>
-                            <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
+                <div className="pt-20 pb-8 flex justify-between items-end flex-wrap gap-6 px-8 select-none">
+                    <div className="pt-4 pl-32 sm:pl-36 md:pl-40 lg:pl-44 xl:pl-48">
+                        <div className="flex items-center gap-3 mb-1 min-w-[300px]">
+                            <h1 className="text-3xl font-black text-slate-900 tracking-tight whitespace-nowrap">{profile.name}</h1>
+                            <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200 whitespace-nowrap">
                                 <CheckCircle size={10} /> Verified Farmer
                             </span>
                         </div>
