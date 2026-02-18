@@ -29,8 +29,8 @@ const Dashboard = ({ user, onLogout }) => {
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
-        // On mobile, close sidebar after selection
-        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+        // Always close sidebar after selection
+        setIsSidebarOpen(false);
     };
 
     const renderContent = () => {
