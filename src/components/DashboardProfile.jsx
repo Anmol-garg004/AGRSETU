@@ -22,7 +22,7 @@ import {
 const DashboardProfile = ({ user, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [profile, setProfile] = useState({
-        name: user?.name || 'Kishan Kumar',
+        name: (user?.name && user.name !== 'Admin User') ? user.name : 'Kishan Kumar',
         phone: '+91 98765 43210',
         email: 'kishan.k@agrsetu.com',
         address: 'Village Rampur, Tehsil - Sadar, Dist. Varanasi, UP - 221001',
@@ -63,7 +63,7 @@ const DashboardProfile = ({ user, onUpdate }) => {
     const DetailRow = ({ label, value, name, icon: Icon, editable = true }) => (
         <div className="group">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                {Icon && <Icon size={10} />} {label}
+                {Icon && <Icon size={12} />} {label}
             </label>
             <div className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${isEditing && editable ? 'bg-white border-emerald-200 shadow-sm' : 'bg-slate-50 border-transparent'}`}>
                 {isEditing && editable ? (
@@ -98,8 +98,8 @@ const DashboardProfile = ({ user, onUpdate }) => {
                     </div>
                 </div>
 
-                <div className="pt-20 px-8 pb-8 flex justify-between items-end flex-wrap gap-6">
-                    <div>
+                <div className="pt-20 px-8 pb-8 flex justify-between items-end flex-wrap gap-6 pl-[140px]">
+                    <div className="pt-2">
                         <div className="flex items-center gap-3 mb-1">
                             <h1 className="text-3xl font-black text-slate-900 tracking-tight">{profile.name}</h1>
                             <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200">
