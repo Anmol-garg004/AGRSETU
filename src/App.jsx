@@ -16,8 +16,13 @@ function App() {
   useEffect(() => {
     const storedUser = localStorage.getItem('agrsetu_user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+      try {
+        setUser(JSON.parse(storedUser));
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.error("Failed to parse user data", e);
+        localStorage.removeItem('agrsetu_user');
+      }
     }
   }, []);
 
