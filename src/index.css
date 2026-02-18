@@ -255,6 +255,24 @@ button {
   justify-content: space-between;
   align-items: center;
   position: relative;
+  height: 60px;
+  /* Fixed height for consistency */
+}
+
+/* Ensure Nav Links are perfectly centered */
+.nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 32px;
+  border-radius: 50px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .logo-icon {
@@ -279,16 +297,7 @@ button {
   color: var(--secondary-main);
 }
 
-.nav-links {
-  display: flex;
-  gap: 32px;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.8);
-  padding: 8px 24px;
-  border-radius: 50px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
+
 
 
 /* Hero Section Overhaul */
