@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowRight, ChevronRight } from 'lucide-react';
 import '../index.css';
 
-const Hero = () => {
+const Hero = ({ onLoginClick }) => {
     return (
         <section id="hero" className="hero" style={{
             backgroundImage: 'url("https://images.unsplash.com/photo-1625246333195-58197bd47f3b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")'
@@ -13,7 +13,7 @@ const Hero = () => {
                 <p>Empowering farmers with verified income, AI risk scoring, and fair access to finance. Bridging the gap between agriculture and banking.</p>
 
                 <div className="hero-buttons">
-                    <button className="btn btn-primary" style={{ backgroundColor: '#2E7D32', border: 'none', padding: '16px 32px', fontSize: '1.2rem' }}>
+                    <button className="btn btn-primary" onClick={onLoginClick} style={{ backgroundColor: '#2E7D32', border: 'none', padding: '16px 32px', fontSize: '1.2rem' }}>
                         Get Started <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
                     <button className="btn btn-white" style={{ padding: '16px 32px', fontSize: '1.2rem' }}>
