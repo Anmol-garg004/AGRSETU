@@ -168,6 +168,7 @@ button {
   z-index: 1;
 }
 
+/* Button Styles */
 .btn-primary {
   background: var(--accent-color);
   color: var(--neutral-900);
@@ -220,6 +221,17 @@ button {
   color: white;
 }
 
+/* Button Sizes */
+.btn-sm {
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  border-radius: 40px;
+}
+
+.btn-lg {
+  padding: 18px 48px;
+  font-size: 1.25rem;
+}
 
 /* Enhanced Navbar */
 .navbar {
@@ -227,23 +239,30 @@ button {
   top: 0;
   width: 100%;
   z-index: 1000;
-  padding: 24px 0;
+  padding: 16px 0;
   transition: var(--transition);
 }
 
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  padding: 16px 0;
+  padding: 12px 0;
   box-shadow: var(--shadow-sm);
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 
 .logo-icon {
   background: var(--grad-primary);
   color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -251,13 +270,24 @@ button {
 }
 
 .logo-text {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--primary-dark);
 }
 
 .logo-text span {
   color: var(--secondary-main);
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 24px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 
@@ -270,9 +300,11 @@ button {
   background-size: cover;
   background-position: center;
   margin-top: -90px;
-  padding-top: 120px;
+  padding-top: 140px;
+  /* Increased padding */
 }
 
+/* Hero Content */
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -438,6 +470,24 @@ button {
   .hero-stats {
     flex-direction: column;
     gap: 30px;
+    padding: 20px;
+  }
+
+  .btn-lg {
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    width: 100%;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 16px !important;
+  }
+
+  .nav-links {
+    display: none;
+    /* Hide desktop links on mobile */
   }
 }
 

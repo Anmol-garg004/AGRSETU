@@ -40,7 +40,7 @@ const Navbar = ({ onLoginClick }) => {
                 </div>
 
                 <div className="nav-actions desktop-only">
-                    <button className="btn btn-primary" onClick={onLoginClick}>Get Started</button>
+                    <button className="btn btn-primary btn-sm" onClick={onLoginClick}>Get Started</button>
                 </div>
 
                 {/* Mobile Menu Button */}

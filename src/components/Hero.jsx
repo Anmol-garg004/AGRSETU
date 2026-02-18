@@ -20,10 +20,10 @@ const Hero = ({ onLoginClick }) => {
                 <p>Empowering rural India with verified income data, AI risk scoring, and fair access to institutional finance. The bridge between soil and capital.</p>
 
                 <div className="hero-buttons" style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button className="btn btn-primary" onClick={onLoginClick}>
+                    <button className="btn btn-primary btn-lg" onClick={onLoginClick}>
                         Get Started <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
-                    <button className="btn btn-secondary">
+                    <button className="btn btn-secondary btn-lg">
                         Partner With Us <ChevronRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
                 </div>
