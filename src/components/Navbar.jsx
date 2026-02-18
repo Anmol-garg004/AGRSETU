@@ -22,11 +22,29 @@ const Navbar = ({ onLoginClick }) => {
         <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
             <div className="container nav-content">
                 <a href="#" className="logo-container" onClick={(e) => { e.preventDefault(); window.scrollTo(0, 0); }}>
-                    <div className="logo-icon">
-                        <Sprout size={24} color="white" strokeWidth={2.5} />
-                    </div>
-                    <div className="logo-text">
-                        AGR<span>SETU</span>
+                    <div className="logo-text" style={{
+                        fontSize: '1.8rem',
+                        fontWeight: '800',
+                        display: 'flex',
+                        alignItems: 'center',
+                        letterSpacing: '-1px',
+                        color: 'var(--primary-dark)'
+                    }}>
+                        AGR
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                            borderRadius: '50%',
+                            width: '36px',
+                            height: '36px',
+                            margin: '0 2px',
+                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.4)'
+                        }}>
+                            <Sprout size={22} color="white" strokeWidth={2.5} style={{ transform: 'translateY(1px)' }} />
+                        </div>
+                        <span style={{ color: 'var(--secondary-main)' }}>ETU</span>
                     </div>
                 </a>
 
