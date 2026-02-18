@@ -66,7 +66,12 @@ const VoiceAssistant = () => {
         landSize: "5 Acres",
         soilType: "Alluvial (Doamat)",
         currentCrop: "Wheat (Gehu)",
-        yieldHistory: "Last year we harvested 45 quintals of Wheat and 60 quintals of Paddy.",
+        yieldHistory: "पिछली बार आपने 45 क्विंटल गेहूं और 60 क्विंटल धान की पैदावार की थी। (45q Wheat, 60q Paddy last year.)",
+        salesHistory: "आपने आखिरी बार जनवरी में 15 क्विंटल सरसों ₹6,500 प्रति क्विंटल के भाव पर बेची थी। (Last sold: Mustard in Jan at ₹6,500/q.)",
+        cropAdvice: {
+            wheat: "गेहूं के लिए अभी यूरिया की दूसरी खुराक और हल्की सिंचाई की जरूरत है। खरपतवार के लिए '2,4-D' का छिड़काव करें।",
+            general: "फसल को कीटों से बचाने के लिए नीम के तेल का उपयोग करें और मिट्टी की जांच हर 2 साल में कराएं।"
+        },
         livestock: "3 Buffaloes (Murrah breed) and 2 Sahiwal Cows. Milk production is 20 Liters daily.",
         machinery: "Mahindra Tractor, Electric Pump, and Thresher",
         income: "₹8,50,000 per year",
@@ -81,53 +86,61 @@ const VoiceAssistant = () => {
         console.log("Processing Query:", userQuery);
         const lowerQuery = userQuery.toLowerCase().trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
-        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप एग्री-सेतु से अपनी लोन, फसल या योजना की जानकारी चाहते हैं? (Please ask about Loans, Crops or Schemes)";
+        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप एग्री-सेतु से अपनी लोन, फसल, खाद या पिछली बिक्री की जानकारी चाहते हैं?";
 
-        // 1. PERSONAL & FAMILY (Naam/Family/Bache)
-        if (lowerQuery.match(/(profile|name|naam|nam|parichay|identity|who am i|mera|identity|kaun hu|family|pariwar|wi|husband|bac|girl|boy|son|daughter|savitri|naam|nam|profile|kis|kumar|नाम|परिचय|परिवार|पत्नी|बच्चे|बेटा|बेटी|कौन|मेरा|आपका|कौन हूँ|किशन|कुमार)/i)) {
+        // 1. PERSONAL & FAMILY
+        if (lowerQuery.match(/(profile|name|naam|nam|parichay|identity|who am i|mera|kaun hu|family|pariwar|wi|husband|bac|girl|boy|son|daughter|savitri|नाम|परिचय|परिवार|पत्नी|बच्चे|कौन)/i)) {
             answer = `आपका नाम ${farmerData.name} है। आपका परिवार में आपकी पत्नी ${farmerData.family} हैं।`;
         }
-        // 2. FARM & SOIL (Kheti/Zameen/Mitti)
-        else if (lowerQuery.match(/(farm|land|zameen|jameen|kheti|soil|mitti|acre|bigha|killa|het|field|fasal|crop|खेती|जमीन|मिट्टी|खेत|एकड़|किला|फसल|मिटटी|जमीन)/i)) {
-            answer = `आपके पास ${farmerData.landSize} उपजाऊ जमीन है, जिसकी मिट्टी ${farmerData.soilType} है। अभी आपकी ${farmerData.currentCrop} लगी है।`;
+        // 2. SALES HISTORY (Aakhri fasal kab bechi / Last sold)
+        else if (lowerQuery.match(/(sold|bechi|sales|history|bikki|becha|pichli|last|sell|sale|बेची|बेचा|बिक्री|पिछली)/i)) {
+            answer = farmerData.salesHistory;
         }
-        // 3. CROP & YIELD HISTORY (Fasal/Yie/Pida/Harvest)
-        else if (lowerQuery.match(/(crop|fasal|gehu|wheat|dhan|paddy|harvest|yield|paida|cut|pichli|last year|kitni|फसल|गेहूं|धान|पैदावार|कटाई|पिछली)/i)) {
+        // 3. FERTILIZER & CROP ADVICE (Khad / Fertilizer / Dawai)
+        else if (lowerQuery.match(/(fertilizer|khad|urea|dap|spray|dawai|pesticide|growth|keet|bimari|salah|upay|advice|खाद|यूरिया|छिड़काव|दवाई|बीमारी|सलाह|उपाय|बढ़ावा)/i)) {
+            if (lowerQuery.match(/(wheat|gehu|gehun|गेहूं|गेहूँ)/i)) {
+                answer = farmerData.cropAdvice.wheat;
+            } else {
+                answer = `आपकी फसल के लिए सलाह: ${farmerData.cropAdvice.general} आपकी अभी ${farmerData.currentCrop} की फसल लगी है।`;
+            }
+        }
+        // 4. FARM & SOIL
+        else if (lowerQuery.match(/(farm|land|zameen|jameen|kheti|soil|mitti|acre|bigha|killa|het|field|खेती|जमीन|मिट्टी|खेत|एकड़|किला)/i)) {
+            answer = `आपके पास ${farmerData.landSize} उपजाऊ जमीन है, जिसकी मिट्टी ${farmerData.soilType} है।`;
+        }
+        // 5. CROP & YIELD (Fasal / Yield)
+        else if (lowerQuery.match(/(crop|fasal|harvest|yield|paida|cut|kitni|फसल|पैदावार|कटाई)/i)) {
             answer = `अभी खेत में ${farmerData.currentCrop} है। ${farmerData.yieldHistory}`;
         }
-        // 4. LIVESTOCK (Cow/Buffalo/Pashu/Doodh/Milk)
-        else if (lowerQuery.match(/(cow|buffalo|gaay|bhains|pashu|animal|milk|doodh|dairy|litre|animal|गाय|भैंस|पशु|दूध|डेयरी)/i)) {
+        // 6. LIVESTOCK
+        else if (lowerQuery.match(/(cow|buffalo|gaay|bhains|pashu|animal|milk|doodh|dairy|litre|गाय|भैंस|पशु|दूध|डेयरी)/i)) {
             answer = `आपके पास ${farmerData.livestock}`;
         }
-        // 5. MACHINERY (Tractor/Pump/Machine)
-        else if (lowerQuery.match(/(tractor|pump|machine|auzar|tool|thresher|mahindra|bijli|ट्रैक्टर|पंप|मशीन|औजार)/i)) {
-            answer = `आपके पास ${farmerData.machinery} उपलब्ध है।`;
-        }
-        // 6. FINANCIALS & LOAN (Loan/Karz/Income/EMI)
+        // 7. FINANCIALS & LOAN
         else if (lowerQuery.match(/(loan|karz|udhar|paisa|money|income|kamai|emi|debt|kcc|bank|sbi|rin|byaj|balance|लोन|कर्ज|उधार|पैसा|पैसे|कमाई|किस्त|बैंक|ब्याज)/i)) {
             answer = `आपकी सालाना कमाई ${farmerData.income} है। ${farmerData.loanStatus}। अगली किश्त ${farmerData.nextEmi} को देनी है।`;
         }
-        // 7. CREDIT SCORE (Score/Trust/Credit)
-        else if (lowerQuery.match(/(score|trust|credit|bharo|rating|number|ank|point|cibil|स्कोर|नंबर|रेटिंग|साख|विश्वास)/i)) {
+        // 8. CREDIT SCORE
+        else if (lowerQuery.match(/(score|trust|credit|rating|point|cibil|स्कोर|नंबर|रेटिंग|साख|विश्वास)/i)) {
             answer = `आपका एग्री-ट्रस्ट स्कोर ${farmerData.creditScore} है। आपकी साख बहुत अच्छी है!`;
         }
-        // 8. GOVERNMENT SCHEMES (Yojana/Sarkari/Scheme/PM Kisan)
-        else if (lowerQuery.match(/(yojana|scheme|sarkari|pm|kisan|bima|insurance|paisa|benefit|subsidy|labh|योजना|स्कीम|सरकारी|बीमा|लाभ|सब्सिडी)/i)) {
+        // 9. GOVERNMENT SCHEMES
+        else if (lowerQuery.match(/(yojana|scheme|sarkari|pm|kisan|bima|insurance|subsidy|labh|योजना|स्कीम|सरकारी|बीमा|लाभ|सब्सिडी)/i)) {
             answer = `सरकारी योजना: ${farmerData.governmentSchemes}`;
         }
-        // 9. ADVISORY & WEATHER (Salah/Weather/Barish)
+        // 10. ADVISORY & WEATHER
         else if (lowerQuery.match(/(advisory|salah|upay|sujhav|tips|weather|mausam|barish|rain|dhup|सलाह|उपाय|सुझाव|मौसम|बारिश|धूप|तापमान)/i)) {
             answer = `मेरी सलाह: ${farmerData.advisory} मौसम: अगले 3 दिन साफ़ रहेंगे।`;
         }
-        // 10. MARKET & PRICE (Mandi/Price/Rate)
+        // 11. MARKET & PRICE
         else if (lowerQuery.match(/(price|rate|bhav|mandi|market|bazar|cost|dam|kimat|मंडी|भाव|रेट|बाजार|कीमत|दाम)/i)) {
-            answer = "सोनीपत मंडी में गेहूं ₹2125 और धान ₹3500 प्रति क्विंटल है। आप अपना सामान मंडी ले जा सकते हैं।";
+            answer = "सोनीपत मंडी में गेहूं ₹2125 और धान ₹3500 प्रति क्विंटल है।";
         }
-        // 11. GREETINGS
+        // 12. GREETINGS
         else if (lowerQuery.match(/(hello|hi|namaste|pranam|ram|hallo|hey|नमस्ते|प्रणाम|राम)/i)) {
-            answer = `राम राम ${farmerData.name} जी! मैं एग्री-सेतु का आवाज़ सहायक हूँ। आपकी खेती, पशु या लोन की क्या जानकारी दूँ?`;
+            answer = `राम राम ${farmerData.name} जी! मैं एग्री-सेतु सहायक हूँ। आप लोन, फसल, खाद या बिक्री के बारे में पूछ सकते हैं।`;
         }
-        // 12. CONTACT
+        // 13. CONTACT
         else if (lowerQuery.match(/(support|call|phone|number|sampark|contact|baat|मदद|संपर्क|फ़ोन|नंबर)/i)) {
             answer = "सहायता के लिए +91 98765 43210 पर कॉल करें।";
         }
