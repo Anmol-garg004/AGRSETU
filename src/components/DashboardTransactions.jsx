@@ -1,152 +1,207 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    CreditCard,
-    Smartphone,
-    ArrowUpRight,
+    Search,
+    Download,
+    Filter,
     ArrowDownLeft,
-    History,
+    Banknote,
+    Building2,
+    Calendar,
+    ChevronDown,
     IndianRupee,
     Laptop,
     Box
 } from 'lucide-react';
 
 const DashboardTransactions = () => {
-    const bankTransactions = [
-        { id: 1, type: 'Credit', source: 'KCC Disbursement', amount: '₹ 50,000', date: '2026-02-15', status: 'Completed', method: 'Bank Transfer' },
-        { id: 2, type: 'Credit', source: 'Crop Sale Payment', amount: '₹ 25,400', date: '2026-02-10', status: 'Completed', method: 'NEFT' },
-        { id: 3, type: 'Credit', source: 'Subsidy Payment', amount: '₹ 5,000', date: '2026-02-05', status: 'Completed', method: 'DBT' },
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Unified transaction data
+    const transactions = [
+        {
+            id: 'TXN001',
+            date: '2026-02-18',
+            source: 'Mandi Sale (Wheat)',
+            category: 'Direct Market Sale',
+            method: 'IOT Cashbox',
+            amount: 12500,
+            status: 'Deposited',
+            type: 'Cash'
+        },
+        {
+            id: 'TXN002',
+            date: '2026-02-15',
+            source: 'PM-Kisan Installment',
+            category: 'Govt. Direct Benefit (DBT)',
+            method: 'Bank Account',
+            amount: 2000,
+            status: 'Completed',
+            type: 'Digital'
+        },
+        {
+            id: 'TXN003',
+            date: '2026-02-12',
+            source: 'Local Merchant (Potato)',
+            category: 'Direct Market Sale',
+            method: 'IOT Cashbox',
+            amount: 8200,
+            status: 'Deposited',
+            type: 'Cash'
+        },
+        {
+            id: 'TXN004',
+            date: '2026-02-10',
+            source: 'Crop Insurance Claim',
+            category: 'Govt. Directly (KCC)',
+            method: 'Bank Account',
+            amount: 15400,
+            status: 'Completed',
+            type: 'Digital'
+        },
+        {
+            id: 'TXN005',
+            date: '2026-02-05',
+            source: 'Fertilizer Subsidy',
+            category: 'Govt. Directly (DBT)',
+            method: 'Bank Account',
+            amount: 1200,
+            status: 'Completed',
+            type: 'Digital'
+        }
     ];
 
-    const cashboxTransactions = [
-        { id: 1, type: 'Cash', source: 'Mandi Sale', amount: '₹ 12,500', date: '2026-02-18', status: 'Deposited', location: 'Local Hub X' },
-        { id: 2, type: 'Cash', source: 'Rental Income', amount: '₹ 3,000', date: '2026-02-17', status: 'Deposited', location: 'Storage A' },
-        { id: 3, type: 'Cash', source: 'Direct Sale', amount: '₹ 8,200', date: '2026-02-14', status: 'Processing', location: 'Main Street Box' },
-    ];
+    const filteredTransactions = transactions.filter(t =>
+        t.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className="fade-in space-y-8">
+        <div className="fade-in space-y-6">
             <div className="flex justify-between items-end mb-4">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">Transaction History</h2>
-                    <p className="text-slate-500 font-medium">Monitor your digital and physical cash flows</p>
+                    <h2 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-2">Transaction Ledger</h2>
+                    <p className="text-slate-500 font-medium">Unified view of Gov payments and Cashbox income</p>
                 </div>
-                <div className="flex gap-4">
-                    <div className="card p-4 flex items-center gap-3">
-                        <div className="p-2 bg-emerald-50 rounded-xl">
-                            <IndianRupee size={20} className="text-emerald-600" />
+                <button className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl font-bold hover:bg-black transition-all">
+                    <Download size={18} /> Export Statement
+                </button>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 lg-grid-cols-1 gap-6">
+                <div className="card p-6 border-slate-100 bg-white shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+                            <Laptop size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Credit</p>
-                            <p className="text-xl font-black text-slate-900 leading-none">₹ 1,04,100</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Gov. Bank Credits</p>
+                            <p className="text-2xl font-black text-slate-900 leading-none">₹ 18,600</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="card p-6 border-slate-100 bg-white shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                            <Box size={24} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cashbox Income</p>
+                            <p className="text-2xl font-black text-slate-900 leading-none">₹ 20,700</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="card p-6 border-slate-100 bg-emerald-600 shadow-lg text-white">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-white/20 rounded-2xl">
+                            <IndianRupee size={24} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-white/60">Total Earnings</p>
+                            <p className="text-2xl font-black leading-none">₹ 39,300</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 lg-grid-cols-1 gap-8">
-                {/* Bank Transactions Section */}
-                <div className="card p-8 bg-slate-50/50">
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-white shadow-sm rounded-2xl">
-                                <Laptop className="text-blue-600" size={24} />
-                            </div>
-                            <div>
-                                <h3 className="m-0 text-xl font-bold">Bank Transactions</h3>
-                                <p className="text-xs text-slate-400 font-black uppercase tracking-wider">Digital Credit Flow</p>
-                            </div>
-                        </div>
-                        <span className="status-badge bg-blue-50 text-blue-600 border-blue-100">Direct Deposit</span>
+            {/* Main Table Section */}
+            <div className="card bg-white border-slate-100 overflow-hidden shadow-sm">
+                <div className="p-6 border-b border-slate-50 flex items-center justify-between flex-wrap gap-4">
+                    <div className="relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                        <input
+                            type="text"
+                            placeholder="Filter by source or type..."
+                            className="pl-11 pr-4 py-3 bg-slate-50 border-0 rounded-xl w-80 text-sm font-medium focus:ring-2 ring-emerald-500/20 transition-all"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
-
-                    <div className="space-y-4">
-                        {bankTransactions.map((tr) => (
-                            <div key={tr.id} className="bg-white p-5 rounded-2xl border border-slate-100 hover:border-blue-200 transition-all group cursor-pointer shadow-sm">
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
-                                            <ArrowDownLeft size={18} className="text-emerald-600" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-slate-800 leading-none mb-1">{tr.source}</h4>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{tr.method}</span>
-                                                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{tr.date}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-black text-emerald-600 text-lg mb-1">+{tr.amount}</p>
-                                        <span className="status-badge bg-emerald-50 text-emerald-600 border-emerald-100 py-0.5 px-2 text-[8px]">{tr.status}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="flex items-center gap-3">
+                        <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-all border-0 cursor-pointer">
+                            <Filter size={14} /> Category
+                            <ChevronDown size={14} />
+                        </button>
+                        <button className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-100 transition-all border-0 cursor-pointer">
+                            <Calendar size={14} /> Feb 2026
+                            <ChevronDown size={14} />
+                        </button>
                     </div>
-
-                    <button className="w-full mt-6 py-4 rounded-xl border-2 border-dashed border-slate-200 text-slate-400 font-bold text-sm hover:border-blue-400 hover:text-blue-500 transition-all bg-transparent">
-                        Export Statement (PDF)
-                    </button>
                 </div>
 
-                {/* IOT Cashbox Section */}
-                <div className="card p-8 bg-emerald-50/30">
-                    <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-4">
-                            <div className="p-3 bg-white shadow-sm rounded-2xl">
-                                <Box className="text-emerald-600" size={24} />
-                            </div>
-                            <div>
-                                <h3 className="m-0 text-xl font-bold">IOT Cashbox</h3>
-                                <p className="text-xs text-slate-400 font-black uppercase tracking-wider">Physical Cash Tracking</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-emerald-100">
-                            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                            <span className="text-[10px] font-black text-emerald-600 uppercase">Live Connected</span>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        {cashboxTransactions.map((tr) => (
-                            <div key={tr.id} className="bg-white p-5 rounded-2xl border border-slate-100 hover:border-emerald-200 transition-all group cursor-pointer shadow-sm">
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center">
-                                            <Smartphone size={18} className="text-slate-600" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-slate-800 leading-none mb-1">{tr.source}</h4>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{tr.location}</span>
-                                                <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                                <span className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{tr.date}</span>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-50/50">
+                                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Date & ID</th>
+                                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Source Description</th>
+                                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Payment Channel</th>
+                                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Amount Received</th>
+                                <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                            {filteredTransactions.map((item) => (
+                                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                                    <td className="px-6 py-5">
+                                        <p className="text-sm font-bold text-slate-900 mb-0.5">{item.date}</p>
+                                        <p className="text-[10px] font-black text-slate-400 tracking-tighter">{item.id}</p>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2.5 rounded-xl ${item.type === 'Digital' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                                {item.type === 'Digital' ? <Building2 size={18} /> : <Banknote size={18} />}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-black text-slate-800 leading-none mb-1">{item.source}</p>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.category}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-black text-slate-900 text-lg mb-1">{tr.amount}</p>
-                                        <span className={`status-badge ${tr.status === 'Deposited' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'} py-0.5 px-2 text-[8px]`}>
-                                            {tr.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-6 p-4 bg-white rounded-2xl border border-emerald-100">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
-                                    <History size={16} />
-                                </div>
-                                <span className="text-xs font-bold text-slate-600">Next collection in 2 days</span>
-                            </div>
-                            <button className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-transparent border-0 cursor-pointer hover:underline">Request Early Pickup</button>
-                        </div>
-                    </div>
+                                    </td>
+                                    <td className="px-6 py-5 text-center">
+                                        <div className="flex flex-col items-start">
+                                            <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg ${item.method === 'Bank Account' ? 'bg-slate-100 text-slate-600' : 'bg-emerald-50 text-emerald-700'}`}>
+                                                {item.method}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 text-center">
+                                        <div className="flex items-center justify-center gap-1">
+                                            <span className="text-lg font-black text-slate-900 tracking-tighter">₹ {item.amount.toLocaleString()}</span>
+                                            <ArrowDownLeft size={16} className="text-emerald-500" />
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5">
+                                        <div className="flex justify-center">
+                                            <span className={`status-badge ${item.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-50 text-amber-700'} border-0`}>
+                                                {item.status}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
