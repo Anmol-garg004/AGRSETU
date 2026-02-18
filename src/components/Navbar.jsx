@@ -23,28 +23,48 @@ const Navbar = ({ onLoginClick }) => {
             <div className="container nav-content">
                 <a href="#" className="logo-container" onClick={(e) => { e.preventDefault(); window.scrollTo(0, 0); }}>
                     <div className="logo-text" style={{
-                        fontSize: '1.8rem',
-                        fontWeight: '800',
+                        fontSize: '2rem',
+                        fontWeight: '900',
                         display: 'flex',
                         alignItems: 'center',
                         letterSpacing: '-1px',
-                        color: 'var(--primary-dark)'
+                        transition: 'all 0.3s ease'
                     }}>
-                        AGRSE
+                        <span style={{
+                            background: scrolled
+                                ? 'linear-gradient(135deg, #064E3B 0%, #047857 100%)'
+                                : 'linear-gradient(135deg, #FFFFFF 0%, #D1FAE5 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+                        }}>AGRSE</span>
+
                         <div style={{
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                            background: scrolled
+                                ? 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
+                                : 'linear-gradient(135deg, #34D399 0%, #10B981 100%)',
                             borderRadius: '50%',
-                            width: '36px',
-                            height: '36px',
-                            margin: '0 2px',
-                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.4)'
+                            width: '40px',
+                            height: '40px',
+                            margin: '0 4px',
+                            boxShadow: scrolled ? '0 4px 10px rgba(16, 185, 129, 0.4)' : '0 4px 15px rgba(0,0,0,0.3)',
+                            border: scrolled ? 'none' : '2px solid rgba(255,255,255,0.2)',
+                            transition: 'all 0.3s ease'
                         }}>
-                            <Sprout size={22} color="white" strokeWidth={2.5} style={{ transform: 'translateY(1px)' }} />
+                            <Sprout size={24} color="white" strokeWidth={2.5} style={{ transform: 'translateY(1px)' }} />
                         </div>
-                        <span style={{ color: 'var(--secondary-main)' }}>U</span>
+
+                        <span style={{
+                            background: scrolled
+                                ? 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)'
+                                : 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
+                        }}>U</span>
                     </div>
                 </a>
 
