@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CloudRain, Sun, Leaf, BarChart2, Sprout, Droplets, Wind, ArrowUpRight, Map, AlertCircle } from 'lucide-react';
+import { CloudRain, Sun, Leaf, BarChart2, Sprout, Droplets, Wind, ArrowUpRight, Map, AlertCircle, CheckCircle } from 'lucide-react';
 
 const DashboardFarm = () => {
     // Mock Weather and Satellite Data Logic
@@ -27,86 +27,91 @@ const DashboardFarm = () => {
             {/* Left Column: Main Operations (Crops & Weather) */}
             <div className="flex-1 w-full flex flex-col gap-6">
 
+                {/* Quick Weather Row - Moved to Top for Better "At a Glance" feel */}
+                <div className="grid grid-cols-3 gap-4">
+                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-2 opacity-10"><Sun size={40} /></div>
+                        <div className="p-2.5 bg-white text-amber-500 rounded-xl shadow-sm z-10"><Sun size={20} /></div>
+                        <div className="z-10">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Temperature</p>
+                            <p className="text-xl font-black text-slate-800">{weather.temp}</p>
+                        </div>
+                    </div>
+                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-2 opacity-10"><CloudRain size={40} /></div>
+                        <div className="p-2.5 bg-white text-blue-500 rounded-xl shadow-sm z-10"><CloudRain size={20} /></div>
+                        <div className="z-10">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Precipitation</p>
+                            <p className="text-xl font-black text-slate-800">{weather.rain}</p>
+                        </div>
+                    </div>
+                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-slate-50 to-gray-50 border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-2 opacity-10"><Wind size={40} /></div>
+                        <div className="p-2.5 bg-white text-slate-500 rounded-xl shadow-sm z-10"><Wind size={20} /></div>
+                        <div className="z-10">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wind Speed</p>
+                            <p className="text-xl font-black text-slate-800">{weather.wind}</p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Active Crops List - Professional Table View */}
-                <div className="card p-0 overflow-hidden border-0 shadow-sm bg-white">
+                <div className="card p-0 overflow-hidden border-0 shadow-sm bg-white ring-1 ring-slate-100">
                     <div className="p-6 border-b flex justify-between items-center bg-white">
-                        <h3 className="m-0 text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <Sprout size={20} className="text-emerald-600" /> Active Crops
-                        </h3>
-                        <button className="text-xs font-bold text-emerald-600 border border-emerald-200 bg-emerald-50 px-3 py-1.5 rounded-lg hover:bg-emerald-600 hover:text-white transition-colors flex items-center gap-1">
-                            + Log Crop
+                        <div>
+                            <h3 className="m-0 text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <Sprout size={20} className="text-emerald-600" /> Active Crops
+                            </h3>
+                            <p className="text-xs text-slate-400 font-medium mt-1">Real-time monitoring of your fields</p>
+                        </div>
+                        <button className="text-xs font-bold text-emerald-600 border border-emerald-200 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-2 shadow-sm">
+                            + Log New Crop
                         </button>
                     </div>
 
                     <div className="bg-white">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-slate-50 border-b text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            <div className="col-span-4">Crop Name</div>
-                            <div className="col-span-3">Stage</div>
-                            <div className="col-span-3">Health</div>
-                            <div className="col-span-2 text-right">Yield</div>
+                        <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/50 border-b text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <div className="col-span-4 pl-2">Crop Details</div>
+                            <div className="col-span-3">Development</div>
+                            <div className="col-span-3">Health Status</div>
+                            <div className="col-span-2 text-right">Est. Yield</div>
                         </div>
 
-                        <div className="divide-y">
+                        <div className="divide-y divide-slate-50">
                             {crops.map((crop, idx) => (
-                                <div key={idx} className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-slate-50 transition-colors cursor-pointer group">
-                                    <div className="col-span-4 flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0 font-bold">
+                                <div key={idx} className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-slate-50 transition-colors cursor-pointer group border-l-4 border-l-transparent hover:border-l-emerald-500">
+                                    <div className="col-span-4 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-black shadow-sm group-hover:scale-110 transition-transform">
                                             {crop.name[0]}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-slate-800 leading-tight">{crop.name}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium">Harv: {crop.harvest}</p>
+                                            <p className="text-sm font-bold text-slate-800 leading-tight mb-1 group-hover:text-emerald-700 transition-colors">{crop.name}</p>
+                                            <p className="text-[10px] text-slate-400 font-bold bg-slate-100 inline-block px-1.5 py-0.5 rounded">Harvest: {crop.harvest}</p>
                                         </div>
                                     </div>
                                     <div className="col-span-3">
-                                        <span className="inline-block px-2 py-1 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold">
-                                            {crop.stage}
-                                        </span>
+                                        <p className="text-xs font-bold text-slate-700 mb-1">{crop.stage}</p>
+                                        <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${crop.progress}%` }}></div>
+                                        </div>
                                     </div>
                                     <div className="col-span-3">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${crop.progress}%` }}></div>
-                                            </div>
-                                            <span className="text-[10px] font-bold text-emerald-600">{crop.health}</span>
+                                            <CheckCircle size={14} className="text-emerald-500" />
+                                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">{crop.health}</span>
                                         </div>
                                     </div>
                                     <div className="col-span-2 text-right">
-                                        <span className="text-sm font-black text-slate-700">{crop.yield}</span>
+                                        <span className="text-sm font-black text-slate-800">{crop.yield}</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <button className="w-full py-3 text-xs font-bold text-slate-500 hover:bg-slate-50 border-t transition-colors flex items-center justify-center gap-1">
-                        View All History <ArrowUpRight size={14} />
+                    <button className="w-full py-4 text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-50 border-t transition-colors flex items-center justify-center gap-2">
+                        View All Crop History <ArrowUpRight size={14} />
                     </button>
-                </div>
-
-                {/* Quick Weather Row */}
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="card p-4 flex items-center gap-3 bg-white border-0 shadow-sm">
-                        <div className="p-2 bg-amber-50 text-amber-500 rounded-lg"><Sun size={20} /></div>
-                        <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase">Temp</p>
-                            <p className="text-sm font-black text-slate-800">{weather.temp}</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3 bg-white border-0 shadow-sm">
-                        <div className="p-2 bg-blue-50 text-blue-500 rounded-lg"><CloudRain size={20} /></div>
-                        <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase">Precip</p>
-                            <p className="text-sm font-black text-slate-800">{weather.rain}</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3 bg-white border-0 shadow-sm">
-                        <div className="p-2 bg-slate-100 text-slate-500 rounded-lg"><Wind size={20} /></div>
-                        <div>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase">Wind</p>
-                            <p className="text-sm font-black text-slate-800">{weather.wind}</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
