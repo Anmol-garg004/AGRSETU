@@ -258,16 +258,47 @@ button {
 }
 
 /* Ensure Nav Links are perfectly centered */
+/* Ensure Nav Links are White by default (for Hero bg) */
 .nav-links {
   display: flex;
   gap: 32px;
   align-items: center;
   background: transparent;
-  /* Removed background for cleaner look if requested, or keep glass */
-  /* Or if user wants exactly old layout but new UI, I should restore the flex behavior */
   margin-left: auto;
-  /* Push to right if that was the old way? No, usually it's Logo - Links - Button */
   margin-right: 32px;
+}
+
+.nav-links a {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  /* White text for dark background */
+  position: relative;
+  font-size: 1rem;
+}
+
+.nav-links a:hover {
+  color: var(--white);
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--accent-color);
+  /* Amber underline */
+  transition: var(--transition);
+}
+
+/* When Scrolled, switch to dark text */
+.navbar.scrolled .nav-links a {
+  color: var(--neutral-700);
+}
+
+.navbar.scrolled .nav-links a:hover {
+  color: var(--primary-main);
 }
 
 .logo-icon {
