@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { X, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import '../index.css';
 
+import { createPortal } from 'react-dom';
+
 const LoginModal = ({ isOpen, onClose, onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,9 +29,9 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         }, 1000);
     };
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fade-in" style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(12px)' }}>
-            <div className="card p-10 w-full shadow-2xl relative" style={{ maxWidth: '440px' }}>
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 fade-in" style={{ backgroundColor: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)' }}>
+            <div className="card p-10 w-full shadow-2xl relative bg-white border border-slate-200" style={{ maxWidth: '440px', maxHeight: '90vh', overflowY: 'auto' }}>
                 <button
                     onClick={onClose}
                     className="absolute top-6 right-6 p-2 rounded-xl hover:bg-slate-50 transition-all border-0 bg-transparent text-slate-400 hover:text-slate-900 cursor-pointer"
@@ -53,34 +55,34 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="form-group">
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Official Email</label>
-                        <div className="relative">
-                            <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <div className="space-y-2">
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Official Email</label>
+                        <div className="relative group">
+                            <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@agrsetu.com"
-                                className="w-full pl-12 h-14 bg-slate-50 border-slate-100 focus:bg-white transition-all font-medium"
+                                className="w-full pl-12 h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-all font-medium text-slate-700"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <div className="flex justify-between items-center mb-2 ml-1">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Secret Key</label>
-                            <a href="#" className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:underline">Forgot?</a>
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center ml-1">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Secret Key</label>
+                            <a href="#" className="text-xs font-bold text-emerald-600 uppercase tracking-widest hover:underline">Forgot?</a>
                         </div>
-                        <div className="relative">
-                            <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <div className="relative group">
+                            <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="w-full pl-12 h-14 bg-slate-50 border-slate-100 focus:bg-white transition-all"
+                                className="w-full pl-12 h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-all font-medium text-slate-700"
                                 required
                             />
                         </div>
@@ -88,7 +90,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
                     <button
                         type="submit"
-                        className="btn-premium w-full justify-center h-14 text-lg mt-4"
+                        className="btn-premium w-full justify-center h-14 text-lg mt-6 hover:scale-[1.02] active:scale-[0.98] transition-transform"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Decrypting Access...' : (
@@ -105,7 +107,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                     </p>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

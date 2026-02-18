@@ -32,7 +32,7 @@ const Navbar = ({ onLoginClick }) => {
                         filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                     }}>
                         <span className={scrolled ? 'logo-text-gradient-dark' : 'logo-text-gradient-light'}>
-                            AGRSE
+                            AGR
                         </span>
 
                         <div style={{
@@ -54,7 +54,7 @@ const Navbar = ({ onLoginClick }) => {
                         </div>
 
                         <span className={scrolled ? 'logo-text-gradient-blue-dark' : 'logo-text-gradient-blue-light'}>
-                            U
+                            SETU
                         </span>
                     </div>
                 </a>

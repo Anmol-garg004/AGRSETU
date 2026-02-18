@@ -230,6 +230,42 @@ button {
   grid-column: span 3 / span 3;
 }
 
+.col-span-4 {
+  grid-column: span 4 / span 4;
+}
+
+.col-span-8 {
+  grid-column: span 8 / span 8;
+}
+
+.col-span-12 {
+  grid-column: span 12 / span 12;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+@media (max-width: 1024px) {
+  .lg-grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .lg-col-span-12 {
+    grid-column: span 12 / span 12;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Spacing Utilities */
 .gap-1 {
   gap: 0.25rem;
@@ -1892,4 +1928,131 @@ button {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
+}
+
+/* ===== Dashboard Layout System (ADDED FIX) ===== */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.dashboard-sidebar {
+  width: 280px;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+.dashboard-main {
+  flex: 1;
+  min-width: 0;
+  /* Prevents flex item from overflowing */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #f8fafc;
+  padding: 0;
+}
+
+.dashboard-content {
+  padding: 2rem;
+  flex: 1;
+  animation: fadeIn 0.5s ease-out;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Mobile Responsiveness for Sidebar */
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    transform: translateX(-100%);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    z-index: 1005;
+    /* Above overlay */
+  }
+
+  .dashboard-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+/* Overlay for Mobile Sidebar */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Utility visibility classes */
+.show-mobile {
+  display: none;
+}
+
+.hide-mobile {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .show-mobile {
+    display: block;
+  }
+
+  .hide-mobile {
+    display: none;
+  }
+}
+
+/* Avatar Utilities */
+.avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  border: 2px solid white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.status-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Fix for weird blue glow vignette */
+body::after {
+  content: none !important;
+  display: none !important;
 }
