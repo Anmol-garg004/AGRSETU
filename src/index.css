@@ -255,24 +255,19 @@ button {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  height: 60px;
-  /* Fixed height for consistency */
 }
 
 /* Ensure Nav Links are perfectly centered */
 .nav-links {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 32px;
   align-items: center;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 10px 32px;
-  border-radius: 50px;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  background: transparent;
+  /* Removed background for cleaner look if requested, or keep glass */
+  /* Or if user wants exactly old layout but new UI, I should restore the flex behavior */
+  margin-left: auto;
+  /* Push to right if that was the old way? No, usually it's Logo - Links - Button */
+  margin-right: 32px;
 }
 
 .logo-icon {
