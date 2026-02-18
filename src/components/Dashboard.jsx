@@ -21,12 +21,14 @@ import AgriTrustScore from './AgriTrustScore';
 import '../index.css';
 
 const Dashboard = ({ user, onLogout }) => {
-    const [activeTab, setActiveTab] = useState('Overview');
+    // Default Sidebar: CLOSED (as requested)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('Overview');
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
-        setIsSidebarOpen(false);
+        // On mobile, close sidebar after selection
+        if (window.innerWidth < 1024) setIsSidebarOpen(false);
     };
 
     const renderContent = () => {
@@ -67,37 +69,51 @@ const Dashboard = ({ user, onLogout }) => {
 
     return (
         <>
-            {/* Mobile Overlay */}
+            {/* Overlay for both Mobile and Desktop when Sidebar is Open (Optional preference) */}
             <div
                 className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`}
                 onClick={() => setIsSidebarOpen(false)}
+                style={{ zIndex: 90 }} // Below content if Sidebar is push, above if overlay
             />
 
             <div className="dashboard-container">
-                {/* Professional Sidebar */}
-                <aside className={`dashboard-sidebar ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-                    <div className="p-8 flex items-center justify-between">
+                {/* Professional Sidebar - Hidden by default as requested */}
+                <aside
+                    className={`dashboard-sidebar ${isSidebarOpen ? 'sidebar-open' : ''}`}
+                    style={{
+                        transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+                        position: 'fixed',
+                        left: 0,
+                        top: 0,
+                        zIndex: 100,
+                        height: '100vh',
+                        width: '280px',
+                        transition: 'transform 0.3s ease-in-out',
+                        boxShadow: isSidebarOpen ? '0 0 50px rgba(0,0,0,0.2)' : 'none'
+                    }}
+                >
+                    <div className="p-6 flex items-center justify-between">
                         <div
-                            className="flex items-center gap-3 cursor-pointer group"
+                            className="flex items-center gap-2 cursor-pointer group"
                             onClick={() => handleTabChange('Overview')}
                         >
-                            <div className="avatar-initials bg-emerald-600 shadow-lg group-hover:scale-110 transition-transform" style={{ color: 'white', border: 'none' }}>
-                                <Leaf size={22} color="white" />
+                            <div className="avatar-initials bg-emerald-600 shadow-lg group-hover:scale-110 transition-transform w-8 h-8" style={{ color: 'white', border: 'none' }}>
+                                <Leaf size={18} color="white" />
                             </div>
-                            <span className="text-2xl font-black tracking-tighter text-slate-800 uppercase">
+                            <span className="text-xl font-black tracking-tighter text-slate-800 uppercase">
                                 AGR<span className="text-emerald-600">SETU</span>
                             </span>
                         </div>
-                        {/* Mobile Close Button */}
+                        {/* Close Button */}
                         <button
-                            className="show-mobile p-2 text-slate-400 hover:text-slate-900 bg-transparent border-0 cursor-pointer"
+                            className="p-2 text-slate-400 hover:text-slate-900 bg-transparent border-0 cursor-pointer"
                             onClick={() => setIsSidebarOpen(false)}
                         >
-                            <X size={24} />
+                            <X size={20} />
                         </button>
                     </div>
 
-                    <nav className="flex-1 px-4 py-4 space-y-2">
+                    <nav className="flex-1 px-3 py-2 space-y-1">
                         {[
                             { id: 'Overview', icon: Layout },
                             { id: 'Profile', icon: Users },
@@ -109,13 +125,13 @@ const Dashboard = ({ user, onLogout }) => {
                             <button
                                 key={item.id}
                                 onClick={() => handleTabChange(item.id)}
-                                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl font-bold transition-all border-0 cursor-pointer ${activeTab === item.id
+                                className={`w-full flex items-center justify-between px-3 py-3 rounded-xl font-bold transition-all border-0 cursor-pointer ${activeTab === item.id
                                     ? 'active-tab shadow-sm'
-                                    : 'text-slate-400 bg-white hover:bg-slate-50 hover:text-slate-600'
+                                    : 'text-slate-400 bg-transparent hover:bg-slate-50 hover:text-slate-600'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <item.icon size={20} strokeWidth={activeTab === item.id ? 2.5 : 2} />
+                                    <item.icon size={18} strokeWidth={activeTab === item.id ? 2.5 : 2} />
                                     <span className="text-sm">{item.id}</span>
                                 </div>
                                 {activeTab === item.id && <ChevronRight size={14} className="opacity-50" />}
@@ -123,67 +139,62 @@ const Dashboard = ({ user, onLogout }) => {
                         ))}
                     </nav>
 
-                    <div className="p-6 mt-auto border-t">
-                        <div className="bg-slate-50 p-4 rounded-2xl flex items-center gap-4 mb-4">
-                            <div className="avatar-initials">
+                    <div className="p-4 mt-auto border-t">
+                        <div className="bg-slate-50 p-3 rounded-xl flex items-center gap-3 mb-3">
+                            <div className="avatar-initials w-8 h-8 text-xs">
                                 KK
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-black text-slate-800 truncate mb-1">Kishan Kumar</p>
-                                <span className="status-badge bg-emerald-50 text-emerald-600" style={{ fontSize: '10px' }}>Verified</span>
+                                <p className="text-xs font-black text-slate-800 truncate">Kishan Kumar</p>
+                                <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md font-bold">Verified</span>
                             </div>
                         </div>
                         <button
                             onClick={onLogout}
-                            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-slate-900 text-white font-bold hover:bg-black transition-all cursor-pointer border-0"
+                            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-black transition-all cursor-pointer border-0 text-sm"
                         >
-                            <LogOut size={18} /> Logout
+                            <LogOut size={16} /> Logout
                         </button>
                     </div>
                 </aside>
 
                 {/* Premium Main Content Area */}
-                <main className="dashboard-main">
-                    <header className="flex items-center justify-between gap-6 mb-12 fade-in">
+                <main className="dashboard-main w-full" style={{ paddingLeft: '0' }}>
+                    <header className="flex items-center justify-between gap-4 mb-8 fade-in sticky top-0 bg-slate-50/90 backdrop-blur-md z-40 py-4 px-6 border-b border-slate-200">
                         <div className="flex items-center gap-4">
-                            {/* Mobile Menu Toggle */}
+                            {/* Menu Toggle - ALWAYS VISIBLE now */}
                             <button
-                                className="show-mobile p-3 bg-white border rounded-2xl text-slate-600 shadow-sm hover:bg-slate-50 cursor-pointer"
+                                className="p-2 bg-white border rounded-xl text-slate-600 shadow-sm hover:bg-slate-50 cursor-pointer"
                                 onClick={() => setIsSidebarOpen(true)}
                             >
-                                <Menu size={24} />
+                                <Menu size={20} />
                             </button>
 
                             <div>
-                                <div className="flex items-center gap-2 text-xs font-black text-slate-400 uppercase tracking-widest mb-2">
-                                    Dashboard <ChevronRight size={10} /> {activeTab}
-                                </div>
-                                <h1 className="text-4xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="relative hide-mobile">
-                                <Search className="absolute left-4 top-1/2" size={18} style={{ transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                <Search className="absolute left-3 top-1/2" size={16} style={{ transform: 'translateY(-50%)', color: '#94a3b8' }} />
                                 <input
                                     type="text"
-                                    placeholder="Search analytics..."
-                                    className="px-12 py-3 w-64"
+                                    placeholder="Search..."
+                                    className="px-10 py-2 w-48 bg-white border rounded-xl text-sm focus:w-64 transition-all"
                                 />
                             </div>
-                            <div className="flex gap-3">
-                                <button className="relative w-12 h-12 flex items-center justify-center bg-white border rounded-2xl text-slate-500 hover:bg-slate-50 cursor-pointer">
-                                    <Bell size={20} />
-                                    <span className="absolute top-3 right-3 w-2 h-2 bg-rose-500 border-2 border-white rounded-full"></span>
-                                </button>
-                                <button className="btn-premium">
-                                    <IndianRupee size={18} /> Funding
-                                </button>
-                            </div>
+                            <button className="relative w-10 h-10 flex items-center justify-center bg-white border rounded-xl text-slate-500 hover:bg-slate-50 cursor-pointer">
+                                <Bell size={18} />
+                                <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                            </button>
+                            <button className="btn-premium px-4 py-2 text-sm flex gap-2 items-center">
+                                <IndianRupee size={16} /> <span className="hide-mobile">Funding</span>
+                            </button>
                         </div>
                     </header>
 
-                    <div className="dashboard-content fade-in">
+                    <div className="dashboard-content fade-in p-6">
                         {renderContent()}
                     </div>
                 </main>
