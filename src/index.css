@@ -606,19 +606,98 @@ button {
 }
 
 
-/* Steps (Keep existing functional logic, update style) */
+/* Steps (Interactive Premium Hover Logic) */
 .step-card {
   background: white;
-  border-radius: 24px;
-  padding: 30px;
+  border-radius: 28px;
+  padding: 40px 32px;
   box-shadow: var(--shadow-sm);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  z-index: 1;
+}
+
+.step-number {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--neutral-300);
   transition: var(--transition);
-  border: 1px solid #f0f0f0;
 }
 
 .step-card:hover {
-  background: white;
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-12px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-light);
+}
+
+.step-card:hover .step-number {
+  color: var(--primary-main);
+  transform: scale(1.2);
+}
+
+.step-card h3 {
+  margin-top: 10px;
+  transition: var(--transition);
+}
+
+.step-card p {
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+/* Hover Reveal Info Box */
+.step-info-box {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px dashed var(--neutral-100);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  text-align: left;
+}
+
+.step-card:hover .step-info-box {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.step-info-box h4 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary-dark);
+  margin-bottom: 15px;
+}
+
+.step-info-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.step-info-box li {
+  font-size: 0.85rem;
+  color: var(--neutral-500);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-info-box li::before {
+  content: '•';
+  color: var(--primary-main);
+  font-weight: bold;
+}
+
+.step-card:hover .icon-box {
+  transform: scale(1.1) rotate(6deg);
+  box-shadow: var(--shadow-glow);
 }
 
 /* Footer Upgrade */
