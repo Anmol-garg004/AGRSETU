@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Problem from './components/Problem';
@@ -13,6 +13,9 @@ import Dashboard from './components/Dashboard';
 import VoiceAssistant from './components/VoiceAssistant';
 
 function App() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   useEffect(() => {
     const storedUser = localStorage.getItem('agrsetu_user');
     if (storedUser) {
