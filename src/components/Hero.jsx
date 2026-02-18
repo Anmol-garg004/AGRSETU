@@ -23,7 +23,10 @@ const Hero = ({ onLoginClick }) => {
                     <button className="btn btn-primary btn-lg" onClick={onLoginClick}>
                         Get Started <ArrowRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
-                    <button className="btn btn-secondary btn-lg">
+                    <button
+                        className="btn btn-secondary btn-lg"
+                        onClick={() => document.getElementById('partners').scrollIntoView({ behavior: 'smooth' })}
+                    >
                         Partner With Us <ChevronRight size={20} style={{ marginLeft: '10px' }} />
                     </button>
                 </div>
