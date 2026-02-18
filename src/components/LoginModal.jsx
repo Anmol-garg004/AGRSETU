@@ -34,7 +34,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
             <div className="card p-10 w-full shadow-2xl relative bg-white border border-slate-200" style={{ maxWidth: '440px', maxHeight: '90vh', overflowY: 'auto' }}>
                 <button
                     onClick={onClose}
-                    className="absolute top-5 right-5 p-2 rounded-full hover:bg-slate-100 transition-colors border-0 bg-transparent text-slate-400 hover:text-slate-900 cursor-pointer z-10"
+                    className="absolute p-2 rounded-full hover:bg-slate-100 transition-colors border-0 bg-transparent text-slate-400 hover:text-slate-900 cursor-pointer z-10"
+                    style={{ top: '20px', right: '20px' }}
                 >
                     <X size={24} />
                 </button>
@@ -55,38 +56,34 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2 relative">
+                    <div className="space-y-2">
                         <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest ml-1 mb-1">Official Email</label>
-                        <div className="relative group">
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors pointer-events-none z-10">
-                                <Mail size={20} />
-                            </div>
+                        <div className="group flex items-center w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus-within:bg-white focus-within:border-emerald-500 focus-within:scale-[1.01] transition-all px-4 shadow-sm">
+                            <Mail size={20} className="text-slate-400 group-focus-within:text-emerald-500 transition-colors mr-3 flex-shrink-0" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@agrsetu.com"
-                                className="w-full pl-14 h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400"
+                                className="flex-1 bg-transparent border-none outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2 relative">
+                    <div className="space-y-2">
                         <div className="flex justify-between items-center ml-1 mb-1">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Secret Key</label>
                             <a href="#" className="text-xs font-bold text-emerald-600 uppercase tracking-widest hover:underline tab-index-0">Forgot?</a>
                         </div>
-                        <div className="relative group">
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors pointer-events-none z-10">
-                                <Lock size={20} />
-                            </div>
+                        <div className="group flex items-center w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus-within:bg-white focus-within:border-emerald-500 focus-within:scale-[1.01] transition-all px-4 shadow-sm">
+                            <Lock size={20} className="text-slate-400 group-focus-within:text-emerald-500 transition-colors mr-3 flex-shrink-0" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="w-full pl-14 h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-all font-medium text-slate-700 placeholder:text-slate-400"
+                                className="flex-1 bg-transparent border-none outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full"
                                 required
                             />
                         </div>
