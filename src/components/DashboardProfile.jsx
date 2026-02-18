@@ -92,14 +92,14 @@ const DashboardProfile = ({ user, onUpdate }) => {
                 <div className="h-32 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden">
                     <div className="absolute inset-0 bg-mesh opacity-20"></div>
                     <div className="absolute -bottom-16 left-8 p-1.5 bg-white rounded-2xl shadow-xl">
-                        <div className="w-28 h-28 bg-emerald-600 rounded-xl flex items-center justify-center text-emerald-50 drop-shadow-md text-center p-2">
-                            <span className="text-xl font-black leading-tight">Kishan Kumar</span>
+                        <div className="h-28 w-auto px-6 min-w-[140px] bg-emerald-600 rounded-xl flex items-center justify-center text-emerald-50 drop-shadow-md text-center">
+                            <span className="text-xl font-black leading-tight whitespace-nowrap">Kishan Kumar</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="pt-20 pb-8 flex justify-between items-end flex-wrap gap-6 px-8 select-none">
-                    <div className="pt-2 pl-56">
+                    <div className="pt-2 pl-80">
                         <div className="flex items-center gap-3 mb-1 min-w-[300px]">
                             <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-200 whitespace-nowrap">
                                 <CheckCircle size={10} /> Verified Farmer
