@@ -13,60 +13,7 @@ const VoiceAssistant = () => {
     const recognitionRef = useRef(null);
     const synthesisRef = useRef(null);
 
-    useEffect(() => {
-        // Initialize Speech Synthesis
-        synthesisRef.current = window.speechSynthesis;
 
-        // Initialize Speech Recognition
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognitionRef.current = new SpeechRecognition();
-            recognitionRef.current.continuous = false;
-            recognitionRef.current.interimResults = true;
-            recognitionRef.current.lang = 'hi-IN'; // Default to Hindi/Indian context
-
-            recognitionRef.current.onstart = () => {
-                setIsListening(true);
-                setText("सुन रहा हूँ... (Listening...)");
-            };
-
-            recognitionRef.current.onresult = (event) => {
-                const transcriptText = Array.from(event.results)
-                    .map(result => result[0].transcript)
-                    .join('');
-                setTranscript(transcriptText);
-
-                // If final result, handle it immediately
-                if (event.results[0].isFinal) {
-                    handleAIResponse(transcriptText);
-                    stopListening();
-                }
-            };
-
-            recognitionRef.current.onend = () => {
-                setIsListening(false);
-                // We rely on isFinal check above to trigger response, 
-                // or manual stop. 
-            };
-
-            recognitionRef.current.onerror = (event) => {
-                console.error("Speech recognition error", event.error);
-                setIsListening(false);
-                if (event.error !== 'no-speech') {
-                    setText("कोई त्रुटि हुई। कृपया पुन: प्रयास करें। (Error occurred)");
-                }
-            };
-        }
-
-        return () => {
-            if (synthesisRef.current) {
-                synthesisRef.current.cancel();
-            }
-            if (recognitionRef.current) {
-                // recognitionRef.current.stop(); // Don't aggressive stop on unmount to avoid errors if already stopped
-            }
-        };
-    }, []); // Empty dependency array to run only once!
 
     const startListening = () => {
         if (synthesisRef.current.speaking) synthesisRef.current.cancel();
@@ -107,8 +54,10 @@ const VoiceAssistant = () => {
         synthesisRef.current.speak(utterance);
     };
 
+    // Use a ref for handleAIResponse to avoid stale closure in useEffect
+    const handleAIResponseRef = useRef(null);
+
     // Mock Data for Voice Assistant to access
-    // Massively Expanded Mock Data for Voice Assistant
     const farmerData = {
         name: "Kishan Kumar",
         age: "42 Years",
@@ -129,67 +78,121 @@ const VoiceAssistant = () => {
     };
 
     const handleAIResponse = (userQuery) => {
-        // MOCK AI LOGIC - In production, this would go to an LLM API
-        console.log("User Query:", userQuery); // Debugging
-
-        // Normalize: lowercase and remove trailing punctuation/spaces
+        console.log("Processing Query:", userQuery);
         const lowerQuery = userQuery.toLowerCase().trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
 
-        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप एग्री-सेतु से अपनी लोन, फसल या योजना की जानकारी चाहते हैं?";
+        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप एग्री-सेतु से अपनी लोन, फसल या योजना की जानकारी चाहते हैं? (Please ask about Loans, Crops or Schemes)";
 
         // 1. PERSONAL & FAMILY (Naam/Family/Bache)
-        if (lowerQuery.match(/(profile|name|naam|nam|parichay|identity|who am i|mera|identity|kaun hu|family|pariwar|wi|husband|bac|girl|boy|son|daughter|savitri)/i)) {
+        if (lowerQuery.match(/(profile|name|naam|nam|parichay|identity|who am i|mera|identity|kaun hu|family|pariwar|wi|husband|bac|girl|boy|son|daughter|savitri|naam|nam|profile|kis|kumar|नाम|परिचय|परिवार|पत्नी|बच्चे|बेटा|बेटी|कौन|मेरा|आपका|कौन हूँ|किशन|कुमार)/i)) {
             answer = `आपका नाम ${farmerData.name} है। आपका परिवार में आपकी पत्नी ${farmerData.family} हैं।`;
         }
         // 2. FARM & SOIL (Kheti/Zameen/Mitti)
-        else if (lowerQuery.match(/(farm|land|zameen|jameen|kheti|soil|mitti|acre|bigha|killa|het|field)/i)) {
-            answer = `आपके पास ${farmerData.landSize} उपजाऊ जमीन है, जिसकी मिट्टी ${farmerData.soilType} है।`;
+        else if (lowerQuery.match(/(farm|land|zameen|jameen|kheti|soil|mitti|acre|bigha|killa|het|field|fasal|crop|खेती|जमीन|मिट्टी|खेत|एकड़|किला|फसल|मिटटी|जमीन)/i)) {
+            answer = `आपके पास ${farmerData.landSize} उपजाऊ जमीन है, जिसकी मिट्टी ${farmerData.soilType} है। अभी आपकी ${farmerData.currentCrop} लगी है।`;
         }
         // 3. CROP & YIELD HISTORY (Fasal/Yie/Pida/Harvest)
-        else if (lowerQuery.match(/(crop|fasal|gehu|wheat|dhan|paddy|harvest|yield|paida|cut|pichli|last year|kitni)/i)) {
+        else if (lowerQuery.match(/(crop|fasal|gehu|wheat|dhan|paddy|harvest|yield|paida|cut|pichli|last year|kitni|फसल|गेहूं|धान|पैदावार|कटाई|पिछली)/i)) {
             answer = `अभी खेत में ${farmerData.currentCrop} है। ${farmerData.yieldHistory}`;
         }
         // 4. LIVESTOCK (Cow/Buffalo/Pashu/Doodh/Milk)
-        else if (lowerQuery.match(/(cow|buffalo|gaay|bhains|pashu|animal|milk|doodh|dairy|litre|animal)/i)) {
+        else if (lowerQuery.match(/(cow|buffalo|gaay|bhains|pashu|animal|milk|doodh|dairy|litre|animal|गाय|भैंस|पशु|दूध|डेयरी)/i)) {
             answer = `आपके पास ${farmerData.livestock}`;
         }
         // 5. MACHINERY (Tractor/Pump/Machine)
-        else if (lowerQuery.match(/(tractor|pump|machine|auzar|tool|thresher|mahindra|bijli)/i)) {
+        else if (lowerQuery.match(/(tractor|pump|machine|auzar|tool|thresher|mahindra|bijli|ट्रैक्टर|पंप|मशीन|औजार)/i)) {
             answer = `आपके पास ${farmerData.machinery} उपलब्ध है।`;
         }
         // 6. FINANCIALS & LOAN (Loan/Karz/Income/EMI)
-        else if (lowerQuery.match(/(loan|karz|udhar|paisa|money|income|kamai|emi|debt|kcc|bank|sbi|rin|byaj|balance)/i)) {
+        else if (lowerQuery.match(/(loan|karz|udhar|paisa|money|income|kamai|emi|debt|kcc|bank|sbi|rin|byaj|balance|लोन|कर्ज|उधार|पैसा|पैसे|कमाई|किस्त|बैंक|ब्याज)/i)) {
             answer = `आपकी सालाना कमाई ${farmerData.income} है। ${farmerData.loanStatus}। अगली किश्त ${farmerData.nextEmi} को देनी है।`;
         }
         // 7. CREDIT SCORE (Score/Trust/Credit)
-        else if (lowerQuery.match(/(score|trust|credit|bharo|rating|number|ank|point|cibil)/i)) {
+        else if (lowerQuery.match(/(score|trust|credit|bharo|rating|number|ank|point|cibil|स्कोर|नंबर|रेटिंग|साख|विश्वास)/i)) {
             answer = `आपका एग्री-ट्रस्ट स्कोर ${farmerData.creditScore} है। आपकी साख बहुत अच्छी है!`;
         }
         // 8. GOVERNMENT SCHEMES (Yojana/Sarkari/Scheme/PM Kisan)
-        else if (lowerQuery.match(/(yojana|scheme|sarkari|pm|kisan|bima|insurance|paisa|benefit|subsidy|labh)/i)) {
+        else if (lowerQuery.match(/(yojana|scheme|sarkari|pm|kisan|bima|insurance|paisa|benefit|subsidy|labh|योजना|स्कीम|सरकारी|बीमा|लाभ|सब्सिडी)/i)) {
             answer = `सरकारी योजना: ${farmerData.governmentSchemes}`;
         }
         // 9. ADVISORY & WEATHER (Salah/Weather/Barish)
-        else if (lowerQuery.match(/(advisory|salah|upay|sujhav|tips|weather|mausam|barish|rain|dhup)/i)) {
+        else if (lowerQuery.match(/(advisory|salah|upay|sujhav|tips|weather|mausam|barish|rain|dhup|सलाह|उपाय|सुझाव|मौसम|बारिश|धूप|तापमान)/i)) {
             answer = `मेरी सलाह: ${farmerData.advisory} मौसम: अगले 3 दिन साफ़ रहेंगे।`;
         }
         // 10. MARKET & PRICE (Mandi/Price/Rate)
-        else if (lowerQuery.match(/(price|rate|bhav|mandi|market|bazar|cost|dam|kimat)/i)) {
+        else if (lowerQuery.match(/(price|rate|bhav|mandi|market|bazar|cost|dam|kimat|मंडी|भाव|रेट|बाजार|कीमत|दाम)/i)) {
             answer = "सोनीपत मंडी में गेहूं ₹2125 और धान ₹3500 प्रति क्विंटल है। आप अपना सामान मंडी ले जा सकते हैं।";
         }
         // 11. GREETINGS
-        else if (lowerQuery.match(/(hello|hi|namaste|pranam|ram|hallo|hey)/i)) {
+        else if (lowerQuery.match(/(hello|hi|namaste|pranam|ram|hallo|hey|नमस्ते|प्रणाम|राम)/i)) {
             answer = `राम राम ${farmerData.name} जी! मैं एग्री-सेतु का आवाज़ सहायक हूँ। आपकी खेती, पशु या लोन की क्या जानकारी दूँ?`;
         }
         // 12. CONTACT
-        else if (lowerQuery.match(/(support|call|phone|number|sampark|contact|baat)/i)) {
+        else if (lowerQuery.match(/(support|call|phone|number|sampark|contact|baat|मदद|संपर्क|फ़ोन|नंबर)/i)) {
             answer = "सहायता के लिए +91 98765 43210 पर कॉल करें।";
         }
 
-        console.log("Response Sent:", answer);
         setText(answer);
         speakText(answer);
     };
+
+    // Update the ref whenever handleAIResponse changes
+    useEffect(() => {
+        handleAIResponseRef.current = handleAIResponse;
+    });
+
+    useEffect(() => {
+        // Initialize Speech Synthesis
+        synthesisRef.current = window.speechSynthesis;
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false;
+            recognitionRef.current.interimResults = true;
+            recognitionRef.current.lang = 'hi-IN'; // Default to Hindi/Indian context
+
+            recognitionRef.current.onstart = () => {
+                setIsListening(true);
+                setText("सुन रहा हूँ... (Listening...)");
+            };
+
+            recognitionRef.current.onresult = (event) => {
+                const results = event.results;
+                const transcriptText = Array.from(results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                setTranscript(transcriptText);
+
+                // Check if the latest result is final
+                if (results[results.length - 1].isFinal) {
+                    if (handleAIResponseRef.current) {
+                        handleAIResponseRef.current(transcriptText);
+                    }
+                    stopListening();
+                }
+            };
+
+            recognitionRef.current.onend = () => {
+                setIsListening(false);
+            };
+
+            recognitionRef.current.onerror = (event) => {
+                console.error("Speech recognition error", event.error);
+                setIsListening(false);
+                if (event.error !== 'no-speech') {
+                    setText("कोई त्रुटि हुई। कृपया पुन: प्रयास करें। (Error occurred)");
+                }
+            };
+        }
+
+        return () => {
+            if (synthesisRef.current) {
+                synthesisRef.current.cancel();
+            }
+        };
+    }, []); // Run only once!
 
     if (!isOpen) {
         return (
