@@ -13,16 +13,23 @@ const AgriTrustScore = () => {
         yearsFarming: 15,
         defaults: 0,
         kycVerified: true,
-        yieldConsistency: 0.95 // 95%
+        yieldConsistency: 0.95, // 95%
+        transactionVolume: 'High' // High, Medium, Low
     };
 
-    useEffect(() => {
+    const runAnalysis = () => {
+        setIsAnalyzing(true);
+        setScore(0);
+        setBreakdown(null);
+        setAnalysisStep('Initializing AI Model...');
+
         // AI Simulation Sequence
         const steps = [
             { msg: 'Fetching Land Records...', delay: 800 },
             { msg: 'Analyzing Satellite Yield Data...', delay: 1800 },
             { msg: 'Verifying Credit History...', delay: 2800 },
-            { msg: 'Calculating Trust Vectors...', delay: 3500 },
+            { msg: 'Analyzing Digital Footprint & Transactions...', delay: 3500 },
+            { msg: 'Calculating Trust Vectors...', delay: 4200 },
         ];
 
         let currentStep = 0;
@@ -36,37 +43,44 @@ const AgriTrustScore = () => {
                 finalizeScore();
             }
         }, 1000);
+    };
 
-        return () => clearInterval(interval);
+    useEffect(() => {
+        runAnalysis();
     }, []);
 
     const finalizeScore = () => {
-        // SCORING ALGORITHM
+        // SCORING ALGORITHM - Total Max 1000
         let computedScore = 0;
         const details = {};
 
-        // 1. Land Stability (Max 300)
-        // Base 100 + 40 per acre (capped)
-        const landScore = Math.min(300, 100 + (farmerData.landSize * 40));
+        // 1. Land Stability (Max 250)
+        const landScore = Math.min(250, 80 + (farmerData.landSize * 35));
         computedScore += landScore;
         details.land = Math.round(landScore);
 
-        // 2. Yield Consistency (Max 250)
-        // 95% consistency * 250
-        const yieldScore = farmerData.yieldConsistency * 250;
+        // 2. Yield Consistency (Max 200)
+        const yieldScore = farmerData.yieldConsistency * 200;
         computedScore += yieldScore;
         details.yield = Math.round(yieldScore);
 
-        // 3. Credit History (Max 250)
-        // 250 - (50 * defaults)
-        const creditScore = Math.max(0, 250 - (farmerData.defaults * 50));
+        // 3. Credit History (Max 200)
+        const creditScore = Math.max(0, 200 - (farmerData.defaults * 50));
         computedScore += creditScore;
         details.credit = Math.round(creditScore);
 
-        // 4. KYC & Identity (Max 200)
-        const kycScore = farmerData.kycVerified ? 200 : 50;
+        // 4. KYC & Identity (Max 150)
+        const kycScore = farmerData.kycVerified ? 150 : 50;
         computedScore += kycScore;
         details.kyc = Math.round(kycScore);
+
+        // 5. Transaction History (Max 200) - New Factor
+        let transactionScore = 50;
+        if (farmerData.transactionVolume === 'High') transactionScore = 200;
+        else if (farmerData.transactionVolume === 'Medium') transactionScore = 120;
+
+        computedScore += transactionScore;
+        details.transaction = Math.round(transactionScore);
 
         setBreakdown(details);
 
@@ -87,6 +101,12 @@ const AgriTrustScore = () => {
                 setScore(Math.round(start));
             }
         }, stepTime);
+    };
+
+    const handleGenerateReport = () => {
+        if (!isAnalyzing) {
+            runAnalysis();
+        }
     };
 
     const getScoreCategory = (s) => {
@@ -155,17 +175,24 @@ const AgriTrustScore = () => {
 
                 {!isAnalyzing && breakdown && (
                     <div className="w-full grid grid-cols-2 gap-2 animate-fade-in-up">
-                        <ScoreFactor label="Land Assets" value={breakdown.land} max={300} icon={CheckCircle} />
-                        <ScoreFactor label="Yield Consistency" value={breakdown.yield} max={250} icon={TrendingUp} />
-                        <ScoreFactor label="Credit History" value={breakdown.credit} max={250} icon={ShieldCheck} />
-                        <ScoreFactor label="KYC Verified" value={breakdown.kyc} max={200} icon={Award} />
+                        <ScoreFactor label="Land Assets" value={breakdown.land} max={250} icon={CheckCircle} />
+                        <ScoreFactor label="Yield Consistency" value={breakdown.yield} max={200} icon={TrendingUp} />
+                        <ScoreFactor label="Credit History" value={breakdown.credit} max={200} icon={ShieldCheck} />
+                        <ScoreFactor label="KYC Verified" value={breakdown.kyc} max={150} icon={Award} />
+                        <div className="col-span-2">
+                            <ScoreFactor label="Transaction Score" value={breakdown.transaction} max={200} icon={Activity} />
+                        </div>
                     </div>
                 )}
             </div>
 
             <div className="p-4 bg-slate-50 border-t mt-auto">
-                <button className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-900/10 hover:shadow-slate-900/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-                    {isAnalyzing ? 'Analyzing Data...' : 'Generate New Report'} <ArrowRight size={14} />
+                <button
+                    onClick={handleGenerateReport}
+                    disabled={isAnalyzing}
+                    className="w-full py-3 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-900/10 hover:shadow-slate-900/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group-hover:bg-slate-800"
+                >
+                    {isAnalyzing ? <><Loader2 size={14} className="animate-spin" /> Analyzing Data...</> : <><Zap size={14} /> Generate New Report <ArrowRight size={14} /></>}
                 </button>
             </div>
         </div>
