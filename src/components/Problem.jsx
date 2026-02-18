@@ -6,7 +6,7 @@ const Problem = () => {
     return (
         <section className="section bg-light" id="problem">
             <div className="container">
-                <h2 className="text-center mb-4">Why Agriset?</h2>
+                <h2 className="text-center mb-4">Why Agrisetu?</h2>
                 <p className="text-center mb-12" style={{ maxWidth: '600px', margin: '0 auto 3rem' }}>
                     Millions of farmers struggle to get fair loans because traditional banking systems don't understand rural cashflows.
                 </p>
