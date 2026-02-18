@@ -34,8 +34,9 @@ const Navbar = ({ onLoginClick }) => {
                             background: scrolled
                                 ? 'linear-gradient(135deg, #064E3B 0%, #047857 100%)'
                                 : 'linear-gradient(135deg, #FFFFFF 0%, #D1FAE5 100%)',
+                            backgroundClip: 'text',
                             WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
+                            color: 'transparent',
                             filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                         }}>AGRSE</span>
 
@@ -61,8 +62,9 @@ const Navbar = ({ onLoginClick }) => {
                             background: scrolled
                                 ? 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)'
                                 : 'linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%)',
+                            backgroundClip: 'text',
                             WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
+                            color: 'transparent',
                             filter: scrolled ? 'none' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                         }}>U</span>
                     </div>
