@@ -331,7 +331,7 @@ const VoiceAssistant = () => {
     if (!isOpen) {
         return (
             <button
-                onClick={() => { setIsOpen(true); setText(getResponseText('welcome', selectedLang)); speakText(getResponseText('welcome', selectedLang)); }}
+                onClick={() => { setIsOpen(true); setText(getLocalizedTemplate(selectedLang, 'welcome')); speakText(getLocalizedTemplate(selectedLang, 'welcome')); }}
                 style={{
                     position: 'fixed',
                     bottom: '30px',
@@ -497,7 +497,7 @@ const VoiceAssistant = () => {
                             ))}
                         </div>
                         <p style={{ marginTop: '16px', color: '#059669', fontWeight: '700', fontSize: '0.875rem' }}>
-                            {getResponseText('listening', selectedLang)}
+                            {getLocalizedTemplate(selectedLang, 'listening')}
                         </p>
                     </div>
                 ) : (
