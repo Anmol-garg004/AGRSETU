@@ -5,8 +5,11 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     const [isScanning, setIsScanning] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [detectedCrop, setDetectedCrop] = useState(null);
+    const [cropQuality, setCropQuality] = useState(null);
     const [processingStep, setProcessingStep] = useState('');
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
     const fileInputRef = useRef(null);
+    const videoRef = useRef(null);
 
     // Mock Market Offers Data
     const marketOffers = [
@@ -96,8 +99,42 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         }
     ];
 
-    const handleCameraClick = () => {
-        fileInputRef.current.click();
+    const startCamera = async () => {
+        try {
+            setIsCameraOpen(true);
+            setSelectedImage(null);
+            setDetectedCrop(null);
+            setCropQuality(null);
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+            }
+        } catch (err) {
+            console.error("Camera access denied:", err);
+            // Fallback to file upload if camera fails
+            fileInputRef.current.click();
+            setIsCameraOpen(false);
+        }
+    };
+
+    const capturePhoto = () => {
+        if (videoRef.current) {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoRef.current.videoWidth;
+            canvas.height = videoRef.current.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoRef.current, 0, 0);
+            const imageUrl = canvas.toDataURL('image/jpeg');
+
+            // Stop stream
+            const stream = videoRef.current.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+
+            setSelectedImage(imageUrl);
+            setIsCameraOpen(false);
+            simulateAIDetection();
+        }
     };
 
     const handleImageChange = (e) => {
@@ -112,14 +149,22 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     const simulateAIDetection = () => {
         setIsScanning(true);
         setDetectedCrop(null);
+        setCropQuality(null);
 
         // Simulation Sequence
         setTimeout(() => setProcessingStep('Uploading Image...'), 500);
-        setTimeout(() => setProcessingStep('Analyzing Texture & Color...'), 1500);
-        setTimeout(() => setProcessingStep('Matching with Database...'), 3000);
+        setTimeout(() => setProcessingStep('Analyzing Grain Texture...'), 1500);
+        setTimeout(() => setProcessingStep('Evaluating Moisture Content...'), 2500);
+        setTimeout(() => setProcessingStep('Grading Quality Standards...'), 3500);
         setTimeout(() => {
             setIsScanning(false);
-            setDetectedCrop('Wheat'); // Simulating Wheat detection for demo
+            setDetectedCrop('Wheat'); // Simulating Wheat detection
+            setCropQuality({
+                grade: 'A+ Premium',
+                moisture: '12.5%',
+                size: 'Large Uniform',
+                score: 96
+            });
             setProcessingStep('');
         }, 4500);
     };
@@ -127,7 +172,14 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     const clearScan = () => {
         setSelectedImage(null);
         setDetectedCrop(null);
+        setCropQuality(null);
         setIsScanning(false);
+        setIsCameraOpen(false);
+        if (videoRef.current && videoRef.current.srcObject) {
+            const stream = videoRef.current.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -161,17 +213,15 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
 
                 {/* AI Camera Button */}
                 <div
-                    onClick={handleCameraClick}
-                    className="group cursor-pointer bg-slate-900 hover:bg-emerald-600 text-white pl-5 pr-6 py-3 rounded-2xl shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center gap-3 active:scale-95"
+                    onClick={startCamera}
+                    className="group cursor-pointer bg-slate-900 hover:bg-emerald-600 text-white w-14 h-14 rounded-full shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center active:scale-95 relative"
+                    title="Scan Crop with AI"
                 >
-                    <div className="relative">
-                        <Camera size={24} className="group-hover:scale-110 transition-transform" />
-                        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span>
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                     </div>
-                    <div className="text-left">
-                        <p className="text-[10px] uppercase font-bold tracking-wider opacity-80">Sell with AI</p>
-                        <p className="text-sm font-black leading-none">Scan Your Crop</p>
-                    </div>
+                    <Camera size={24} />
                     <input
                         type="file"
                         ref={fileInputRef}
@@ -182,8 +232,8 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                 </div>
             </div>
 
-            {/* AI Scanning Interface (Conditional) */}
-            {(selectedImage || isScanning) && (
+            {/* AI Scanning Interface & Results */}
+            {(isCameraOpen || selectedImage || isScanning) && (
                 <div className="bg-slate-900 rounded-3xl p-6 text-white relative overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-4">
                     {/* Close Button */}
                     <button
@@ -194,15 +244,29 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                     </button>
 
                     <div className="flex flex-col md:flex-row gap-8 items-center">
-                        {/* Image Preview Area */}
-                        <div className="relative w-64 h-48 bg-black/50 rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0">
-                            {selectedImage && (
+                        {/* Camera / Image Preview Area */}
+                        <div className="relative w-72 h-56 bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0 shadow-2xl">
+                            {isCameraOpen ? (
+                                <>
+                                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                                    <button
+                                        onClick={capturePhoto}
+                                        className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-full border-4 border-slate-300 flex items-center justify-center hover:scale-110 transition-transform shadow-lg z-20"
+                                    >
+                                        <div className="w-10 h-10 bg-rose-500 rounded-full"></div>
+                                    </button>
+                                </>
+                            ) : selectedImage ? (
                                 <img src={selectedImage} alt="Crop Scan" className="w-full h-full object-cover opacity-80" />
+                            ) : (
+                                <div className="flex items-center justify-center h-full text-slate-500">
+                                    <Camera size={32} />
+                                </div>
                             )}
 
                             {/* Scanning Overlay Animation */}
                             {isScanning && (
-                                <div className="absolute inset-0 z-10">
+                                <div className="absolute inset-0 z-10 pointer-events-none">
                                     <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] animate-scan-line"></div>
                                     <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
                                         <div className="text-center">
@@ -223,23 +287,56 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                         </div>
 
                         {/* Analysis Result Text */}
-                        <div className="flex-1 space-y-4">
-                            {!isScanning && detectedCrop ? (
-                                <div>
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider mb-2">
-                                        <CheckCircle size={14} /> Scan Successful
+                        <div className="flex-1 space-y-4 w-full">
+                            {!isScanning && detectedCrop && cropQuality ? (
+                                <div className="animate-in slide-in-from-right-4 fade-in duration-500">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
+                                            <CheckCircle size={14} /> Analysis Complete
+                                        </div>
+                                        <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
+                                            Grade: {cropQuality.grade}
+                                        </div>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-2">We found <span className="text-emerald-400">12 Buyers</span> matching your crop.</h3>
+
+                                    <h3 className="text-2xl font-bold mb-2">Quality Assessment</h3>
+
+                                    <div className="grid grid-cols-2 gap-3 mb-4">
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Moisture</p>
+                                            <p className="text-lg font-bold text-white">{cropQuality.moisture}</p>
+                                        </div>
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Grain Size</p>
+                                            <p className="text-lg font-bold text-white">{cropQuality.size}</p>
+                                        </div>
+                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 col-span-2">
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Estimated Yield Rate</p>
+                                            <p className="text-lg font-bold text-emerald-400">Excellent Market Value</p>
+                                        </div>
+                                    </div>
+
                                     <p className="text-slate-400 text-sm">
-                                        Based on your image, we identified the crop as <strong className="text-white">Premium Sharbati Wheat</strong>.
-                                        Filtering the marketplace to show you the best rates for this variety.
+                                        Found <strong className="text-white">12 Premium Buyers</strong> looking for this quality.
                                     </p>
+                                </div>
+                            ) : isCameraOpen ? (
+                                <div>
+                                    <h3 className="text-xl font-bold mb-2 text-white">Scan Your Crop</h3>
+                                    <p className="text-slate-400 text-sm mb-4">
+                                        Center the crop in the frame. Ensure good lighting for accurate AI quality grading.
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Detects Variety</span>
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Analyzes Moisture</span>
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Grades Quality</span>
+                                    </div>
                                 </div>
                             ) : (
                                 <div>
-                                    <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing your harvest...</h3>
+                                    <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing...</h3>
                                     <p className="text-slate-500 text-sm">
-                                        Our AI engine is checking for crop variety, quality, and estimated yield to find you the perfect buyer match.
+                                        Calculating quality parameters...
                                     </p>
                                 </div>
                             )}
