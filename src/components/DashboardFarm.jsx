@@ -126,24 +126,27 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                     </div>
                 </div>
 
-                {/* Right: Satellite Image */}
-                <div className="w-full md:w-1/3 min-h-[200px] relative bg-black/40 border-l border-white/5 overflow-hidden group">
-                    <img
-                        src="/krmu_satellite.png"
-                        alt="Satellite View of KR Mangalam University"
-                        className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale-[20%] group-hover:grayscale-0"
-                        style={{ filter: 'contrast(1.2)' }}
+                {/* Right: Satellite View (Live Iframe) */}
+                <div className="w-full md:w-1/3 min-h-[280px] relative bg-black border-l border-white/5 overflow-hidden group">
+                    <iframe
+                        src="https://agrsetumap.vercel.app/"
+                        className="absolute inset-0 w-full h-full border-0 opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                        title="Live Satellite Map"
+                        loading="lazy"
                     />
 
-                    <div className="absolute top-4 left-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl pointer-events-none">
+                    <div className="absolute top-4 left-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl pointer-events-none transition-transform group-hover:-translate-y-1">
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                                <Satellite size={12} /> Satellite Feed
+                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+                                <Satellite size={12} className="animate-pulse" /> LIVE SATELLITE FEED
                             </span>
-                            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="text-[9px] font-black text-white/40 tracking-widest uppercase">Real-time</span>
+                                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></span>
+                            </span>
                         </div>
-                        <p className="text-sm font-bold text-white">Total Land Area</p>
-                        <p className="text-lg font-black text-white/90">28 Acres</p>
+                        <p className="text-sm font-bold text-white">Land Area Analyzed</p>
+                        <p className="text-lg font-black text-emerald-400">28.43 Acres</p>
                     </div>
                 </div>
             </div>
