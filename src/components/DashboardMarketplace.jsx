@@ -263,6 +263,18 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
+    const [offerStatus, setOfferStatus] = useState({}); // { [id]: 'idle' | 'processing' | 'accepted' }
+
+    const handleAcceptOffer = (id) => {
+        setOfferStatus(prev => ({ ...prev, [id]: 'processing' }));
+
+        // Simulate API Call / Transaction
+        setTimeout(() => {
+            setOfferStatus(prev => ({ ...prev, [id]: 'accepted' }));
+            // Optional: You could trigger a global notification here
+        }, 1500);
+    };
+
     // Filter Logic
     const filteredOffers = marketOffers.filter(offer => {
         // 1. Filter by Search Query (Global)
@@ -542,8 +554,24 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
 
                             {/* Actions */}
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-emerald-600 transition-colors shadow-lg active:scale-95 flex items-center justify-center gap-2">
-                                    Accept Offer <DollarSign size={16} />
+                                <button
+                                    onClick={() => handleAcceptOffer(offer.id)}
+                                    disabled={offerStatus[offer.id] === 'processing' || offerStatus[offer.id] === 'accepted'}
+                                    className={`flex-1 py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2
+                                        ${offerStatus[offer.id] === 'accepted'
+                                            ? 'bg-green-600 text-white cursor-default'
+                                            : offerStatus[offer.id] === 'processing'
+                                                ? 'bg-slate-700 text-slate-300 cursor-wait'
+                                                : 'bg-slate-900 text-white hover:bg-emerald-600'
+                                        }`}
+                                >
+                                    {offerStatus[offer.id] === 'processing' ? (
+                                        <>Processing...</>
+                                    ) : offerStatus[offer.id] === 'accepted' ? (
+                                        <>Deal Closed <CheckCircle size={16} /></>
+                                    ) : (
+                                        <>Accept Offer <DollarSign size={16} /></>
+                                    )}
                                 </button>
                                 <button className="p-3 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition-colors">
                                     <ScanLine size={20} />
