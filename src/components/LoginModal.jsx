@@ -139,7 +139,6 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 placeholder="name@agrsetu.com"
                                 className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
                                 style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
-                                required
                             />
                         </div>
                     </div>
@@ -158,7 +157,6 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 placeholder="••••••••"
                                 className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
                                 style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
-                                required
                             />
                         </div>
                     </div>
