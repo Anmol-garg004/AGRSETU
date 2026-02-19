@@ -47,7 +47,7 @@ function App() {
     return (
       <>
         <Dashboard user={user} onLogout={handleLogout} />
-        <VoiceAssistant />
+        <VoiceAssistant user={user} />
       </>
     );
   }

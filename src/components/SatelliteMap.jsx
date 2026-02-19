@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Compass, Navigation, Gauge, Activity, Radio, Target, Battery, Signal, Maximize2 } from 'lucide-react';
-
-// Fix for default marker icon in Leaflet with bundlers
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
+import { Compass, Navigation, Activity, Target, Battery, Signal, Maximize2 } from 'lucide-react';
 
 // Custom Hook to update map view if location changes
 function MapView({ coords }) {
@@ -23,6 +9,8 @@ function MapView({ coords }) {
     map.setView(coords, map.getZoom());
     return null;
 }
+
+
 
 const SatelliteMap = ({ lat, lon }) => {
     const position = [lat, lon];
@@ -72,14 +60,14 @@ const SatelliteMap = ({ lat, lon }) => {
                     opacity={0.4}
                 />
 
-                <Marker position={position}>
+                <CircleMarker center={position} pathOptions={{ color: '#10b981', fillColor: '#10b981', fillOpacity: 0.8 }} radius={10}>
                     <Popup>
-                        <div className="text-center">
+                        <div className="text-center font-sans text-xs">
                             <strong>KR Mangalam University</strong><br />
                             Field Cluster A
                         </div>
                     </Popup>
-                </Marker>
+                </CircleMarker>
 
                 <MapView coords={position} />
             </MapContainer>
