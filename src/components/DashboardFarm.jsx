@@ -128,18 +128,12 @@ const DashboardFarm = ({ searchQuery = '' }) => {
 
                 {/* Right: Satellite Image */}
                 <div className="w-full md:w-1/3 min-h-[200px] relative bg-black/40 border-l border-white/5 overflow-hidden group">
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        src={`https://maps.google.com/maps?q=${location.lat},${location.lon}&t=k&z=17&ie=UTF8&iwloc=&output=embed`}
-                        frameBorder="0"
-                        scrolling="no"
-                        marginHeight="0"
-                        marginWidth="0"
-                        title="Satellite View"
-                        className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale-[20%] group-hover:grayscale-0"
+                    <img
+                        src="/krmu_satellite.jpg"
+                        alt="Satellite View of KR Mangalam University"
+                        className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale-[20%] group-hover:grayscale-0"
                         style={{ filter: 'contrast(1.2)' }}
-                    ></iframe>
+                    />
 
                     <div className="absolute top-4 left-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl pointer-events-none">
                         <div className="flex items-center justify-between mb-1">
