@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CloudRain, Sun, Leaf, BarChart2, Sprout, Droplets, Wind, ArrowUpRight, Map, AlertCircle, CheckCircle } from 'lucide-react';
+import { CloudRain, Sun, Leaf, BarChart2, Sprout, Droplets, Wind, ArrowUpRight, Map, AlertCircle, CheckCircle, Smartphone, Calendar, Thermometer } from 'lucide-react';
 
 const DashboardFarm = () => {
     // Real-time Weather Data Integration
@@ -19,7 +19,6 @@ const DashboardFarm = () => {
     useEffect(() => {
         const fetchWeather = async () => {
             try {
-                setLoading(true);
                 // Using Open-Meteo API (Free, No Key Required)
                 const response = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,precipitation,rain,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`
@@ -29,8 +28,8 @@ const DashboardFarm = () => {
                 // Current Weather
                 const current = data.current;
                 setWeather({
-                    temp: `${current.temperature_2m}°C`,
-                    rain: `${current.precipitation || 0}mm`, // Open-Meteo gives mm for precipitation
+                    temp: `${current.temperature_2m}°`,
+                    rain: `${current.precipitation || 0}mm`,
                     humidity: `${current.relative_humidity_2m}%`,
                     wind: `${current.wind_speed_10m} km/h`,
                     condition: getWeatherCondition(current.weather_code)
@@ -45,12 +44,11 @@ const DashboardFarm = () => {
                     code: daily.weather_code[i]
                 }));
                 setForecast(newForecast);
+                setLoading(false);
 
             } catch (error) {
                 console.error("Weather fetch failed:", error);
-                // Fallback to mock if API fails
-                setWeather({ temp: '32°C', rain: '20%', humidity: '45%', wind: '12km/h', condition: 'Sunny' });
-            } finally {
+                setWeather({ temp: '32°', rain: '20%', humidity: '45%', wind: '12km/h', condition: 'Sunny' });
                 setLoading(false);
             }
         };
@@ -58,7 +56,7 @@ const DashboardFarm = () => {
         fetchWeather();
 
         // 1. Poll Weather API Every 15 Minutes (Real-Time Updates without Refresh)
-        const weatherInterval = setInterval(fetchWeather, 900000); // 15 mins
+        const weatherInterval = setInterval(fetchWeather, 900000);
 
         // 2. Simulate Real-Time Sensor Updates (Soil/NDVI)
         const sensorInterval = setInterval(() => {
@@ -84,198 +82,233 @@ const DashboardFarm = () => {
     };
 
     const crops = [
-        { name: 'Wheat (Rabi)', stage: 'Vegetative', health: 'Excellent', progress: 65, harvest: 'Apr 2026', yield: '45 q/ac' },
-        { name: 'Mustard', stage: 'Flowering', health: 'Good', progress: 40, harvest: 'Mar 2026', yield: '18 q/ac' },
-        { name: 'Potato', stage: 'Planting', health: 'Excellent', progress: 15, harvest: 'Feb 2026', yield: '120 q/ac' },
+        { name: 'Wheat (Rabi)', stage: 'Vegetative', health: 'Excellent', progress: 65, harvest: 'Apr 2026', yield: '45 q/ac', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=300&h=200' },
+        { name: 'Mustard', stage: 'Flowering', health: 'Good', progress: 40, harvest: 'Mar 2026', yield: '18 q/ac', image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=300&h=200' },
+        { name: 'Potato', stage: 'Planting', health: 'Excellent', progress: 15, harvest: 'Feb 2026', yield: '120 q/ac', image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&q=80&w=300&h=200' },
     ];
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 fade-in items-start">
-
-            {/* Left Column: Main Operations (Crops & Weather) */}
-            <div className="flex-1 w-full flex flex-col gap-6">
-
-                {/* Quick Weather Row - REAL TIME */}
-                <div className="grid grid-cols-3 gap-4">
-                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-2 opacity-10 transition-transform group-hover:scale-110"><Sun size={40} /></div>
-                        <div className="p-2.5 bg-white text-amber-500 rounded-xl shadow-sm z-10"><Sun size={20} /></div>
-                        <div className="z-10">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                                Temperature <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                            </p>
-                            <p className="text-xl font-black text-slate-800">{loading ? '...' : weather.temp}</p>
-                            <p className="text-[10px] text-slate-500 font-bold">{weather.condition}</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-2 opacity-10 transition-transform group-hover:scale-110"><CloudRain size={40} /></div>
-                        <div className="p-2.5 bg-white text-blue-500 rounded-xl shadow-sm z-10"><CloudRain size={20} /></div>
-                        <div className="z-10">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Precipitation</p>
-                            <p className="text-xl font-black text-slate-800">{loading ? '...' : weather.rain}</p>
-                            <p className="text-[10px] text-slate-500 font-bold">Humidity: {weather.humidity}</p>
-                        </div>
-                    </div>
-                    <div className="card p-4 flex items-center gap-3 bg-gradient-to-br from-slate-50 to-gray-50 border border-slate-200 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-2 opacity-10 transition-transform group-hover:scale-110"><Wind size={40} /></div>
-                        <div className="p-2.5 bg-white text-slate-500 rounded-xl shadow-sm z-10"><Wind size={20} /></div>
-                        <div className="z-10">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wind Speed</p>
-                            <p className="text-xl font-black text-slate-800">{loading ? '...' : weather.wind}</p>
-                            <p className="text-[10px] text-slate-500 font-bold">Direction: NW</p>
-                        </div>
-                    </div>
+        <div className="fade-in pb-10">
+            {/* Header / Welcome Section */}
+            <div className="mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
+                <div>
+                    <h1 className="text-2xl font-black text-slate-800 tracking-tight">Farm Overview</h1>
+                    <p className="text-slate-500 font-medium text-sm mt-1">Real-time insights for your land in <span className="text-emerald-600 font-bold">{location.name}</span></p>
                 </div>
+                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+                    <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Live Monitoring Active</span>
+                </div>
+            </div>
 
-                {/* Active Crops List - Professional Table View */}
-                <div className="card p-0 overflow-hidden border-0 shadow-sm bg-white ring-1 ring-slate-100">
-                    <div className="p-6 border-b flex justify-between items-center bg-white">
-                        <div>
-                            <h3 className="m-0 text-lg font-bold text-slate-800 flex items-center gap-2">
+            {/* Layout Grid */}
+            <div className="grid grid-cols-12 gap-6">
+
+                {/* LEFT COLUMN: HERO WEATHER & CROPS (8 cols) */}
+                <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
+
+                    {/* 1. HERO WEATHER CARD */}
+                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl min-h-[220px] flex flex-col justify-between p-8">
+                        {/* Background Pattern */}
+                        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-black opacity-10 rounded-full blur-3xl"></div>
+
+                        <div className="relative z-10 flex justify-between items-start">
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Map size={16} className="opacity-80" />
+                                    <span className="text-xs font-bold uppercase tracking-widest opacity-80">{location.name}</span>
+                                </div>
+                                <h2 className="text-5xl font-black tracking-tighter mb-1">{location.name.split(',')[0]}</h2>
+                                <p className="text-lg font-medium opacity-90">{weather.condition}</p>
+                            </div>
+                            <div className="text-right">
+                                <h3 className="text-6xl font-black tracking-tighter">{loading ? '--' : weather.temp}</h3>
+                                <div className="flex items-center justify-end gap-2 text-sm font-bold opacity-80 mt-1">
+                                    <Thermometer size={16} /> Feels like {loading ? '--' : weather.temp}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Weather Details Grid */}
+                        <div className="relative z-10 grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-white/20">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><Wind size={20} /></div>
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">Wind</p>
+                                    <p className="text-lg font-bold">{loading ? '--' : weather.wind}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><Droplets size={20} /></div>
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">Humidity</p>
+                                    <p className="text-lg font-bold">{loading ? '--' : weather.humidity}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm"><CloudRain size={20} /></div>
+                                <div>
+                                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-70">Rain</p>
+                                    <p className="text-lg font-bold">{loading ? '--' : weather.rain}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 2. CROP STATUS CARDS */}
+                    <div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
                                 <Sprout size={20} className="text-emerald-600" /> Active Crops
                             </h3>
-                            <p className="text-xs text-slate-400 font-medium mt-1">Real-time monitoring of your fields</p>
-                        </div>
-                        <button className="text-xs font-bold text-emerald-600 border border-emerald-200 bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-2 shadow-sm">
-                            + Log New Crop
-                        </button>
-                    </div>
-
-                    <div className="bg-white">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50/50 border-b text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            <div className="col-span-4 pl-2">Crop Details</div>
-                            <div className="col-span-3">Development</div>
-                            <div className="col-span-3">Health Status</div>
-                            <div className="col-span-2 text-right">Est. Yield</div>
+                            <button className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors">View All History →</button>
                         </div>
 
-                        <div className="divide-y divide-slate-50">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {crops.map((crop, idx) => (
-                                <div key={idx} className="grid grid-cols-12 gap-4 px-6 py-5 items-center hover:bg-slate-50 transition-colors cursor-pointer group border-l-4 border-l-transparent hover:border-l-emerald-500">
-                                    <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-black shadow-sm group-hover:scale-110 transition-transform">
-                                            {crop.name[0]}
+                                <div key={idx} className="group bg-white rounded-2xl p-4 shadow-sm border border-slate-100 hover:shadow-md transition-all cursor-pointer relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
+                                        <Leaf size={60} className="text-emerald-600" />
+                                    </div>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm">
+                                            <img src={crop.image} alt={crop.name} className="w-full h-full object-cover" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-slate-800 leading-tight mb-1 group-hover:text-emerald-700 transition-colors">{crop.name}</p>
-                                            <p className="text-[10px] text-slate-400 font-bold bg-slate-100 inline-block px-1.5 py-0.5 rounded">Harvest: {crop.harvest}</p>
+                                            <h4 className="font-bold text-slate-800">{crop.name}</h4>
+                                            <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{crop.stage}</span>
                                         </div>
                                     </div>
-                                    <div className="col-span-3">
-                                        <p className="text-xs font-bold text-slate-700 mb-1">{crop.stage}</p>
-                                        <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${crop.progress}%` }}></div>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <div className="flex justify-between text-xs mb-1">
+                                                <span className="font-bold text-slate-500">Growth</span>
+                                                <span className="font-black text-emerald-600">{crop.progress}%</span>
+                                            </div>
+                                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${crop.progress}%` }}></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-span-3">
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle size={14} className="text-emerald-500" />
-                                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">{crop.health}</span>
+                                        <div className="flex justify-between items-center pt-2 border-t border-slate-50">
+                                            <div className="text-center">
+                                                <p className="text-[10px] text-slate-400 uppercase font-bold">Health</p>
+                                                <p className="text-xs font-black text-emerald-600 flex items-center gap-1"><CheckCircle size={10} /> {crop.health}</p>
+                                            </div>
+                                            <div className="text-center border-l pl-4">
+                                                <p className="text-[10px] text-slate-400 uppercase font-bold">Yield</p>
+                                                <p className="text-xs font-black text-slate-800">{crop.yield}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-span-2 text-right">
-                                        <span className="text-sm font-black text-slate-800">{crop.yield}</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <button className="w-full py-4 text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-50 border-t transition-colors flex items-center justify-center gap-2">
-                        View All Crop History <ArrowUpRight size={14} />
-                    </button>
                 </div>
-            </div>
 
-            {/* Right Column: Satellite & Advisory Panel */}
-            <div className="w-full lg:w-96 flex flex-col gap-6">
+                {/* RIGHT COLUMN: SATELLITE & FORECAST (4 cols) */}
+                <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
 
-                {/* Satellite Map Card */}
-                <div className="card p-0 border-0 shadow-sm bg-white overflow-hidden">
-                    <div className="p-4 border-b bg-slate-50 flex justify-between items-center">
-                        <div className="flex flex-col">
+                    {/* 3. SATELLITE CARD - COMPACT & HIGH TECH */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div className="p-4 border-b border-slate-50 flex justify-between items-center">
                             <h4 className="text-xs font-black text-slate-600 uppercase tracking-widest flex items-center gap-2">
-                                <Map size={14} /> Satellite View
+                                <Map size={14} /> Satellite Pulse
                             </h4>
-                            <span className="text-[10px] text-emerald-600 font-bold mt-1">Locked: {location.name}</span>
+                            <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded border border-emerald-100">Live</span>
                         </div>
-                        <span className="flex h-2 w-2 relative">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                    </div>
+                        <div className="relative h-48 bg-slate-900 group cursor-pointer">
+                            <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/82.9739,25.3176,13,0/600x320?access_token=pk.eyJ1IjoidGVtcCIsImEiOiJjbHExcCJ9')] bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-80 hover:opacity-100"></div>
 
-                    {/* Fixed Height Map Container */}
-                    <div className="h-48 w-full bg-slate-100 relative group cursor-pointer">
-                        {/* Placeholder Image */}
-                        <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/82.9739,25.3176,13,0/600x320?access_token=pk.eyJ1IjoidGVtcCIsImEiOiJjbHExcCJ9')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
-
-                        {/* Overlay with details */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex flex-col justify-end p-4">
-                            <p className="text-white font-bold text-sm leading-none mb-1">Live Satellite Feed</p>
-                            <p className="text-emerald-300 text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> {location.lat.toFixed(4)}, {location.lon.toFixed(4)}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="p-4 bg-white grid grid-cols-2 gap-4">
-                        <div className="text-center">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">NDVI</p>
-                            <div className="text-xl font-black text-emerald-600 flex items-center justify-center gap-1">
-                                <Leaf size={14} /> {ndvi.toFixed(2)}
-                            </div>
-                        </div>
-                        <div className="text-center border-l">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Moisture</p>
-                            <div className="text-xl font-black text-blue-600 flex items-center justify-center gap-1">
-                                <Droplets size={14} /> {soilMoisture.toFixed(0)}%
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Advisory Card */}
-                <div className="card p-5 border-l-4 border-l-amber-500 bg-amber-50/50 border-0 shadow-sm">
-                    <div className="flex items-start gap-3">
-                        <AlertCircle size={20} className="text-amber-500 mt-1 flex-shrink-0" />
-                        <div>
-                            <h4 className="text-sm font-bold text-slate-800 mb-1">Today's Priority</h4>
-                            <p className="text-xs text-slate-600 leading-relaxed mb-3">
-                                Irrigate Wheat field (Sector B). Top-dress Urea due to expected rain in 2 days.
-                            </p>
-                            <button className="text-[10px] font-black text-amber-600 uppercase tracking-widest hover:underline">Mark Complete</button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Forecast List */}
-                <div className="card p-4 border-0 shadow-sm bg-white">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">5-Day Forecast</h4>
-                    <div className="space-y-3">
-                        {loading ? (
-                            <div className="text-xs text-slate-400 text-center py-4">Loading forecast...</div>
-                        ) : (
-                            forecast.map((day, i) => (
-                                <div key={i} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
-                                    <div className="flex flex-col">
-                                        <span className="text-slate-700 font-bold text-xs">{new Date(day.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })}</span>
-                                        <span className="text-[10px] text-slate-400">{getWeatherCondition(day.code)}</span>
+                            {/* HUD Overlay */}
+                            <div className="absolute inset-0 p-4 flex flex-col justify-between pointer-events-none">
+                                <div className="flex justify-between">
+                                    <div className="bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono text-emerald-400 border border-emerald-500/30">
+                                        LAT: {location.lat.toFixed(4)}
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex flex-col items-end">
-                                            <span className="font-black text-slate-800 text-xs">{day.max}°</span>
-                                            <span className="font-medium text-slate-400 text-[10px]">{day.min}°</span>
-                                        </div>
-                                        {day.code > 50 ? <CloudRain size={16} className="text-blue-500" /> : <Sun size={16} className="text-amber-500" />}
+                                    <div className="bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] font-mono text-emerald-400 border border-emerald-500/30">
+                                        LON: {location.lon.toFixed(4)}
                                     </div>
                                 </div>
-                            ))
-                        )}
+                                <div className="text-center">
+                                    <div className="inline-flex flex-col items-center justify-center w-16 h-16 rounded-full border-2 border-dashed border-emerald-500/50 bg-black/30 backdrop-blur-sm">
+                                        <Leaf size={20} className="text-emerald-400 mb-1" />
+                                        <span className="text-xs font-black text-white">{ndvi.toFixed(2)}</span>
+                                        <span className="text-[8px] font-bold text-emerald-400 uppercase">NDVI</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 text-center divide-x border-t border-slate-50">
+                            <div className="p-3 hover:bg-slate-50 transition-colors">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Moisture</p>
+                                <p className="text-lg font-black text-blue-600">{soilMoisture.toFixed(0)}%</p>
+                            </div>
+                            <div className="p-3 hover:bg-slate-50 transition-colors">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Health</p>
+                                <p className="text-lg font-black text-emerald-500">Good</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
+                    {/* 4. ADVISORY CARD */}
+                    <div className="bg-amber-50 rounded-2xl p-5 border border-amber-100 shadow-sm relative overflow-hidden">
+                        <div className="absolute -right-4 -top-4 text-amber-100"><AlertCircle size={80} /></div>
+                        <h4 className="relative z-10 text-xs font-black text-amber-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <AlertCircle size={14} /> Priority Action
+                        </h4>
+                        <p className="relative z-10 text-sm text-slate-700 font-medium leading-relaxed mb-4">
+                            Irrigation required for <strong>Wheat (Sector B)</strong>. Top-dress Urea due to expected rain in 48h.
+                        </p>
+                        <button className="relative z-10 w-full py-2 bg-white text-amber-600 text-xs font-bold rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors shadow-sm">
+                            Mark as Complete
+                        </button>
+                    </div>
+
+                    {/* 5. 5-DAY FORECAST */}
+                    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <Calendar size={14} /> 5-Day Forecast
+                        </h4>
+                        <div className="space-y-4">
+                            {loading ? (
+                                <div className="text-center py-6 text-slate-400 text-sm">Loading weather data...</div>
+                            ) : (
+                                forecast.map((day, i) => (
+                                    <div key={i} className="flex items-center justify-between group">
+                                        <div className="flex items-center gap-3 w-1/3">
+                                            <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                                                {day.code > 50 ? <CloudRain size={16} /> : <Sun size={16} />}
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-slate-700">{new Date(day.date).toLocaleDateString('en-IN', { weekday: 'short' })}</p>
+                                                <p className="text-[10px] text-slate-400 leading-none">{new Date(day.date).getDate()}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="w-1/3 text-center">
+                                            <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded group-hover:bg-slate-200 transition-colors">
+                                                {getWeatherCondition(day.code)}
+                                            </span>
+                                        </div>
+
+                                        <div className="w-1/3 text-right">
+                                            <span className="text-sm font-black text-slate-800">{day.max}°</span>
+                                            <span className="text-xs font-medium text-slate-400 ml-1">{day.min}°</span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     );
