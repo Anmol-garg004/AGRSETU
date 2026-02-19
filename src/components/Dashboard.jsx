@@ -14,7 +14,8 @@ import {
     ChevronRight,
     Menu,
     X,
-    Landmark
+    Landmark,
+    ShoppingBag
 } from 'lucide-react';
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
@@ -22,6 +23,7 @@ import DashboardFarm from './DashboardFarm';
 import DashboardTransactions from './DashboardTransactions';
 import AgriTrustScore from './AgriTrustScore';
 import DashboardFunding from './DashboardFunding';
+import DashboardMarketplace from './DashboardMarketplace';
 import '../index.css';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -43,7 +45,8 @@ const Dashboard = ({ user, onLogout }) => {
                 return <DashboardProfile user={user} />;
             case 'Farm Data':
                 return <DashboardFarm searchQuery={searchQuery} />;
-
+            case 'Marketplace':
+                return <DashboardMarketplace searchQuery={searchQuery} />;
             case 'Trust Score':
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
             case 'Transactions':
@@ -114,7 +117,7 @@ const Dashboard = ({ user, onLogout }) => {
 
                             { id: 'Profile', icon: Users },
                             { id: 'Farm Data', icon: MapPin },
-
+                            { id: 'Marketplace', icon: ShoppingBag },
                             { id: 'Funding', icon: Landmark },
                             { id: 'Trust Score', icon: Award },
                             { id: 'Transactions', icon: History }
