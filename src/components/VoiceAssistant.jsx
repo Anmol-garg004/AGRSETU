@@ -34,9 +34,9 @@ const VoiceAssistant = () => {
     const farmerData = {
         profile: {
             name: "Kishan Kumar",
-            id: "UP-VNS-789012",
-            location: "Rampur, Varanasi",
-            landSize: "5.2 Acres",
+            id: "HR-GGM-122103",
+            location: "Sohna, Gurugram",
+            landSize: "28 Acres",
             soil: "Alluvial (Loamy)",
             irrigation: "Tube Well (Electric)"
         },

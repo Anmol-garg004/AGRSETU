@@ -9,11 +9,11 @@ const DashboardFarm = () => {
     const [ndvi, setNdvi] = useState(0.78);
     const [loading, setLoading] = useState(true);
 
-    // LOCKED LOCATION: Farmer's Agricultural Land (Rampur, Varanasi)
+    // LOCKED LOCATION: KR Mangalam University, Sohna, Gurgaon
     const location = {
-        lat: 25.3176,
-        lon: 82.9739,
-        name: "Village Rampur, Varanasi"
+        lat: 28.2711,
+        lon: 77.0678,
+        name: "KR Mangalam Univ, Sohna"
     };
 
     useEffect(() => {
