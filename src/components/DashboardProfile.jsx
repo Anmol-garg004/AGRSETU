@@ -120,135 +120,98 @@ const DashboardProfile = ({ user, onUpdate }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-8 lg-grid-cols-1">
-                {/* Left Column: Personal & Identity */}
-                <div className="col-span-8 lg-col-span-12 space-y-8">
-                    {/* Personal Information */}
-                    <div className="card p-6 border-slate-100 shadow-sm">
-                        <SectionHeader icon={User} title="Personal Identity Information" />
-                        <div className="grid grid-cols-2 lg-grid-cols-1 gap-6">
-                            <DetailRow label="Full Name" value={profile.name} name="name" icon={User} />
-                            <DetailRow label="Date of Birth" value={profile.dob} name="dob" icon={Calendar} />
-                            <DetailRow label="Primary Phone" value={profile.phone} name="phone" icon={Phone} />
-                            <DetailRow label="Email Address" value={profile.email} name="email" icon={Mail} />
-                            <div className="col-span-2">
-                                <DetailRow label="Permanent Address" value={profile.address} name="address" icon={MapPin} />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Government ID Proofs */}
-                    <div className="card p-6 border-slate-100 shadow-sm">
-                        <SectionHeader icon={Fingerprint} title="Government Identification (KYC)" />
-                        <div className="grid grid-cols-2 gap-6">
-                            <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-slate-200">
-                                <div className="flex justify-between items-start mb-3">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                                        <Fingerprint size={12} className="text-blue-500" /> Aadhaar Card
-                                    </label>
-                                    <CheckCircle size={14} className="text-emerald-500" />
-                                </div>
-                                <div className="text-lg font-black text-slate-800 font-mono tracking-wider mb-2">{profile.aadhaar}</div>
-                                <p className="text-[10px] text-emerald-600 font-bold bg-emerald-50 inline-block px-2 py-0.5 rounded">Biometric Verified</p>
-                            </div>
-
-                            <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-slate-200">
-                                <div className="flex justify-between items-start mb-3">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-                                        <Shield size={12} className="text-blue-500" /> PAN Card
-                                    </label>
-                                    <CheckCircle size={14} className="text-emerald-500" />
-                                </div>
-                                <div className="text-lg font-black text-slate-800 font-mono tracking-wider mb-2">{profile.pan}</div>
-                                <p className="text-[10px] text-emerald-600 font-bold bg-emerald-50 inline-block px-2 py-0.5 rounded">Tax Compliant</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Land & Agriculture Details */}
-                    <div className="card p-6 border-slate-100 shadow-sm">
-                        <SectionHeader icon={Tractor} title="Land & Agriculture Profile" />
-                        <div className="grid grid-cols-3 lg-grid-cols-1 gap-6">
-                            <DetailRow label="Total Land Area" value={profile.landSize} name="landSize" icon={MapPin} />
-                            <DetailRow label="Land ID (Khata No)" value={profile.khataNo} name="khataNo" icon={FileText} />
-                            <DetailRow label="Soil Type" value={profile.soilType} name="soilType" icon={Sprout} />
-                            <div className="col-span-2">
-                                <DetailRow label="Irrigation Source" value={profile.irrigation} name="irrigation" icon={Tractor} />
-                            </div>
-                        </div>
-
-                        <div className="mt-6 pt-6 border-t border-slate-50">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Major Crops Cultivated</label>
-                            <div className="flex flex-wrap gap-2">
-                                {profile.majorCrops.map((crop, i) => (
-                                    <span key={i} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-100 flex items-center gap-1.5 hover:bg-emerald-100 transition-colors cursor-default">
-                                        <Leaf size={12} /> {crop}
-                                    </span>
-                                ))}
-                                {isEditing && (
-                                    <button className="px-3 py-1.5 bg-slate-50 text-slate-400 border border-dashed border-slate-300 rounded-lg text-xs font-bold hover:text-slate-600 hover:border-slate-400 transition-all cursor-pointer">
-                                        + Add Crop
-                                    </button>
-                                )}
-                            </div>
+            <div className="space-y-8">
+                {/* Personal Information */}
+                <div className="card p-6 border-slate-100 shadow-sm">
+                    <SectionHeader icon={User} title="Personal Identity Information" />
+                    <div className="grid grid-cols-2 lg-grid-cols-1 gap-6">
+                        <DetailRow label="Full Name" value={profile.name} name="name" icon={User} />
+                        <DetailRow label="Date of Birth" value={profile.dob} name="dob" icon={Calendar} />
+                        <DetailRow label="Primary Phone" value={profile.phone} name="phone" icon={Phone} />
+                        <DetailRow label="Email Address" value={profile.email} name="email" icon={Mail} />
+                        <div className="col-span-2">
+                            <DetailRow label="Permanent Address" value={profile.address} name="address" icon={MapPin} />
                         </div>
                     </div>
                 </div>
 
-                {/* Right Column: Financials & Extras */}
-                <div className="col-span-4 lg-col-span-12 space-y-8">
-                    {/* Banking Details */}
-                    <div className="card p-6 border-slate-100 bg-slate-900 text-white relative overflow-hidden shadow-lg">
-                        <div className="absolute top-0 right-0 p-12 bg-white/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-
-                        <div className="flex items-center gap-2 mb-6 opacity-80">
-                            <Landmark size={18} />
-                            <h3 className="text-sm font-bold uppercase tracking-wide">Banking Details</h3>
+                {/* Government ID Proofs */}
+                <div className="card p-6 border-slate-100 shadow-sm">
+                    <SectionHeader icon={Fingerprint} title="Government Identification (KYC)" />
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-slate-200">
+                            <div className="flex justify-between items-start mb-3">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                                    <Fingerprint size={12} className="text-blue-500" /> Aadhaar Card
+                                </label>
+                                <CheckCircle size={14} className="text-emerald-500" />
+                            </div>
+                            <div className="text-lg font-black text-slate-800 font-mono tracking-wider mb-2">{profile.aadhaar}</div>
+                            <p className="text-[10px] text-emerald-600 font-bold bg-emerald-50 inline-block px-2 py-0.5 rounded">Biometric Verified</p>
                         </div>
 
-                        <div className="space-y-6 relative z-10">
-                            <div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bank Name</p>
-                                <p className="text-lg font-bold">{profile.bankName}</p>
+                        <div className="bg-slate-50/50 p-4 rounded-2xl border border-dashed border-slate-200">
+                            <div className="flex justify-between items-start mb-3">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                                    <Shield size={12} className="text-blue-500" /> PAN Card
+                                </label>
+                                <CheckCircle size={14} className="text-emerald-500" />
                             </div>
-                            <div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Account Number</p>
-                                <p className="text-xl font-mono tracking-widest">{profile.accountNo}</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">IFSC Code</p>
-                                    <p className="font-mono">{profile.ifsc}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
-                                    <p className="text-emerald-400 font-bold text-xs flex items-center justify-end gap-1"><CheckCircle size={10} /> Active</p>
-                                </div>
-                            </div>
+                            <div className="text-lg font-black text-slate-800 font-mono tracking-wider mb-2">{profile.pan}</div>
+                            <p className="text-[10px] text-emerald-600 font-bold bg-emerald-50 inline-block px-2 py-0.5 rounded">Tax Compliant</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Land & Agriculture Details */}
+                <div className="card p-6 border-slate-100 shadow-sm">
+                    <SectionHeader icon={Tractor} title="Land & Agriculture Profile" />
+                    <div className="grid grid-cols-3 lg-grid-cols-1 gap-6">
+                        <DetailRow label="Total Land Area" value={profile.landSize} name="landSize" icon={MapPin} />
+                        <DetailRow label="Land ID (Khata No)" value={profile.khataNo} name="khataNo" icon={FileText} />
+                        <DetailRow label="Soil Type" value={profile.soilType} name="soilType" icon={Sprout} />
+                        <div className="col-span-2">
+                            <DetailRow label="Irrigation Source" value={profile.irrigation} name="irrigation" icon={Tractor} />
                         </div>
                     </div>
 
-                    {/* Financial Status */}
-                    <div className="card p-6 border-slate-100 shadow-sm">
-                        <SectionHeader icon={CreditCard} title="Financial Profile" />
-                        <div className="space-y-4">
-                            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-xs font-bold text-slate-700">KCC Status</span>
-                                    <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Active</span>
-                                </div>
-                                <div className="text-lg font-black text-emerald-800">₹ 3,00,000</div>
-                                <p className="text-[10px] text-emerald-600 mt-1">Available Limit</p>
-                            </div>
+                    <div className="mt-6 pt-6 border-t border-slate-50">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 block">Major Crops Cultivated</label>
+                        <div className="flex flex-wrap gap-2">
+                            {profile.majorCrops.map((crop, i) => (
+                                <span key={i} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-bold border border-emerald-100 flex items-center gap-1.5 hover:bg-emerald-100 transition-colors cursor-default">
+                                    <Leaf size={12} /> {crop}
+                                </span>
+                            ))}
+                            {isEditing && (
+                                <button className="px-3 py-1.5 bg-slate-50 text-slate-400 border border-dashed border-slate-300 rounded-lg text-xs font-bold hover:text-slate-600 hover:border-slate-400 transition-all cursor-pointer">
+                                    + Add Crop
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
-                            <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                <div className="flex justify-between items-center mb-1">
-                                    <span className="text-xs font-bold text-slate-700">Crop Insurance</span>
-                                    <span className="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-bold">Valid 2026</span>
-                                </div>
-                                <div className="text-lg font-black text-blue-800">PMFBY Policy</div>
-                                <p className="text-[10px] text-blue-600 mt-1">Covering Wheat & Potato</p>
+                {/* Financial Status */}
+                <div className="card p-6 border-slate-100 shadow-sm">
+                    <SectionHeader icon={CreditCard} title="Financial Profile" />
+                    <div className="space-y-4">
+                        <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-xs font-bold text-slate-700">KCC Status</span>
+                                <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Active</span>
                             </div>
+                            <div className="text-lg font-black text-emerald-800">₹ 3,00,000</div>
+                            <p className="text-[10px] text-emerald-600 mt-1">Available Limit</p>
+                        </div>
+
+                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-xs font-bold text-slate-700">Crop Insurance</span>
+                                <span className="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-bold">Valid 2026</span>
+                            </div>
+                            <div className="text-lg font-black text-blue-800">PMFBY Policy</div>
+                            <p className="text-[10px] text-blue-600 mt-1">Covering Wheat & Potato</p>
                         </div>
                     </div>
                 </div>
