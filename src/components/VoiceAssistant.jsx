@@ -221,10 +221,30 @@ const VoiceAssistant = () => {
         return (
             <button
                 onClick={() => { setIsOpen(true); setText(getResponseText('welcome', selectedLang)); speakText(getResponseText('welcome', selectedLang)); }}
-                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-2xl flex items-center justify-center z-[9999] hover:scale-110 transition-transform group"
+                style={{
+                    position: 'fixed',
+                    bottom: '30px',
+                    right: '30px',
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 10px 25px rgba(16, 185, 129, 0.5)',
+                    cursor: 'pointer',
+                    zIndex: 9999,
+                    border: '4px solid white',
+                    transition: 'transform 0.3s ease'
+                }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
             >
-                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping"></div>
+                <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', border: '2px solid rgba(16, 185, 129, 0.3)', animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }}></div>
                 <Mic size={32} />
+                <style>{`@keyframes ping { 75%, 100% { transform: scale(1.5); opacity: 0; } }`}</style>
             </button>
         );
     }
