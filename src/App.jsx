@@ -14,8 +14,14 @@ import VoiceAssistant from './components/VoiceAssistant';
 
 function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  // TEMPORARY: Bypass Login for Development
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [user, setUser] = useState({
+    name: 'Kishan Kumar',
+    email: 'kishan.k@agrsetu.com',
+    landId: 'UP-VNS-789012',
+    village: 'Rampur, Varanasi'
+  });
   useEffect(() => {
     const storedUser = localStorage.getItem('agrsetu_user');
     if (storedUser) {
