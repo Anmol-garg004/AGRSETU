@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Search, Filter, TrendingUp, MapPin, CheckCircle, Scale, DollarSign, Upload, X, Loader2, ScanLine } from 'lucide-react';
+import { Camera, Search, Filter, TrendingUp, MapPin, CheckCircle, Scale, DollarSign, Upload, X, Loader2, ScanLine, AlertTriangle } from 'lucide-react';
+import * as tf from '@tensorflow/tfjs';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 
 const DashboardMarketplace = ({ searchQuery = '' }) => {
     const [isScanning, setIsScanning] = useState(false);
@@ -7,9 +9,11 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     const [detectedCrop, setDetectedCrop] = useState(null);
     const [cropQuality, setCropQuality] = useState(null);
     const [processingStep, setProcessingStep] = useState('');
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
     const fileInputRef = useRef(null);
     const videoRef = useRef(null);
+    const imgRef = useRef(null);
 
     // Mock Market Offers Data
     const marketOffers = [
@@ -105,6 +109,7 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
             setSelectedImage(null);
             setDetectedCrop(null);
             setCropQuality(null);
+            setErrorMessage(null);
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
@@ -133,7 +138,7 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
 
             setSelectedImage(imageUrl);
             setIsCameraOpen(false);
-            simulateAIDetection();
+            // Detection triggered automatically by img onLoad
         }
     };
 
@@ -142,75 +147,112 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         if (file) {
             const imageUrl = URL.createObjectURL(file);
             setSelectedImage(imageUrl);
-            simulateAIDetection();
+            setErrorMessage(null);
+            setDetectedCrop(null);
+            // Detection triggered automatically by img onLoad
         }
     };
 
-    const simulateAIDetection = () => {
+    const runObjectDetection = async () => {
+        if (!imgRef.current) return;
+
         setIsScanning(true);
-        setDetectedCrop(null);
-        setCropQuality(null);
+        setErrorMessage(null);
+        setProcessingStep('Loading AI Model...');
 
-        // Simulation Sequence
-        setTimeout(() => setProcessingStep('Uploading Image...'), 500);
-        setTimeout(() => setProcessingStep('Analyzing Grain Texture...'), 1500);
-        setTimeout(() => setProcessingStep('Evaluating Moisture Content...'), 2500);
-        setTimeout(() => setProcessingStep('Grading Quality Standards...'), 3500);
+        try {
+            const model = await mobilenet.load();
+            setProcessingStep('Analyzing Image Features...');
 
-        setTimeout(() => {
-            setIsScanning(false);
+            // Classify the image
+            const predictions = await model.classify(imgRef.current);
+            console.log('Detected:', predictions);
 
-            // 1. Identify Crop (Simulated Random Selection from available market crops)
-            const possibleCrops = [
-                { name: 'Wheat', varieties: ['Sharbati', 'Lok-1', 'HD 2967'], moistureRange: [10, 14] },
-                { name: 'Rice', varieties: ['Basmati 1121', 'Sona Masoori'], moistureRange: [12, 16] },
-                { name: 'Potato', varieties: ['Chipsona', 'Jyoti'], moistureRange: [75, 80] }, // Potatoes are wetter
-                { name: 'Mustard', varieties: ['Black', 'Yellow'], moistureRange: [6, 9] }
+            setProcessingStep('Verifying Agricultural Match...');
+
+            // Allowable Agricultural Keywords
+            const agriKeywords = [
+                'corn', 'maize', 'wheat', 'grain', 'ear', 'rice', 'field', 'plant', 'vegetable', 'fruit',
+                'food', 'produce', 'potato', 'harvest', 'agriculture', 'seed', 'legume', 'broccoli', 'cauliflower',
+                'mushroom', 'squash', 'pumpkin', 'cucumber', 'lemon', 'orange', 'banana', 'apple', 'grape', 'strawberry',
+                'head cabbage', 'rapeseed', 'mustard', 'grass', 'hay', 'daisy', 'sunflower'
             ];
 
-            // Randomly pick a crop to simulate "AI Detection"
-            const randomCropIndex = Math.floor(Math.random() * possibleCrops.length);
-            const detectedProfile = possibleCrops[randomCropIndex];
+            // Check if any prediction matches typical farm produce
+            const matchedPrediction = predictions.find(p =>
+                agriKeywords.some(keyword => p.className.toLowerCase().includes(keyword))
+            );
 
-            setDetectedCrop(detectedProfile.name);
+            if (matchedPrediction) {
+                // Determine Category
+                let inferredType = 'Wheat'; // fallback
+                const pName = matchedPrediction.className.toLowerCase();
 
-            // 2. Generate Realistic Quality Metrics based on the crop
-            // Moisture
-            const minM = detectedProfile.moistureRange[0];
-            const maxM = detectedProfile.moistureRange[1];
-            const randomMoisture = (Math.random() * (maxM - minM) + minM).toFixed(1);
+                if (pName.includes('rice') || pName.includes('grain')) inferredType = 'Rice';
+                if (pName.includes('corn') || pName.includes('maize')) inferredType = 'Corn';
+                if (pName.includes('potato')) inferredType = 'Potato';
+                if (pName.includes('mustard') || pName.includes('rapeseed') || pName.includes('flower')) inferredType = 'Mustard';
 
-            // Grade logic (Randomized)
-            const grades = ['A+ Premium', 'A Standard', 'B Commercial'];
-            const randomGrade = grades[Math.floor(Math.random() * grades.length)];
+                // If generic 'plant' or 'veg', simulate a valid market crop choice
+                if (!['Wheat', 'Rice', 'Potato', 'Mustard', 'Corn'].includes(inferredType)) {
+                    const randoms = ['Wheat', 'Rice', 'Potato', 'Mustard'];
+                    inferredType = randoms[Math.floor(Math.random() * randoms.length)];
+                }
 
-            // Size logic differs by crop
-            let size = 'Medium';
-            if (detectedProfile.name === 'Wheat' || detectedProfile.name === 'Rice') {
-                const sizes = ['Long Grain', 'Medium Grain', 'Short Bold'];
-                size = sizes[Math.floor(Math.random() * sizes.length)];
-            } else if (detectedProfile.name === 'Potato') {
-                const sizes = ['Large (>50mm)', 'Medium (35-50mm)', 'Small (<35mm)'];
-                size = sizes[Math.floor(Math.random() * sizes.length)];
+                generateSimulatedQuality(inferredType);
             } else {
-                size = 'Uniform Standard';
+                setIsScanning(false);
+                setErrorMessage(`Not a recognized crop. AI detected: ${predictions[0]?.className.split(',')[0] || 'Unknown Object'}. Please scan a valid crop.`);
+            }
+
+        } catch (error) {
+            console.error(error);
+            setIsScanning(false);
+            setErrorMessage('AI Engine Error. Please try again.');
+        }
+    };
+
+    const generateSimulatedQuality = (cropType) => {
+        setProcessingStep('Grading Quality Standards...');
+        setTimeout(() => {
+            setIsScanning(false);
+            setDetectedCrop(cropType);
+
+            // Generate Realistic Quality Metrics based on the crop
+            let moisture = '12.5%';
+            let size = 'Medium';
+            let grade = 'A Standard';
+
+            if (cropType === 'Rice') {
+                moisture = (12 + Math.random() * 4).toFixed(1) + '%';
+                size = 'Long Grain';
+            } else if (cropType === 'Potato') {
+                moisture = (75 + Math.random() * 5).toFixed(1) + '%';
+                size = Math.random() > 0.5 ? 'Large (>50mm)' : 'Medium';
+            } else if (cropType === 'Mustard') {
+                moisture = (6 + Math.random() * 3).toFixed(1) + '%';
+                size = 'Standard';
+            } else {
+                moisture = (10 + Math.random() * 4).toFixed(1) + '%'; // Wheat default
+                size = 'Bold';
             }
 
             setCropQuality({
-                grade: randomGrade,
-                moisture: `${randomMoisture}%`,
+                grade: Math.random() > 0.3 ? 'A+ Premium' : 'A Standard',
+                moisture: moisture,
                 size: size,
-                score: Math.floor(Math.random() * (99 - 85) + 85) // Random score 85-99
+                score: Math.floor(Math.random() * (99 - 88) + 88)
             });
 
             setProcessingStep('');
-        }, 4500);
+        }, 1500);
     };
 
     const clearScan = () => {
         setSelectedImage(null);
         setDetectedCrop(null);
         setCropQuality(null);
+        setErrorMessage(null);
         setIsScanning(false);
         setIsCameraOpen(false);
         if (videoRef.current && videoRef.current.srcObject) {
@@ -284,7 +326,7 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                     <div className={`flex flex-col gap-8 items-center ${detectedCrop ? 'justify-center' : 'md:flex-row'}`}>
                         {/* Camera / Image Preview Area - HIDE if analysis is complete */}
                         {!detectedCrop && (
-                            <div className="relative w-72 h-56 bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0 shadow-2xl">
+                            <div className="relative w-72 h-56 bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0 shadow-2xl flex items-center justify-center">
                                 {isCameraOpen ? (
                                     <>
                                         <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
@@ -296,7 +338,17 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                                         </button>
                                     </>
                                 ) : selectedImage ? (
-                                    <img src={selectedImage} alt="Crop Scan" className="w-full h-full object-cover opacity-80" />
+                                    <>
+                                        <img
+                                            ref={imgRef}
+                                            src={selectedImage}
+                                            onLoad={runObjectDetection}
+                                            className="hidden"
+                                            crossOrigin="anonymous"
+                                            alt="hidden-analysis"
+                                        />
+                                        <img src={selectedImage} alt="Crop Scan" className="w-full h-full object-cover opacity-80" />
+                                    </>
                                 ) : (
                                     <div className="flex items-center justify-center h-full text-slate-500">
                                         <Camera size={32} />
@@ -357,6 +409,22 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                                         <TrendingUp size={16} className="text-emerald-500" />
                                         <span>Matched with <strong className="text-white">12 High-Value Buyers</strong> instantly.</span>
                                     </div>
+                                </div>
+                            ) : errorMessage ? (
+                                <div className="text-center animate-in fade-in zoom-in-50">
+                                    <div className="mb-4 flex justify-center">
+                                        <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center text-red-500">
+                                            <AlertTriangle size={32} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2 text-red-500">Analysis Failed</h3>
+                                    <p className="text-slate-300 font-medium">{errorMessage}</p>
+                                    <button
+                                        onClick={() => { setSelectedImage(null); setErrorMessage(null); startCamera(); }}
+                                        className="mt-6 px-6 py-2 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-200 transition-colors"
+                                    >
+                                        Try Again
+                                    </button>
                                 </div>
                             ) : isCameraOpen ? (
                                 <div>
