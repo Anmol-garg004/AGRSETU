@@ -15,7 +15,9 @@ import {
     Menu,
     X,
     Landmark,
-    ShoppingBag
+    ShoppingBag,
+    ExternalLink,
+    Satellite
 } from 'lucide-react';
 import DashboardProfile from './DashboardProfile';
 import DashboardFarm from './DashboardFarm';
@@ -189,6 +191,17 @@ const Dashboard = ({ user, onLogout }) => {
                                 <div>
                                     <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">{activeTab}</h1>
                                 </div>
+
+                                {activeTab === 'Farm Data' && (
+                                    <button
+                                        onClick={() => window.open('https://agrsetumap.vercel.app/', '_blank')}
+                                        className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-all cursor-pointer shadow-sm active:scale-95 group"
+                                    >
+                                        <Satellite size={14} className="group-hover:rotate-12 transition-transform" />
+                                        LAUNCH LIVE SATELLITE PORTAL
+                                        <ExternalLink size={12} className="opacity-50" />
+                                    </button>
+                                )}
                             </div>
 
                             <div className="flex items-center gap-3">
