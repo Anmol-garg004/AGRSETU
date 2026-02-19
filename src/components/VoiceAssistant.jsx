@@ -10,7 +10,9 @@ const VoiceAssistant = () => {
     const [transcript, setTranscript] = useState("");
     const [selectedLang, setSelectedLang] = useState('hi-IN');
     const [apiKey, setApiKey] = useState(localStorage.getItem('elevenlabs_key') || '');
+    const [geminiKey, setGeminiKey] = useState(localStorage.getItem('gemini_key') || '');
     const [showSettings, setShowSettings] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Refs
     const recognitionRef = useRef(null);
@@ -239,10 +241,14 @@ const VoiceAssistant = () => {
         return 'error';
     };
 
-    const saveApiKey = (key) => {
-        setApiKey(key);
-        localStorage.setItem('elevenlabs_key', key);
-        setShowSettings(false);
+    const saveKeys = (keyType, value) => {
+        if (keyType === 'elevenlabs') {
+            setApiKey(value);
+            localStorage.setItem('elevenlabs_key', value);
+        } else if (keyType === 'gemini') {
+            setGeminiKey(value);
+            localStorage.setItem('gemini_key', value);
+        }
     };
 
     const startListening = () => {
@@ -316,7 +322,61 @@ const VoiceAssistant = () => {
         window.speechSynthesis.speak(utterance);
     };
 
-    const handleAIResponse = (userQuery) => {
+    const handleAIResponse = async (userQuery) => {
+        // TIER 1: ADVANCED AI (Google Gemini)
+        if (geminiKey) {
+            setIsProcessing(true);
+            try {
+                const prompt = `
+                You are an expert AI Agricultural Assistant for a farmer named Kishan Kumar.
+                
+                CTX: USER DATA (JSON):
+                ${JSON.stringify(farmerData)}
+
+                INSTRUCTIONS:
+                1. Answer the user's query mainly based on the provided JSON data.
+                2. If the query is about general farming advise, use your general knowledge.
+                3. Keep the response SHORT (max 2-3 sentences) and spoken-friendly.
+                4. REPLY IN THE SAME LANGUAGE AS THE USER QUERY (or the selected language: ${selectedLang}).
+                5. Be polite and respectful (Use "Ji" for respect in Hindi/Indian languages).
+                
+                USER QUERY: "${userQuery}"
+                
+                RESPONSE:`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message || 'Gemini API Error');
+                }
+
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    setText(aiText);
+                    speakText(aiText);
+                } else {
+                    throw new Error('No content in response');
+                }
+                setIsProcessing(false);
+                return;
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                setText(`Error: ${error.message}. Switching to basic mode.`);
+                // Fallback to basic mode
+            }
+            setIsProcessing(false);
+        }
+
+        // TIER 2: RULES BASED (Regex Fallback)
         const intent = identifyIntent(userQuery, selectedLang);
         const answer = getLocalizedTemplate(selectedLang, intent);
         setText(answer);
@@ -436,25 +496,55 @@ const VoiceAssistant = () => {
             {/* Settings Panel */}
             {showSettings && (
                 <div style={{ padding: '16px', backgroundColor: '#f8fafc', borderBottom: '1px solid #f1f5f9' }}>
-                    <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Key size={12} /> ElevenLabs API Key
-                    </p>
-                    <input
-                        type="password"
-                        value={apiKey}
-                        onChange={(e) => saveApiKey(e.target.value)}
-                        placeholder="Enter your API Key..."
-                        style={{
-                            width: '100%',
-                            fontSize: '0.75rem',
-                            padding: '8px',
-                            borderRadius: '4px',
-                            border: '1px solid #e2e8f0',
-                            outline: 'none',
-                            marginBottom: '4px'
-                        }}
-                    />
-                    <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>Required for generic high-quality multilingual voice. Without this, browser default voice is used.</p>
+
+                    {/* Gemini Key Input */}
+                    <div style={{ marginBottom: '12px' }}>
+                        <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#10b981', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ fontSize: '14px' }}>✨</span> Enable Advanced AI (Gemini)
+                        </p>
+                        <input
+                            type="password"
+                            value={geminiKey}
+                            onChange={(e) => saveKeys('gemini', e.target.value)}
+                            placeholder="Paste Google Gemini API Key..."
+                            style={{
+                                width: '100%',
+                                fontSize: '0.75rem',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #10b981',
+                                outline: 'none',
+                                marginBottom: '4px',
+                                backgroundColor: '#ecfdf5'
+                            }}
+                        />
+                        <p style={{ fontSize: '10px', color: '#64748b', margin: 0 }}>
+                            Get a free key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" style={{ color: '#10b981', textDecoration: 'underline' }}>Google AI Studio</a>.
+                        </p>
+                    </div>
+
+                    {/* ElevenLabs Key Input */}
+                    <div>
+                        <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Volume2 size={12} /> ElevenLabs Voice API (Optional)
+                        </p>
+                        <input
+                            type="password"
+                            value={apiKey}
+                            onChange={(e) => saveKeys('elevenlabs', e.target.value)}
+                            placeholder="ElevenLabs API Key..."
+                            style={{
+                                width: '100%',
+                                fontSize: '0.75rem',
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #e2e8f0',
+                                outline: 'none',
+                                marginBottom: '4px'
+                            }}
+                        />
+                        <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>Required for generic high-quality multilingual voice. Without this, browser default voice is used.</p>
+                    </div>
                 </div>
             )}
 
@@ -531,10 +621,14 @@ const VoiceAssistant = () => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: isSpeaking ? '#ecfdf5' : '#f8fafc',
-                            color: isSpeaking ? '#059669' : '#cbd5e1'
+                            backgroundColor: (isSpeaking || isProcessing) ? '#ecfdf5' : '#f8fafc',
+                            color: (isSpeaking || isProcessing) ? '#059669' : '#cbd5e1'
                         }}>
-                            {isSpeaking ? <Volume2 size={32} /> : <Mic size={32} />}
+                            {isProcessing ? (
+                                <div style={{ width: '24px', height: '24px', border: '2px solid #059669', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                            ) : (
+                                isSpeaking ? <Volume2 size={32} /> : <Mic size={32} />
+                            )}
                         </div>
                         {isSpeaking && <div style={{
                             position: 'absolute',
@@ -623,6 +717,10 @@ const VoiceAssistant = () => {
                 }
                 .animate-voice-wave {
                     animation: voice-wave 1s ease-in-out infinite;
+                }
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
                 }
                 /* Hide Scrollbar for language selector */
                 div::-webkit-scrollbar {
