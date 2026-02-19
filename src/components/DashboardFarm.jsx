@@ -176,15 +176,25 @@ const DashboardFarm = () => {
                 <div className="card p-4 border-0 shadow-sm bg-white">
                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">5-Day Forecast</h4>
                     <div className="space-y-3">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="flex justify-between items-center text-sm">
-                                <span className="text-slate-500 font-medium">{i === 0 ? 'Today' : `Feb ${19 + i}`}</span>
-                                <div className="flex items-center gap-2">
-                                    <Sun size={14} className="text-amber-500" />
-                                    <span className="font-bold text-slate-700">{32 - i}°C</span>
+                        {loading ? (
+                            <div className="text-xs text-slate-400 text-center py-4">Loading forecast...</div>
+                        ) : (
+                            forecast.map((day, i) => (
+                                <div key={i} className="flex justify-between items-center text-sm border-b border-slate-50 pb-2 last:border-0 last:pb-0">
+                                    <div className="flex flex-col">
+                                        <span className="text-slate-700 font-bold text-xs">{new Date(day.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' })}</span>
+                                        <span className="text-[10px] text-slate-400">{getWeatherCondition(day.code)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex flex-col items-end">
+                                            <span className="font-black text-slate-800 text-xs">{day.max}°</span>
+                                            <span className="font-medium text-slate-400 text-[10px]">{day.min}°</span>
+                                        </div>
+                                        {day.code > 50 ? <CloudRain size={16} className="text-blue-500" /> : <Sun size={16} className="text-amber-500" />}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </div>
 
