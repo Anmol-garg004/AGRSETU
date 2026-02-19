@@ -345,35 +345,39 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                 </div>
             )}
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Live Mandi Price</p>
-                    <p className="text-xl font-black text-slate-800">₹2,125<span className="text-xs font-medium text-slate-400">/q</span></p>
+            {/* Stats Overview - Hide when viewing specific crop results */}
+            {!detectedCrop && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Live Mandi Price</p>
+                        <p className="text-xl font-black text-slate-800">₹2,125<span className="text-xs font-medium text-slate-400">/q</span></p>
+                    </div>
+                    <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm">
+                        <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Highest Bid</p>
+                        <p className="text-xl font-black text-emerald-700">₹2,250<span className="text-xs font-medium text-emerald-500">/q</span></p>
+                    </div>
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Active Buyers</p>
+                        <p className="text-xl font-black text-slate-800">42 <span className="text-xs font-medium text-slate-400">Near you</span></p>
+                    </div>
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Your Rating</p>
+                        <p className="text-xl font-black text-slate-800 flex items-center gap-1">4.8 <span className="text-amber-500">★</span></p>
+                    </div>
                 </div>
-                <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 shadow-sm">
-                    <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">Highest Bid</p>
-                    <p className="text-xl font-black text-emerald-700">₹2,250<span className="text-xs font-medium text-emerald-500">/q</span></p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Active Buyers</p>
-                    <p className="text-xl font-black text-slate-800">42 <span className="text-xs font-medium text-slate-400">Near you</span></p>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Your Rating</p>
-                    <p className="text-xl font-black text-slate-800 flex items-center gap-1">4.8 <span className="text-amber-500">★</span></p>
-                </div>
-            </div>
+            )}
 
             {/* Marketplace Listings */}
-            <div>
+            <div className={detectedCrop ? "animate-in slide-in-from-bottom-8 fade-in duration-700" : ""}>
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
                         <TrendingUp size={24} className="text-emerald-600" />
-                        {detectedCrop ? `Best Offers for ${detectedCrop}` : 'Live Market Offers'}
+                        {detectedCrop ? (
+                            <span>Best <span className="text-emerald-600 underline decoration-4 decoration-emerald-200 underline-offset-4">{detectedCrop}</span> Offers</span>
+                        ) : 'Live Market Offers'}
                     </h3>
                     <button className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-emerald-600 transition-colors">
-                        <Filter size={16} /> Filters
+                        <Filter size={16} /> {detectedCrop ? 'Filtered by AI' : 'Filters'}
                     </button>
                 </div>
 
