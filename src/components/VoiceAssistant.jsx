@@ -1,33 +1,117 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, X, Volume2, Send, StopCircle, RefreshCw } from 'lucide-react';
+import { Mic, X, Volume2, Send, StopCircle, RefreshCw, Globe, Settings, Key } from 'lucide-react';
 import '../index.css';
 
 const VoiceAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [text, setText] = useState("नमस्ते! मैं आपका कृषि सहायक हूँ। (Hello! I am your Agri Assistant.)");
+    const [text, setText] = useState("नमस्ते! मैं आपका कृषि सहायक हूँ। (Hello!)");
     const [transcript, setTranscript] = useState("");
+    const [selectedLang, setSelectedLang] = useState('hi-IN');
+    const [apiKey, setApiKey] = useState(localStorage.getItem('elevenlabs_key') || '');
+    const [showSettings, setShowSettings] = useState(false);
 
-    // Refs for speech synthesis and recognition
+    // Refs
     const recognitionRef = useRef(null);
-    const synthesisRef = useRef(null);
+    const audioRef = useRef(new Audio());
 
+    const languages = [
+        { code: 'hi-IN', name: 'Hindi', label: 'हिंदी' },
+        { code: 'en-IN', name: 'English', label: 'English' },
+        { code: 'pa-IN', name: 'Punjabi', label: 'ਪੰਜਾਬੀ' },
+        { code: 'mr-IN', name: 'Marathi', label: 'मराठी' },
+        { code: 'gu-IN', name: 'Gujarati', label: 'ગુજરાતી' },
+        { code: 'ta-IN', name: 'Tamil', label: 'தமிழ்' },
+        { code: 'te-IN', name: 'Telugu', label: 'తెలుగు' },
+        { code: 'bn-IN', name: 'Bengali', label: 'বাংলা' },
+        { code: 'kn-IN', name: 'Kannada', label: 'कन्नड' }
+    ];
 
+    // Response Dictionary for Multilingual Support
+    const responses = {
+        'hi-IN': {
+            welcome: "नमस्ते! मैं आपका कृषि सहायक हूँ। पूछिये, मैं कैसे मदद कर सकता हूँ?",
+            listening: "सुन रहा हूँ...",
+            error: "माफ़ कीजिये, मैं समझ नहीं पाया।",
+            profile: "आपका नाम किशन कुमार है। आप एक प्रगतिशील किसान हैं।",
+            sales: "आपने पिछली बार 15 क्विंटल सरसों ₹6,500 के भाव पर बेची थी।",
+            weather: "अगले 3 दिन मौसम साफ़ रहेगा, हल्की धूप रहेगी।",
+            loan: "आपका ₹3 लाख का KCC लोन सक्रिय है। अगली किश्त 15 मार्च को है।",
+            crop: "गेहूं की फसल अच्छी स्थिति में है। अभी सिंचाई की आवश्यकता है।"
+        },
+        'en-IN': {
+            welcome: "Hello! I am your Agri Assistant. How can I help you?",
+            listening: "Listening...",
+            error: "Sorry, I didn't catch that.",
+            profile: "You are Kishan Kumar, a verified progressive farmer.",
+            sales: "You last sold 15 Quintals of Mustard at ₹6,500/quintal.",
+            weather: "Weather will remain clear for next 3 days.",
+            loan: "You have an active KCC Loan of ₹3 Lakhs. Next EMI is on 15th March.",
+            crop: "Your Wheat crop is in good condition. Irrigation is recommended now."
+        },
+        'pa-IN': {
+            welcome: "ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਖੇਤੀ ਸਹਾਇਕ ਹਾਂ। ਦੱਸੋ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦਾ ਹਾਂ?",
+            listening: "ਸੁਣ ਰਿਹਾ ਹਾਂ...",
+            error: "ਮਾਫ ਕਰਨਾ, ਮੈਂ ਸਮਝ ਨਹੀਂ ਸਕਿਆ।",
+            profile: "ਤੁਹਾਡਾ ਨਾਮ ਕਿਸ਼ਨ ਕੁਮਾਰ ਹੈ। ਤੁਸੀਂ ਇੱਕ ਅਗਾਂਹਵਧੂ ਕਿਸਾਨ ਹੋ।",
+            sales: "ਤੁਸੀਂ ਪਿਛਲੀ ਵਾਰ 15 ਕੁਇੰਟਲ ਸਰ੍ਹੋਂ ₹6,500 ਦੇ ਭਾਅ 'ਤੇ ਵੇਚੀ ਸੀ।",
+            weather: "ਅਗਲੇ 3 ਦਿਨ ਮੌਸਮ ਸਾਫ ਰਹੇਗਾ।",
+            loan: "ਤੁਹਾਡਾ ₹3 ਲੱਖ ਦਾ KCC ਲੋਨ ਚੱਲ ਰਿਹਾ ਹੈ।",
+            crop: "ਕਣਕ ਦੀ ਫਸਲ ਵਧੀਆ ਹੈ। ਪਾਣੀ ਲਗਾਉਣ ਦੀ ਲੋੜ ਹੈ।"
+        },
+        'mr-IN': {
+            welcome: "नमस्कार! मी तुमचा कृषी सहाय्यक आहे. बोला, काय मदत करू?",
+            listening: "मी ऐकत आहे...",
+            error: "क्षमस्व, मला समजले नाही.",
+            profile: "तुमचे नाव किशन कुमार आहे.",
+            sales: "तुम्ही शेवटची 15 क्विंटल मोहरी ₹6,500 दराने विकली.",
+            weather: "पुढील 3 दिवस हवामान स्वच्छ राहील.",
+            loan: "तुमचे ₹3 लाखांचे KCC कर्ज चालू आहे.",
+            crop: "गव्हाचे पीक चांगले आहे. आता पाणी देण्याची गरज आहे."
+        },
+        // Fallback for others to English (simplified for this demo)
+        default: {
+            welcome: "Welcome! Please speak in your language.",
+            listening: "Listening...",
+            error: "Sorry, I didn't understand.",
+            profile: "Name: Kishan Kumar.",
+            sales: "Last Sale: Mustard at ₹6,500.",
+            weather: "Clear weather expected.",
+            loan: "Active Loan: ₹3 Lakhs.",
+            crop: "Crop status: Good."
+        }
+    };
+
+    const getResponseText = (key, lang) => {
+        const langData = responses[lang] || responses['default'];
+        return langData[key] || responses['en-IN'][key];
+    };
+
+    const saveApiKey = (key) => {
+        setApiKey(key);
+        localStorage.setItem('elevenlabs_key', key);
+        setShowSettings(false);
+    };
 
     const startListening = () => {
-        if (synthesisRef.current.speaking) synthesisRef.current.cancel();
+        // Stop any playing audio
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        window.speechSynthesis.cancel();
+
         setTranscript("");
-        setText("बोलिये, आपकी क्या समस्या है? (Speak now...)");
+        setText(getResponseText('listening', selectedLang));
+
         if (recognitionRef.current) {
+            recognitionRef.current.lang = selectedLang;
             try {
                 recognitionRef.current.start();
             } catch (e) {
-                // If already started
                 console.log("Recognition active");
             }
         } else {
-            alert("Voice recognition not supported in this browser.");
+            alert("Voice recognition not supported.");
         }
     };
 
@@ -37,339 +121,211 @@ const VoiceAssistant = () => {
         }
     };
 
-    const speakText = (content) => {
-        if (!synthesisRef.current) return;
+    const speakText = async (content) => {
+        setIsSpeaking(true);
 
-        // Cancel previous utterances
-        synthesisRef.current.cancel();
+        // Tier 1: Try ElevenLabs if API Key exists
+        if (apiKey) {
+            try {
+                console.log("Calling ElevenLabs API...");
+                // Rachel Voice ID: 21m00Tcm4TlvDq8ikWAM (Standard)
+                // Use 'eleven_multilingual_v2' model for regional languages
+                const voiceId = "21m00Tcm4TlvDq8ikWAM";
+                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+                    method: 'POST',
+                    headers: {
+                        'xi-api-key': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: content,
+                        model_id: "eleven_multilingual_v2",
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.75
+                        }
+                    })
+                });
 
+                if (!response.ok) throw new Error('ElevenLabs API Error');
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                audioRef.current.src = url;
+                audioRef.current.onended = () => setIsSpeaking(false);
+                audioRef.current.play();
+                return;
+
+            } catch (error) {
+                console.error("ElevenLabs Failed, switching to browser TTS:", error);
+                // Fallback continues below
+            }
+        }
+
+        // Tier 2: Fallback to Browser Native TTS
         const utterance = new SpeechSynthesisUtterance(content);
-        utterance.lang = 'hi-IN'; // Try to match Hindi
+        utterance.lang = selectedLang;
         utterance.pitch = 1;
-        utterance.rate = 0.9; // Slightly slower for clarity
-
+        utterance.rate = 0.9;
         utterance.onstart = () => setIsSpeaking(true);
         utterance.onend = () => setIsSpeaking(false);
-
-        synthesisRef.current.speak(utterance);
-    };
-
-    // Use a ref for handleAIResponse to avoid stale closure in useEffect
-    const handleAIResponseRef = useRef(null);
-
-    // Mock Data for Voice Assistant to access
-    const farmerData = {
-        name: "Kishan Kumar",
-        age: "42 Years",
-        village: "Sonepat, Haryana",
-        family: "Savitri Devi (Wife), 2 Children (Son in 8th standard, Daughter in 6th)",
-        landSize: "5 Acres",
-        soilType: "Alluvial (Doamat)",
-        currentCrop: "Wheat (Gehu)",
-        yieldHistory: "पिछली बार आपने 45 क्विंटल गेहूं और 60 क्विंटल धान की पैदावार की थी। (45q Wheat, 60q Paddy last year.)",
-        salesHistory: "आपने आखिरी बार जनवरी में 15 क्विंटल सरसों ₹6,500 प्रति क्विंटल के भाव पर बेची थी। (Last sold: Mustard in Jan at ₹6,500/q.)",
-        cropAdvice: {
-            wheat: "गेहूं के लिए अभी यूरिया की दूसरी खुराक और हल्की सिंचाई की जरूरत है। खरपतवार के लिए '2,4-D' का छिड़काव करें।",
-            general: "फसल को कीटों से बचाने के लिए नीम के तेल का उपयोग करें और मिट्टी की जांच हर 2 साल में कराएं।"
-        },
-        livestock: "3 Buffaloes (Murrah breed) and 2 Sahiwal Cows. Milk production is 20 Liters daily.",
-        machinery: "Mahindra Tractor, Electric Pump, and Thresher",
-        income: "₹8,50,000 per year",
-        loanStatus: "Active - KCC Loan of ₹3 Lakhs from SBI, ₹2 Lakhs remaining",
-        creditScore: "750 (Excellent)",
-        nextEmi: "15th March 2026",
-        governmentSchemes: "Active in PM-Kisan (₹2,000 installment received in January) and Fasal Bima Yojana.",
-        advisory: "Urgent: Light irrigation recommended in 2 days as temperatures might rise. Avoid urea application right now."
+        window.speechSynthesis.speak(utterance);
     };
 
     const handleAIResponse = (userQuery) => {
-        console.log("Processing Query:", userQuery);
-        const lowerQuery = userQuery.toLowerCase().trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "");
+        const lowerQuery = userQuery.toLowerCase();
+        let key = 'error';
 
-        let answer = "माफ़ कीजिये, मैं ठीक से सुन नहीं पाया। क्या आप एग्री-सेतु से अपनी लोन, फसल, खाद या पिछली बिक्री की जानकारी चाहते हैं?";
+        // Simple Intent Classification
+        if (lowerQuery.match(/(name|naam|who|parichay|नाम|परिचय)/)) key = 'profile';
+        else if (lowerQuery.match(/(sold|sale|bechi|rate|price|बिक्री|बेचा|भाव)/)) key = 'sales';
+        else if (lowerQuery.match(/(weather|mausam|rain|barish|मौसम|बारिश)/)) key = 'weather';
+        else if (lowerQuery.match(/(loan|money|bank|karz|paisa|लोन|कर्ज|बैंक)/)) key = 'loan';
+        else if (lowerQuery.match(/(crop|fasal|wheat|gehu|फसल|गेहूं)/)) key = 'crop';
+        else if (lowerQuery.match(/(hello|hi|namaste|नमस्ते)/)) key = 'welcome';
 
-        // 1. PERSONAL & FAMILY
-        if (lowerQuery.match(/(profile|name|naam|nam|parichay|identity|who am i|mera|kaun hu|family|pariwar|wi|husband|bac|girl|boy|son|daughter|savitri|नाम|परिचय|परिवार|पत्नी|बच्चे|कौन)/i)) {
-            answer = `आपका नाम ${farmerData.name} है। आपका परिवार में आपकी पत्नी ${farmerData.family} हैं।`;
-        }
-        // 2. SALES HISTORY (Aakhri fasal kab bechi / Last sold)
-        else if (lowerQuery.match(/(sold|bechi|sales|history|bikki|becha|pichli|last|sell|sale|बेची|बेचा|बिक्री|पिछली)/i)) {
-            answer = farmerData.salesHistory;
-        }
-        // 3. FERTILIZER & CROP ADVICE (Khad / Fertilizer / Dawai)
-        else if (lowerQuery.match(/(fertilizer|khad|urea|dap|spray|dawai|pesticide|growth|keet|bimari|salah|upay|advice|खाद|यूरिया|छिड़काव|दवाई|बीमारी|सलाह|उपाय|बढ़ावा)/i)) {
-            if (lowerQuery.match(/(wheat|gehu|gehun|गेहूं|गेहूँ)/i)) {
-                answer = farmerData.cropAdvice.wheat;
-            } else {
-                answer = `आपकी फसल के लिए सलाह: ${farmerData.cropAdvice.general} आपकी अभी ${farmerData.currentCrop} की फसल लगी है।`;
-            }
-        }
-        // 4. FARM & SOIL
-        else if (lowerQuery.match(/(farm|land|zameen|jameen|kheti|soil|mitti|acre|bigha|killa|het|field|खेती|जमीन|मिट्टी|खेत|एकड़|किला)/i)) {
-            answer = `आपके पास ${farmerData.landSize} उपजाऊ जमीन है, जिसकी मिट्टी ${farmerData.soilType} है।`;
-        }
-        // 5. CROP & YIELD (Fasal / Yield)
-        else if (lowerQuery.match(/(crop|fasal|harvest|yield|paida|cut|kitni|फसल|पैदावार|कटाई)/i)) {
-            answer = `अभी खेत में ${farmerData.currentCrop} है। ${farmerData.yieldHistory}`;
-        }
-        // 6. LIVESTOCK
-        else if (lowerQuery.match(/(cow|buffalo|gaay|bhains|pashu|animal|milk|doodh|dairy|litre|गाय|भैंस|पशु|दूध|डेयरी)/i)) {
-            answer = `आपके पास ${farmerData.livestock}`;
-        }
-        // 7. FINANCIALS & LOAN
-        else if (lowerQuery.match(/(loan|karz|udhar|paisa|money|income|kamai|emi|debt|kcc|bank|sbi|rin|byaj|balance|लोन|कर्ज|उधार|पैसा|पैसे|कमाई|किस्त|बैंक|ब्याज)/i)) {
-            answer = `आपकी सालाना कमाई ${farmerData.income} है। ${farmerData.loanStatus}। अगली किश्त ${farmerData.nextEmi} को देनी है।`;
-        }
-        // 8. CREDIT SCORE
-        else if (lowerQuery.match(/(score|trust|credit|rating|point|cibil|स्कोर|नंबर|रेटिंग|साख|विश्वास)/i)) {
-            answer = `आपका एग्री-ट्रस्ट स्कोर ${farmerData.creditScore} है। आपकी साख बहुत अच्छी है!`;
-        }
-        // 9. GOVERNMENT SCHEMES
-        else if (lowerQuery.match(/(yojana|scheme|sarkari|pm|kisan|bima|insurance|subsidy|labh|योजना|स्कीम|सरकारी|बीमा|लाभ|सब्सिडी)/i)) {
-            answer = `सरकारी योजना: ${farmerData.governmentSchemes}`;
-        }
-        // 10. ADVISORY & WEATHER
-        else if (lowerQuery.match(/(advisory|salah|upay|sujhav|tips|weather|mausam|barish|rain|dhup|सलाह|उपाय|सुझाव|मौसम|बारिश|धूप|तापमान)/i)) {
-            answer = `मेरी सलाह: ${farmerData.advisory} मौसम: अगले 3 दिन साफ़ रहेंगे।`;
-        }
-        // 11. MARKET & PRICE
-        else if (lowerQuery.match(/(price|rate|bhav|mandi|market|bazar|cost|dam|kimat|मंडी|भाव|रेट|बाजार|कीमत|दाम)/i)) {
-            answer = "सोनीपत मंडी में गेहूं ₹2125 और धान ₹3500 प्रति क्विंटल है।";
-        }
-        // 12. GREETINGS
-        else if (lowerQuery.match(/(hello|hi|namaste|pranam|ram|hallo|hey|नमस्ते|प्रणाम|राम)/i)) {
-            answer = `राम राम ${farmerData.name} जी! मैं एग्री-सेतु सहायक हूँ। आप लोन, फसल, खाद या बिक्री के बारे में पूछ सकते हैं।`;
-        }
-        // 13. CONTACT
-        else if (lowerQuery.match(/(support|call|phone|number|sampark|contact|baat|मदद|संपर्क|फ़ोन|नंबर)/i)) {
-            answer = "सहायता के लिए +91 98765 43210 पर कॉल करें।";
-        }
-
+        const answer = getResponseText(key, selectedLang);
         setText(answer);
         speakText(answer);
     };
 
-    // Update the ref whenever handleAIResponse changes
     useEffect(() => {
-        handleAIResponseRef.current = handleAIResponse;
-    });
-
-    useEffect(() => {
-        // Initialize Speech Synthesis
-        synthesisRef.current = window.speechSynthesis;
-
-        // Initialize Speech Recognition
+        // Init Speech Recognition
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognitionRef.current = new SpeechRecognition();
             recognitionRef.current.continuous = false;
             recognitionRef.current.interimResults = true;
-            recognitionRef.current.lang = 'hi-IN'; // Default to Hindi/Indian context
 
-            recognitionRef.current.onstart = () => {
-                setIsListening(true);
-                setText("सुन रहा हूँ... (Listening...)");
-            };
+            recognitionRef.current.onstart = () => setIsListening(true);
+            recognitionRef.current.onend = () => setIsListening(false);
 
             recognitionRef.current.onresult = (event) => {
                 const results = event.results;
-                const transcriptText = Array.from(results)
-                    .map(result => result[0].transcript)
-                    .join('');
+                const transcriptText = Array.from(results).map(r => r[0].transcript).join('');
                 setTranscript(transcriptText);
 
-                // Check if the latest result is final
                 if (results[results.length - 1].isFinal) {
-                    if (handleAIResponseRef.current) {
-                        handleAIResponseRef.current(transcriptText);
-                    }
+                    handleAIResponse(transcriptText);
                     stopListening();
                 }
             };
-
-            recognitionRef.current.onend = () => {
-                setIsListening(false);
-            };
-
-            recognitionRef.current.onerror = (event) => {
-                console.error("Speech recognition error", event.error);
-                setIsListening(false);
-                if (event.error !== 'no-speech') {
-                    setText("कोई त्रुटि हुई। कृपया पुन: प्रयास करें। (Error occurred)");
-                }
-            };
         }
-
         return () => {
-            if (synthesisRef.current) {
-                synthesisRef.current.cancel();
-            }
+            window.speechSynthesis.cancel();
+            audioRef.current.pause();
         };
-    }, []); // Run only once!
+    }, [selectedLang]); // Re-init if needed, but primarily reliance on ref.lang update
 
     if (!isOpen) {
         return (
             <button
-                onClick={() => { setIsOpen(true); speakText("नमस्ते किसान भाई, मैं आपकी क्या सेवा कर सकता हूँ?"); }}
-                style={{
-                    position: 'fixed',
-                    bottom: '30px',
-                    right: '30px',
-                    width: '70px',
-                    height: '70px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)', // Google-like Blue
-                    color: 'white',
-                    border: 'none',
-                    boxShadow: '0 8px 30px rgba(37, 99, 235, 0.4)',
-                    cursor: 'pointer',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1) translateY(-5px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1) translateY(0)'}
+                onClick={() => { setIsOpen(true); setText(getResponseText('welcome', selectedLang)); speakText(getResponseText('welcome', selectedLang)); }}
+                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-2xl flex items-center justify-center z-50 hover:scale-110 transition-transform group"
             >
-                {/* Pulse Animation Ring */}
-                <div style={{
-                    position: 'absolute',
-                    inset: '-5px',
-                    borderRadius: '50%',
-                    border: '2px solid rgba(37, 99, 235, 0.3)',
-                    animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite'
-                }}></div>
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping"></div>
                 <Mic size={32} />
             </button>
         );
     }
 
     return (
-        <div style={{
-            position: 'fixed',
-            bottom: '30px',
-            right: '30px',
-            width: '350px',
-            background: 'white',
-            borderRadius: '24px',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
-            zIndex: 9999,
-            overflow: 'hidden',
-            fontFamily: "'Outfit', sans-serif",
-            animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}>
+        <div className="fixed bottom-8 right-8 w-[360px] bg-white rounded-3xl shadow-2xl z-50 overflow-hidden font-sans border border-slate-100 flex flex-col animate-in slide-in-from-bottom-10 fade-in duration-300">
             {/* Header */}
-            <div style={{
-                padding: '20px',
-                background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                color: 'white',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ background: 'white', padding: '6px', borderRadius: '50%' }}>
-                        <Mic size={18} color="#2563EB" />
+            <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <div className="bg-emerald-500/20 p-1.5 rounded-full">
+                        <Mic size={16} className="text-emerald-400" />
                     </div>
-                    <span style={{ fontWeight: '600', fontSize: '1.1rem' }}>Agri Assistant</span>
+                    <span className="font-bold">Agri Assistant</span>
                 </div>
-                <button onClick={() => { setIsOpen(false); stopListening(); synthesisRef.current.cancel(); }} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}>
-                    <X size={24} />
-                </button>
+                <div className="flex items-center gap-2">
+                    <button onClick={() => setShowSettings(!showSettings)} className="text-slate-400 hover:text-white transition-colors">
+                        <Settings size={18} />
+                    </button>
+                    <button onClick={() => { setIsOpen(false); stopListening(); window.speechSynthesis.cancel(); audioRef.current.pause(); }} className="text-slate-400 hover:text-white">
+                        <X size={20} />
+                    </button>
+                </div>
+            </div>
+
+            {/* Settings Panel */}
+            {showSettings && (
+                <div className="p-4 bg-slate-50 border-b border-slate-100">
+                    <p className="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1"><Key size={12} /> ElevenLabs API Key</p>
+                    <input
+                        type="password"
+                        value={apiKey}
+                        onChange={(e) => saveApiKey(e.target.value)}
+                        placeholder="Enter your API Key..."
+                        className="w-full text-xs p-2 rounded border border-slate-200 focus:outline-none focus:border-emerald-500 mb-2"
+                    />
+                    <p className="text-[10px] text-slate-400">Required for generic high-quality multilingual voice. Without this, browser default voice is used.</p>
+                </div>
+            )}
+
+            {/* Language Selector */}
+            <div className="px-4 py-2 bg-slate-50 border-b flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <Globe size={14} className="text-slate-400 shrink-0" />
+                {languages.map(lang => (
+                    <button
+                        key={lang.code}
+                        onClick={() => { setSelectedLang(lang.code); }}
+                        className={`text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all font-medium ${selectedLang === lang.code ? 'bg-emerald-600 text-white shadow-md' : 'bg-white border text-slate-600 hover:bg-slate-100'}`}
+                    >
+                        {lang.label}
+                    </button>
+                ))}
             </div>
 
             {/* Chat Area */}
-            <div style={{ padding: '24px', minHeight: '180px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-
+            <div className="p-6 min-h-[200px] flex flex-col items-center justify-center text-center bg-white relative">
                 {isListening ? (
-                    <div style={{ marginBottom: '20px' }}>
-                        {/* Google Assistant-like Dots Animation */}
-                        <div className="voice-wave" style={{ display: 'flex', gap: '6px', height: '30px', alignItems: 'center', justifyContent: 'center' }}>
-                            <span style={{ width: '6px', height: '10px', background: '#4285F4', borderRadius: '4px', animation: 'wave 1s infinite 0.1s' }}></span>
-                            <span style={{ width: '6px', height: '20px', background: '#EA4335', borderRadius: '4px', animation: 'wave 1s infinite 0.2s' }}></span>
-                            <span style={{ width: '6px', height: '15px', background: '#FBBC05', borderRadius: '4px', animation: 'wave 1s infinite 0.3s' }}></span>
-                            <span style={{ width: '6px', height: '25px', background: '#34A853', borderRadius: '4px', animation: 'wave 1s infinite 0.4s' }}></span>
+                    <div className="mb-4">
+                        <div className="flex gap-1.5 h-8 items-center justify-center">
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className="w-1.5 bg-emerald-500 rounded-full animate-voice-wave" style={{ animationDelay: `${i * 0.1}s`, height: '10px' }}></div>
+                            ))}
                         </div>
-                        <p style={{ marginTop: '16px', color: '#64748B', fontWeight: '500' }}>सुन रहा हूँ...<br /><span style={{ fontSize: '0.8rem', opacity: 0.7 }}>(Listening...)</span></p>
+                        <p className="mt-4 text-emerald-600 font-bold text-sm animate-pulse">{getResponseText('listening', selectedLang)}</p>
                     </div>
                 ) : (
-                    <div style={{ marginBottom: '10px' }}>
-                        {isSpeaking ? (
-                            <Volume2 size={48} color="#2563EB" style={{ animation: 'pulse 1s infinite' }} />
-                        ) : (
-                            <Mic size={48} color="#CBD5E1" />
-                        )}
+                    <div className="mb-4 relative">
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isSpeaking ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-300'}`}>
+                            {isSpeaking ? <Volume2 size={32} className="animate-pulse" /> : <Mic size={32} />}
+                        </div>
+                        {isSpeaking && <div className="absolute inset-0 rounded-full border-2 border-emerald-500/30 animate-ping"></div>}
                     </div>
                 )}
 
-                <p style={{
-                    fontSize: '1.1rem',
-                    color: '#1E293B',
-                    marginBottom: '8px',
-                    fontWeight: '500',
-                    lineHeight: '1.5'
-                }}>
+                <p className="text-slate-800 font-medium text-lg leading-relaxed">
                     {transcript || text}
                 </p>
             </div>
 
             {/* Controls */}
-            <div style={{ padding: '20px', borderTop: '1px solid #F1F5F9', display: 'flex', justifyContent: 'center', gap: '16px', background: '#FAFAFA' }}>
+            <div className="p-4 border-t bg-slate-50 flex justify-center gap-4">
                 <button
                     onClick={isListening ? stopListening : startListening}
-                    style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '50%',
-                        background: isListening ? '#EF4444' : '#2563EB',
-                        border: 'none',
-                        color: 'white',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                        cursor: 'pointer',
-                        transition: 'transform 0.2s'
-                    }}
-                    onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
-                    onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+                    className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 ${isListening ? 'bg-rose-500 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
                 >
-                    {isListening ? <StopCircle size={28} /> : <Mic size={28} />}
+                    {isListening ? <StopCircle size={24} /> : <Mic size={24} />}
                 </button>
 
                 {(!isListening && transcript) && (
-                    <button
-                        onClick={() => { setTranscript(""); startListening(); }}
-                        style={{
-                            width: '50px',
-                            height: '50px',
-                            borderRadius: '50%',
-                            background: 'white',
-                            border: '1px solid #E2E8F0',
-                            color: '#64748B',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
+                    <button onClick={() => { setTranscript(""); startListening(); }} className="w-12 h-12 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-100 transition-colors">
                         <RefreshCw size={20} />
                     </button>
                 )}
             </div>
 
             <style>{`
-                @keyframes slideUp {
-                    from { transform: translateY(50px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-                @keyframes ping {
-                    75%, 100% { transform: scale(1.5); opacity: 0; }
-                }
-                @keyframes wave {
+                @keyframes voice-wave {
                     0%, 100% { height: 10px; }
-                    50% { height: 30px; }
+                    50% { height: 24px; }
+                }
+                .animate-voice-wave {
+                    animation: voice-wave 1s ease-in-out infinite;
                 }
             `}</style>
         </div>
