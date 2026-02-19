@@ -243,103 +243,113 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                         <X size={20} />
                     </button>
 
-                    <div className="flex flex-col md:flex-row gap-8 items-center">
-                        {/* Camera / Image Preview Area */}
-                        <div className="relative w-72 h-56 bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0 shadow-2xl">
-                            {isCameraOpen ? (
-                                <>
-                                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                                    <button
-                                        onClick={capturePhoto}
-                                        className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-full border-4 border-slate-300 flex items-center justify-center hover:scale-110 transition-transform shadow-lg z-20"
-                                    >
-                                        <div className="w-10 h-10 bg-rose-500 rounded-full"></div>
-                                    </button>
-                                </>
-                            ) : selectedImage ? (
-                                <img src={selectedImage} alt="Crop Scan" className="w-full h-full object-cover opacity-80" />
-                            ) : (
-                                <div className="flex items-center justify-center h-full text-slate-500">
-                                    <Camera size={32} />
-                                </div>
-                            )}
+                    <div className={`flex flex-col gap-8 items-center ${detectedCrop ? 'justify-center' : 'md:flex-row'}`}>
+                        {/* Camera / Image Preview Area - HIDE if analysis is complete */}
+                        {!detectedCrop && (
+                            <div className="relative w-72 h-56 bg-black rounded-2xl overflow-hidden border-2 border-slate-700 shrink-0 shadow-2xl">
+                                {isCameraOpen ? (
+                                    <>
+                                        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                                        <button
+                                            onClick={capturePhoto}
+                                            className="absolute bottom-4 left-1/2 -translate-x-1/2 w-14 h-14 bg-white rounded-full border-4 border-slate-300 flex items-center justify-center hover:scale-110 transition-transform shadow-lg z-20"
+                                        >
+                                            <div className="w-10 h-10 bg-rose-500 rounded-full"></div>
+                                        </button>
+                                    </>
+                                ) : selectedImage ? (
+                                    <img src={selectedImage} alt="Crop Scan" className="w-full h-full object-cover opacity-80" />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-slate-500">
+                                        <Camera size={32} />
+                                    </div>
+                                )}
 
-                            {/* Scanning Overlay Animation */}
-                            {isScanning && (
-                                <div className="absolute inset-0 z-10 pointer-events-none">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] animate-scan-line"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                        <div className="text-center">
-                                            <Loader2 size={32} className="animate-spin text-emerald-400 mx-auto mb-2" />
-                                            <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">{processingStep}</p>
+                                {/* Scanning Overlay Animation */}
+                                {isScanning && (
+                                    <div className="absolute inset-0 z-10 pointer-events-none">
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.8)] animate-scan-line"></div>
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                            <div className="text-center">
+                                                <Loader2 size={32} className="animate-spin text-emerald-400 mx-auto mb-2" />
+                                                <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">{processingStep}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Detection Success Overlay */}
-                            {!isScanning && detectedCrop && (
-                                <div className="absolute bottom-0 left-0 w-full bg-emerald-600/90 backdrop-blur-md p-2 text-center">
-                                    <p className="text-[10px] uppercase font-bold tracking-wider">AI Detected</p>
-                                    <p className="text-lg font-black">{detectedCrop}</p>
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         {/* Analysis Result Text */}
-                        <div className="flex-1 space-y-4 w-full">
+                        <div className={`flex-1 space-y-4 w-full ${detectedCrop ? 'max-w-2xl mx-auto' : ''}`}>
                             {!isScanning && detectedCrop && cropQuality ? (
                                 <div className="animate-in slide-in-from-right-4 fade-in duration-500">
                                     <div className="flex items-center gap-3 mb-4">
                                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
                                             <CheckCircle size={14} /> Analysis Complete
-                                        </div>
-                                        <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
-                                            Grade: {cropQuality.grade}
+                                            <div className="animate-in zoom-in-50 fade-in duration-500 text-center">
+                                                <div className="mb-6 flex justify-center">
+                                                    <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center border-4 border-emerald-500/30 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                                                        <CheckCircle size={40} />
+                                                    </div>
+                                                </div>
+
+                                                <h3 className="text-3xl font-black mb-2 tracking-tight">Analysis Complete</h3>
+                                                <p className="text-slate-400 text-sm mb-8">
+                                                    Successfully identified <strong className="text-white text-lg">{detectedCrop}</strong> with <span className="text-emerald-400 font-bold">98.5% Accuracy</span>.
+                                                </p>
+
+                                                <div className="bg-white/5 rounded-3xl p-8 border border-white/10 backdrop-blur-sm grid grid-cols-1 md:grid-cols-3 gap-8 text-left relative overflow-hidden">
+                                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600"></div>
+
+                                                    <div>
+                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Quality Grade</p>
+                                                        <p className="text-2xl font-black text-white">{cropQuality.grade}</p>
+                                                        <p className="text-xs text-emerald-400 font-bold mt-1">Premium Export Quality</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Moisture Content</p>
+                                                        <p className="text-2xl font-black text-white">{cropQuality.moisture}</p>
+                                                        <p className="text-xs text-slate-400 font-bold mt-1">Optimal Range</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Avg. Grain Size</p>
+                                                        <p className="text-2xl font-black text-white">{cropQuality.size}</p>
+                                                        <p className="text-xs text-slate-400 font-bold mt-1">Uniform Consistency</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-400">
+                                                    <TrendingUp size={16} className="text-emerald-500" />
+                                                    <span>Matched with <strong className="text-white">12 High-Value Buyers</strong> instantly.</span>
+                                                </div>
+                                            </div>
+                                            ) : isCameraOpen ? (
+                                            <div>
+                                                <h3 className="text-xl font-bold mb-2 text-white">Scan Your Crop</h3>
+                                                <p className="text-slate-400 text-sm mb-4">
+                                                    Center the crop in the frame. Ensure good lighting for accurate AI quality grading.
+                                                </p>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Detects Variety</span>
+                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Analyzes Moisture</span>
+                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Grades Quality</span>
+                                                </div>
+                                            </div>
+                                            ) : (
+                                            <div>
+                                                <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing...</h3>
+                                                <p className="text-slate-500 text-sm">
+                                                    Calculating quality parameters...
+                                                </p>
+                                            </div>
+                            )}
                                         </div>
                                     </div>
-
-                                    <h3 className="text-2xl font-bold mb-2">Quality Assessment</h3>
-
-                                    <div className="grid grid-cols-2 gap-3 mb-4">
-                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Moisture</p>
-                                            <p className="text-lg font-bold text-white">{cropQuality.moisture}</p>
-                                        </div>
-                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Grain Size</p>
-                                            <p className="text-lg font-bold text-white">{cropQuality.size}</p>
-                                        </div>
-                                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 col-span-2">
-                                            <p className="text-[10px] text-slate-400 uppercase font-bold">Estimated Yield Rate</p>
-                                            <p className="text-lg font-bold text-emerald-400">Excellent Market Value</p>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-slate-400 text-sm">
-                                        Found <strong className="text-white">12 Premium Buyers</strong> looking for this quality.
-                                    </p>
-                                </div>
-                            ) : isCameraOpen ? (
-                                <div>
-                                    <h3 className="text-xl font-bold mb-2 text-white">Scan Your Crop</h3>
-                                    <p className="text-slate-400 text-sm mb-4">
-                                        Center the crop in the frame. Ensure good lighting for accurate AI quality grading.
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Detects Variety</span>
-                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Analyzes Moisture</span>
-                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Grades Quality</span>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div>
-                                    <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing...</h3>
-                                    <p className="text-slate-500 text-sm">
-                                        Calculating quality parameters...
-                                    </p>
                                 </div>
                             )}
+
                         </div>
                     </div>
                 </div>
@@ -454,5 +464,3 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         </div>
     );
 };
-
-export default DashboardMarketplace;
