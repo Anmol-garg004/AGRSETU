@@ -264,6 +264,7 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     };
 
     const [offerStatus, setOfferStatus] = useState({}); // { [id]: 'idle' | 'processing' | 'accepted' }
+    const [notification, setNotification] = useState(null);
 
     const handleAcceptOffer = (id) => {
         setOfferStatus(prev => ({ ...prev, [id]: 'processing' }));
@@ -271,7 +272,10 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         // Simulate API Call / Transaction
         setTimeout(() => {
             setOfferStatus(prev => ({ ...prev, [id]: 'accepted' }));
-            // Optional: You could trigger a global notification here
+            setNotification("Offer Accepted! The buyer will contact you soon.");
+
+            // Clear notification after 4 seconds
+            setTimeout(() => setNotification(null), 4000);
         }, 1500);
     };
 
@@ -294,7 +298,19 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
     const sortedOffers = [...filteredOffers].sort((a, b) => b.price - a.price);
 
     return (
-        <div className="space-y-6 fade-in pb-12">
+        <div className="space-y-6 fade-in pb-12 relative">
+            {/* Notification Toast */}
+            {notification && (
+                <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300 border border-slate-700">
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-slate-900">
+                        <CheckCircle size={18} fill="currentColor" className="text-emerald-500 bg-white rounded-full" />
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm">Action Successful</h4>
+                        <p className="text-xs text-slate-300">{notification}</p>
+                    </div>
+                </div>
+            )}
 
             {/* Header Area */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-4">
