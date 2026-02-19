@@ -156,15 +156,53 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         setTimeout(() => setProcessingStep('Analyzing Grain Texture...'), 1500);
         setTimeout(() => setProcessingStep('Evaluating Moisture Content...'), 2500);
         setTimeout(() => setProcessingStep('Grading Quality Standards...'), 3500);
+
         setTimeout(() => {
             setIsScanning(false);
-            setDetectedCrop('Wheat'); // Simulating Wheat detection
+
+            // 1. Identify Crop (Simulated Random Selection from available market crops)
+            const possibleCrops = [
+                { name: 'Wheat', varieties: ['Sharbati', 'Lok-1', 'HD 2967'], moistureRange: [10, 14] },
+                { name: 'Rice', varieties: ['Basmati 1121', 'Sona Masoori'], moistureRange: [12, 16] },
+                { name: 'Potato', varieties: ['Chipsona', 'Jyoti'], moistureRange: [75, 80] }, // Potatoes are wetter
+                { name: 'Mustard', varieties: ['Black', 'Yellow'], moistureRange: [6, 9] }
+            ];
+
+            // Randomly pick a crop to simulate "AI Detection"
+            const randomCropIndex = Math.floor(Math.random() * possibleCrops.length);
+            const detectedProfile = possibleCrops[randomCropIndex];
+
+            setDetectedCrop(detectedProfile.name);
+
+            // 2. Generate Realistic Quality Metrics based on the crop
+            // Moisture
+            const minM = detectedProfile.moistureRange[0];
+            const maxM = detectedProfile.moistureRange[1];
+            const randomMoisture = (Math.random() * (maxM - minM) + minM).toFixed(1);
+
+            // Grade logic (Randomized)
+            const grades = ['A+ Premium', 'A Standard', 'B Commercial'];
+            const randomGrade = grades[Math.floor(Math.random() * grades.length)];
+
+            // Size logic differs by crop
+            let size = 'Medium';
+            if (detectedProfile.name === 'Wheat' || detectedProfile.name === 'Rice') {
+                const sizes = ['Long Grain', 'Medium Grain', 'Short Bold'];
+                size = sizes[Math.floor(Math.random() * sizes.length)];
+            } else if (detectedProfile.name === 'Potato') {
+                const sizes = ['Large (>50mm)', 'Medium (35-50mm)', 'Small (<35mm)'];
+                size = sizes[Math.floor(Math.random() * sizes.length)];
+            } else {
+                size = 'Uniform Standard';
+            }
+
             setCropQuality({
-                grade: 'A+ Premium',
-                moisture: '12.5%',
-                size: 'Large Uniform',
-                score: 96
+                grade: randomGrade,
+                moisture: `${randomMoisture}%`,
+                size: size,
+                score: Math.floor(Math.random() * (99 - 85) + 85) // Random score 85-99
             });
+
             setProcessingStep('');
         }, 4500);
     };
