@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CloudRain, Sun, Sprout, Droplets, Wind, Map, AlertCircle, Calendar, Thermometer, ChevronRight } from 'lucide-react';
 import SatelliteMap from './SatelliteMap';
 
-const DashboardFarm = () => {
+const DashboardFarm = ({ searchQuery = '' }) => {
     // Real-time Weather Data Integration
     const [weather, setWeather] = useState({ temp: '--', rain: '--', humidity: '--', wind: '--', condition: 'Loading...' });
     const [forecast, setForecast] = useState([]);
@@ -154,7 +154,7 @@ const DashboardFarm = () => {
                     </div>
 
                     <div className="space-y-4">
-                        {crops.map((crop, i) => (
+                        {crops.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((crop, i) => (
                             <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-sm">

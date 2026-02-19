@@ -1,9 +1,10 @@
 import React from 'react';
 import { IndianRupee, Building, Landmark, Percent, ArrowRight, ShieldCheck, Sprout, FileText } from 'lucide-react';
 
-const DashboardFunding = ({ trustScore = 780 }) => {
+const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
     // Mock Data based on Indian Agri Context
     const loans = [
+        // ... (data remains same, assume it's static in component or moved out)
         {
             bank: "State Bank of India",
             type: "Kisan Credit Card (KCC)",
@@ -57,6 +58,16 @@ const DashboardFunding = ({ trustScore = 780 }) => {
         }
     ];
 
+    const filteredLoans = loans.filter(l =>
+        l.bank.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.type.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const filteredSchemes = schemes.filter(s =>
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.type.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="space-y-8 fade-in pb-12">
             {/* Header Section */}
@@ -92,8 +103,9 @@ const DashboardFunding = ({ trustScore = 780 }) => {
                     <Building size={20} className="text-slate-400" /> Pre-Approved Bank Offers
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {loans.map((loan, idx) => (
+                    {filteredLoans.length > 0 ? filteredLoans.map((loan, idx) => (
                         <div key={idx} className="group bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all relative overflow-hidden">
+                            {/* ... (rest of card content) */}
                             <div className="absolute top-0 right-0 p-3 opacity-10 font-black text-6xl text-slate-900 select-none">
                                 %
                             </div>
@@ -133,7 +145,9 @@ const DashboardFunding = ({ trustScore = 780 }) => {
                                 Apply Now
                             </button>
                         </div>
-                    ))}
+                    )) : (
+                        <p className="text-slate-500 col-span-3 text-center py-8">No loans found matching "{searchQuery}"</p>
+                    )}
                 </div>
             </div>
 
@@ -143,8 +157,9 @@ const DashboardFunding = ({ trustScore = 780 }) => {
                     <Sprout size={20} className="text-slate-400" /> Government Schemes (Govt. of India)
                 </h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {schemes.map((scheme, idx) => (
+                    {filteredSchemes.length > 0 ? filteredSchemes.map((scheme, idx) => (
                         <div key={idx} className="flex flex-col sm:flex-row bg-slate-50 border border-slate-100 rounded-2xl p-6 gap-6 hover:bg-white hover:shadow-lg transition-all">
+                            {/* ... (rest of scheme card) */}
                             <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Govt Emblem" className="w-8 opacity-80" />
                             </div>
@@ -164,7 +179,9 @@ const DashboardFunding = ({ trustScore = 780 }) => {
                                 </button>
                             </div>
                         </div>
-                    ))}
+                    )) : (
+                        <p className="text-slate-500 col-span-2 text-center py-8">No schemes found matching "{searchQuery}"</p>
+                    )}
                 </div>
             </div>
         </div>

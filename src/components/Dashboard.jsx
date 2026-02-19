@@ -28,6 +28,7 @@ const Dashboard = ({ user, onLogout }) => {
     // Default Sidebar: CLOSED (as requested)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Profile');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
@@ -41,14 +42,14 @@ const Dashboard = ({ user, onLogout }) => {
             case 'Profile':
                 return <DashboardProfile user={user} />;
             case 'Farm Data':
-                return <DashboardFarm />;
+                return <DashboardFarm searchQuery={searchQuery} />;
 
             case 'Trust Score':
                 return <div className="flex justify-center"><AgriTrustScore /></div>;
             case 'Transactions':
-                return <DashboardTransactions />;
+                return <DashboardTransactions searchQuery={searchQuery} />;
             case 'Funding':
-                return <DashboardFunding />;
+                return <DashboardFunding searchQuery={searchQuery} />;
             default:
                 return (
                     <div className="flex flex-col items-center justify-center p-20 text-center card bg-slate-50 border-dashed">
@@ -178,6 +179,8 @@ const Dashboard = ({ user, onLogout }) => {
                                         <Search size={20} className="text-slate-400 group-focus-within:text-emerald-500 transition-colors flex-shrink-0 mr-3" />
                                         <input
                                             type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder="Search for crops, loans, schemes..."
                                             className="bg-transparent border-none outline-none text-sm font-bold text-slate-700 placeholder:text-slate-400 w-full h-full"
                                         />

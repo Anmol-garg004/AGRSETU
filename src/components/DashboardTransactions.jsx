@@ -14,8 +14,8 @@ import {
     Check
 } from 'lucide-react';
 
-const DashboardTransactions = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+const DashboardTransactions = ({ searchQuery = '' }) => {
+    // Uses global searchQuery prop
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [selectedDate, setSelectedDate] = useState('Feb 2026');
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -97,8 +97,8 @@ const DashboardTransactions = () => {
     const dates = ['All Time', 'Feb 2026', 'Jan 2026'];
 
     const filteredTransactions = transactions.filter(t => {
-        const matchesSearch = t.source.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            t.category.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = t.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            t.category.toLowerCase().includes(searchQuery.toLowerCase());
 
         const matchesCategory = selectedCategory === 'All' || t.category === selectedCategory;
 
@@ -116,7 +116,7 @@ const DashboardTransactions = () => {
             t.id,
             t.date,
             `"${t.source}"`,
-            `"${t.category}"`,
+            `there"${t.category}"`,
             t.method,
             t.amount,
             t.status,
@@ -195,14 +195,10 @@ const DashboardTransactions = () => {
             <div className="card bg-white border-slate-100 overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-slate-50 flex items-center justify-between flex-wrap gap-4">
                     <div className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Filter by source or type..."
-                            className="pl-11 pr-4 py-3 bg-slate-50 border-0 rounded-xl w-80 text-sm font-medium focus:ring-2 ring-emerald-500/20 transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                        {/* Global Search Active - Local Search Hidden */}
+                        <div className="flex items-center gap-2 text-slate-400 text-sm font-medium pl-2">
+                            <Search size={16} /> Filtering by: <span className="text-emerald-600 font-bold">"{searchQuery || 'All'}"</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="relative" ref={categoryRef}>
