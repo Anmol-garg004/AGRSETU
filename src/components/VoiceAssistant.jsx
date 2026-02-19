@@ -221,7 +221,7 @@ const VoiceAssistant = () => {
         return (
             <button
                 onClick={() => { setIsOpen(true); setText(getResponseText('welcome', selectedLang)); speakText(getResponseText('welcome', selectedLang)); }}
-                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-2xl flex items-center justify-center z-50 hover:scale-110 transition-transform group"
+                className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-2xl flex items-center justify-center z-[9999] hover:scale-110 transition-transform group"
             >
                 <div className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping"></div>
                 <Mic size={32} />
@@ -230,7 +230,7 @@ const VoiceAssistant = () => {
     }
 
     return (
-        <div className="fixed bottom-8 right-8 w-[360px] bg-white rounded-3xl shadow-2xl z-50 overflow-hidden font-sans border border-slate-100 flex flex-col animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="fixed bottom-8 right-8 w-[360px] bg-white rounded-3xl shadow-2xl z-[9999] overflow-hidden font-sans border border-slate-100 flex flex-col animate-in slide-in-from-bottom-10 fade-in duration-300">
             {/* Header */}
             <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
                 <div className="flex items-center gap-2">
