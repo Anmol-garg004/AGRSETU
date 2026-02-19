@@ -129,7 +129,7 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                 {/* Right: Satellite Image */}
                 <div className="w-full md:w-1/3 min-h-[200px] relative bg-black/40 border-l border-white/5 overflow-hidden group">
                     <img
-                        src="/krmu_satellite.jpg"
+                        src="/krmu_satellite.png"
                         alt="Satellite View of KR Mangalam University"
                         className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale-[20%] group-hover:grayscale-0"
                         style={{ filter: 'contrast(1.2)' }}
