@@ -192,29 +192,7 @@ const DashboardProfile = ({ user, onUpdate }) => {
                     </div>
                 </div>
 
-                {/* Financial Status */}
-                <div className="card p-6 border-slate-100 shadow-sm">
-                    <SectionHeader icon={CreditCard} title="Financial Profile" />
-                    <div className="space-y-4">
-                        <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs font-bold text-slate-700">KCC Status</span>
-                                <span className="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Active</span>
-                            </div>
-                            <div className="text-lg font-black text-emerald-800">₹ 3,00,000</div>
-                            <p className="text-[10px] text-emerald-600 mt-1">Available Limit</p>
-                        </div>
 
-                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs font-bold text-slate-700">Crop Insurance</span>
-                                <span className="text-[10px] bg-blue-200 text-blue-800 px-1.5 py-0.5 rounded font-bold">Valid 2026</span>
-                            </div>
-                            <div className="text-lg font-black text-blue-800">PMFBY Policy</div>
-                            <p className="text-[10px] text-blue-600 mt-1">Covering Wheat & Potato</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     );
