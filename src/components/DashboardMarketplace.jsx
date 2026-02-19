@@ -277,79 +277,69 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
                                         </div>
                                     </div>
                                 )}
-
                             </div>
                         )}
 
                         {/* Analysis Result Text */}
                         <div className={`flex-1 space-y-4 w-full ${detectedCrop ? 'max-w-2xl mx-auto' : ''}`}>
                             {!isScanning && detectedCrop && cropQuality ? (
-                                <div className="animate-in slide-in-from-right-4 fade-in duration-500">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
-                                            <CheckCircle size={14} /> Analysis Complete
-                                            <div className="animate-in zoom-in-50 fade-in duration-500 text-center">
-                                                <div className="mb-6 flex justify-center">
-                                                    <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center border-4 border-emerald-500/30 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                                                        <CheckCircle size={40} />
-                                                    </div>
-                                                </div>
-
-                                                <h3 className="text-3xl font-black mb-2 tracking-tight">Analysis Complete</h3>
-                                                <p className="text-slate-400 text-sm mb-8">
-                                                    Successfully identified <strong className="text-white text-lg">{detectedCrop}</strong> with <span className="text-emerald-400 font-bold">98.5% Accuracy</span>.
-                                                </p>
-
-                                                <div className="bg-white/5 rounded-3xl p-8 border border-white/10 backdrop-blur-sm grid grid-cols-1 md:grid-cols-3 gap-8 text-left relative overflow-hidden">
-                                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600"></div>
-
-                                                    <div>
-                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Quality Grade</p>
-                                                        <p className="text-2xl font-black text-white">{cropQuality.grade}</p>
-                                                        <p className="text-xs text-emerald-400 font-bold mt-1">Premium Export Quality</p>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Moisture Content</p>
-                                                        <p className="text-2xl font-black text-white">{cropQuality.moisture}</p>
-                                                        <p className="text-xs text-slate-400 font-bold mt-1">Optimal Range</p>
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Avg. Grain Size</p>
-                                                        <p className="text-2xl font-black text-white">{cropQuality.size}</p>
-                                                        <p className="text-xs text-slate-400 font-bold mt-1">Uniform Consistency</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-400">
-                                                    <TrendingUp size={16} className="text-emerald-500" />
-                                                    <span>Matched with <strong className="text-white">12 High-Value Buyers</strong> instantly.</span>
-                                                </div>
-                                            </div>
-                                            ) : isCameraOpen ? (
-                                            <div>
-                                                <h3 className="text-xl font-bold mb-2 text-white">Scan Your Crop</h3>
-                                                <p className="text-slate-400 text-sm mb-4">
-                                                    Center the crop in the frame. Ensure good lighting for accurate AI quality grading.
-                                                </p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Detects Variety</span>
-                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Analyzes Moisture</span>
-                                                    <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Grades Quality</span>
-                                                </div>
-                                            </div>
-                                            ) : (
-                                            <div>
-                                                <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing...</h3>
-                                                <p className="text-slate-500 text-sm">
-                                                    Calculating quality parameters...
-                                                </p>
-                                            </div>
-                            )}
+                                <div className="animate-in zoom-in-50 fade-in duration-500 text-center">
+                                    <div className="mb-6 flex justify-center">
+                                        <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center border-4 border-emerald-500/30 text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                                            <CheckCircle size={40} />
                                         </div>
                                     </div>
+
+                                    <h3 className="text-3xl font-black mb-2 tracking-tight">Analysis Complete</h3>
+                                    <p className="text-slate-400 text-sm mb-8">
+                                        Successfully identified <strong className="text-white text-lg">{detectedCrop}</strong> with <span className="text-emerald-400 font-bold">98.5% Accuracy</span>.
+                                    </p>
+
+                                    <div className="bg-white/5 rounded-3xl p-8 border border-white/10 backdrop-blur-sm grid grid-cols-1 md:grid-cols-3 gap-8 text-left relative overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-600"></div>
+
+                                        <div>
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Quality Grade</p>
+                                            <p className="text-2xl font-black text-white">{cropQuality.grade}</p>
+                                            <p className="text-xs text-emerald-400 font-bold mt-1">Premium Export Quality</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Moisture Content</p>
+                                            <p className="text-2xl font-black text-white">{cropQuality.moisture}</p>
+                                            <p className="text-xs text-slate-400 font-bold mt-1">Optimal Range</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">Avg. Grain Size</p>
+                                            <p className="text-2xl font-black text-white">{cropQuality.size}</p>
+                                            <p className="text-xs text-slate-400 font-bold mt-1">Uniform Consistency</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 flex items-center justify-center gap-2 text-sm text-slate-400">
+                                        <TrendingUp size={16} className="text-emerald-500" />
+                                        <span>Matched with <strong className="text-white">12 High-Value Buyers</strong> instantly.</span>
+                                    </div>
+                                </div>
+                            ) : isCameraOpen ? (
+                                <div>
+                                    <h3 className="text-xl font-bold mb-2 text-white">Scan Your Crop</h3>
+                                    <p className="text-slate-400 text-sm mb-4">
+                                        Center the crop in the frame. Ensure good lighting for accurate AI quality grading.
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Detects Variety</span>
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Analyzes Moisture</span>
+                                        <span className="text-xs bg-white/10 px-2 py-1 rounded text-slate-300">Grades Quality</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <h3 className="text-xl font-bold mb-2 text-slate-300">Analyzing...</h3>
+                                    <p className="text-slate-500 text-sm">
+                                        Calculating quality parameters...
+                                    </p>
                                 </div>
                             )}
-
                         </div>
                     </div>
                 </div>
@@ -464,3 +454,5 @@ const DashboardMarketplace = ({ searchQuery = '' }) => {
         </div>
     );
 };
+
+export default DashboardMarketplace;
