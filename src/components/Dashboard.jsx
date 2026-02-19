@@ -173,17 +173,14 @@ const Dashboard = ({ user, onLogout }) => {
                             </div>
 
                             <div className="flex items-center gap-3">
-                                <div className="relative hide-mobile group">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors pointer-events-none">
-                                        <Search size={18} />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search for crops, loans..."
-                                        className="pl-11 pr-4 h-11 w-72 bg-white border border-slate-200 rounded-full text-sm font-bold text-slate-700 focus:w-96 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none placeholder:text-slate-400 shadow-sm hover:shadow-md hover:border-emerald-200"
-                                    />
-                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 border border-slate-200 rounded px-1.5 py-0.5 pointer-events-none group-focus-within:hidden">
-                                        /
+                                <div className="hide-mobile group relative z-50">
+                                    <div className="flex items-center bg-white border border-slate-200 rounded-full px-4 h-12 w-72 focus-within:w-96 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 transition-all shadow-sm hover:shadow-md hover:border-emerald-300">
+                                        <Search size={20} className="text-slate-400 group-focus-within:text-emerald-500 transition-colors flex-shrink-0 mr-3" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search for crops, loans, schemes..."
+                                            className="bg-transparent border-none outline-none text-sm font-bold text-slate-700 placeholder:text-slate-400 w-full h-full"
+                                        />
                                     </div>
                                 </div>
 
