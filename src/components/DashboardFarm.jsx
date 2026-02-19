@@ -57,13 +57,19 @@ const DashboardFarm = () => {
 
         fetchWeather();
 
-        // Simulate real-time sensor updates for Soil/NDVI
-        const interval = setInterval(() => {
+        // 1. Poll Weather API Every 15 Minutes (Real-Time Updates without Refresh)
+        const weatherInterval = setInterval(fetchWeather, 900000); // 15 mins
+
+        // 2. Simulate Real-Time Sensor Updates (Soil/NDVI)
+        const sensorInterval = setInterval(() => {
             setSoilMoisture(prev => Math.max(30, Math.min(90, prev + (Math.random() - 0.5) * 5)));
             setNdvi(prev => Math.max(0.4, Math.min(0.95, prev + (Math.random() - 0.5) * 0.05)));
         }, 5000);
 
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(weatherInterval);
+            clearInterval(sensorInterval);
+        };
     }, []);
 
     // Helper: WMO Weather Code to String
