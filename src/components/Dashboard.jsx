@@ -31,6 +31,15 @@ const Dashboard = ({ user, onLogout }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Profile');
     const [searchQuery, setSearchQuery] = useState('');
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+    // Mock Notifications Data
+    const [notifications, setNotifications] = useState([
+        { id: 1, title: 'New Market Offer', message: 'Reliance Retail placed a ₹1.2L bid for your Wheat.', time: '2 mins ago', type: 'market', unread: true },
+        { id: 2, title: 'Climate Alert', message: 'Heavy rain expected in Sohna region tomorrow.', time: '1 hour ago', type: 'weather', unread: true },
+        { id: 3, title: 'Loan Approved!', message: 'SBI KCC application processed successfully.', time: '5 hours ago', type: 'funding', unread: false },
+        { id: 4, title: 'Trust Score Sync', message: 'Your Agri-Trust Score was updated to 942.', time: 'Yesterday', type: 'trust', unread: false }
+    ]);
 
     const handleTabChange = (tabId) => {
         setActiveTab(tabId);
@@ -38,9 +47,12 @@ const Dashboard = ({ user, onLogout }) => {
         setIsSidebarOpen(false);
     };
 
+    const markAllAsRead = () => {
+        setNotifications(notifications.map(n => ({ ...n, unread: false })));
+    };
+
     const renderContent = () => {
         switch (activeTab) {
-
             case 'Profile':
                 return <DashboardProfile user={user} />;
             case 'Farm Data':
@@ -70,8 +82,11 @@ const Dashboard = ({ user, onLogout }) => {
         <>
             {/* Overlay for both Mobile and Desktop when Sidebar is Open (Optional preference) */}
             <div
-                className={`mobile-overlay ${isSidebarOpen ? 'active' : ''}`}
-                onClick={() => setIsSidebarOpen(false)}
+                className={`mobile-overlay ${isSidebarOpen || isNotificationsOpen ? 'active' : ''}`}
+                onClick={() => {
+                    setIsSidebarOpen(false);
+                    setIsNotificationsOpen(false);
+                }}
                 style={{ zIndex: 90 }} // Below content if Sidebar is push, above if overlay
             />
 
@@ -190,10 +205,67 @@ const Dashboard = ({ user, onLogout }) => {
                                     </div>
                                 </div>
 
-                                <button className="relative w-11 h-11 flex items-center justify-center bg-white border border-slate-100 rounded-full text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all cursor-pointer shadow-sm hover:shadow-md active:scale-95">
-                                    <Bell size={20} />
-                                    <span className="absolute top-2.5 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
-                                </button>
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                                        className={`relative w-11 h-11 flex items-center justify-center rounded-full transition-all cursor-pointer shadow-sm hover:shadow-md active:scale-95 z-50
+                                            ${isNotificationsOpen ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-100 text-slate-600 hover:bg-slate-50 hover:text-emerald-600'}
+                                        `}
+                                    >
+                                        <Bell size={20} />
+                                        {notifications.some(n => n.unread) && (
+                                            <span className="absolute top-2.5 right-3 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
+                                        )}
+                                    </button>
+
+                                    {/* Notification Dropdown */}
+                                    {isNotificationsOpen && (
+                                        <div className="absolute top-full right-0 mt-3 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200 z-[100]">
+                                            <div className="p-4 border-b bg-slate-50 flex justify-between items-center">
+                                                <h3 className="font-black text-sm text-slate-900 tracking-tight">Notifications</h3>
+                                                <button
+                                                    onClick={markAllAsRead}
+                                                    className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-700 cursor-pointer bg-transparent border-0"
+                                                >
+                                                    Mark Read
+                                                </button>
+                                            </div>
+                                            <div className="max-h-[400px] overflow-y-auto">
+                                                {notifications.length > 0 ? (
+                                                    notifications.map((n) => (
+                                                        <div key={n.id} className={`p-4 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors relative cursor-pointer group`}>
+                                                            {n.unread && <div className="absolute top-4 right-4 w-2 h-2 bg-emerald-500 rounded-full"></div>}
+                                                            <div className="flex gap-3">
+                                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
+                                                                    ${n.type === 'market' ? 'bg-orange-100 text-orange-600' :
+                                                                        n.type === 'weather' ? 'bg-blue-100 text-blue-600' :
+                                                                            n.type === 'funding' ? 'bg-emerald-100 text-emerald-600' : 'bg-purple-100 text-purple-600'}
+                                                                `}>
+                                                                    {n.type === 'market' ? <ShoppingBag size={14} /> :
+                                                                        n.type === 'weather' ? <MapPin size={14} /> :
+                                                                            n.type === 'funding' ? <Landmark size={14} /> : <Award size={14} />}
+                                                                </div>
+                                                                <div className="flex-1">
+                                                                    <p className="text-xs font-black text-slate-900 mb-0.5">{n.title}</p>
+                                                                    <p className="text-[11px] font-medium text-slate-500 leading-tight mb-1">{n.message}</p>
+                                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{n.time}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div className="p-10 text-center text-slate-400">
+                                                        <Bell size={24} className="mx-auto mb-2 opacity-20" />
+                                                        <p className="text-xs font-bold">No new notifications</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <button className="w-full py-3 bg-slate-50 hover:bg-slate-100 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] transition-colors border-0 cursor-pointer">
+                                                View All History
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
 
                                 <button
                                     onClick={() => handleTabChange('Funding')}
