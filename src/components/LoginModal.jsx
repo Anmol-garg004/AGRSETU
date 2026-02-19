@@ -13,6 +13,9 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 
+    // Debugging: Log when modal renders
+    console.log("LoginModal Rendered. isOpen:", isOpen);
+
     if (!isOpen) return null;
 
     const handleSubmit = (e) => {
@@ -20,10 +23,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         setError('');
         setIsLoading(true);
 
-        // Simulate network delay
         setTimeout(() => {
             if (isSignUp) {
-                // Mock Registration Logic
                 if (email && password && name) {
                     onLogin({ email, name: name }, rememberMe);
                     onClose();
@@ -32,15 +33,10 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                     setIsLoading(false);
                 }
             } else {
-                // Mock Login Logic
                 if (email === 'agrsetu@gmail.com' && password === 'agrsetu@2026') {
                     onLogin({ email, name: 'Admin User' }, rememberMe);
                     onClose();
                 } else {
-                    // Allow any other email/pass for demo purposes if not the admin credentials, 
-                    // or strictly enforcing the hardcoded one? 
-                    // Let's stick to the existing behavior but maybe allow generic login for demo users?
-                    // For now, keep strict admin check or add a fallback "demo" user.
                     if (email && password.length >= 6) {
                         onLogin({ email, name: 'Demo User' }, rememberMe);
                         onClose();
@@ -62,12 +58,50 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
     };
 
     return createPortal(
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 fade-in" style={{ backgroundColor: 'rgba(15, 23, 42, 0.85)', backdropFilter: 'blur(16px)' }}>
-            <div className="card p-10 w-full shadow-2xl relative bg-white border border-slate-200" style={{ maxWidth: '440px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            backdropFilter: 'blur(16px)',
+            animation: 'none' // Disable potential broken animations
+        }}>
+            <div style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '440px',
+                maxHeight: '90vh',
+                overflowY: 'auto',
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                padding: '40px',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                border: '1px solid #e2e8f0'
+            }}>
                 <button
                     onClick={onClose}
-                    className="absolute p-2 rounded-full hover:bg-slate-100 transition-colors border-0 bg-transparent text-slate-400 hover:text-slate-900 cursor-pointer z-10"
-                    style={{ top: '20px', right: '20px' }}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: '20px',
+                        padding: '8px',
+                        borderRadius: '9999px',
+                        border: 'none',
+                        background: 'transparent',
+                        color: '#94a3b8',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'background-color 0.2s',
+                        zIndex: 10
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f1f5f9'; e.currentTarget.style.color = '#0f172a'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
                 >
                     <X size={24} />
                 </button>
@@ -118,7 +152,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@agrsetu.com"
                                 className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
-                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }} // Force override
+                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
                                 required
                             />
                         </div>
@@ -137,7 +171,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 className="flex-1 bg-transparent border-0 outline-none font-medium text-slate-700 placeholder:text-slate-400 h-full w-full shadow-none focus:ring-0"
-                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }} // Force override
+                                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
                                 required
                             />
                         </div>
@@ -178,7 +212,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                         {isSignUp ? 'Already have an account? ' : 'New to AGRSETU? '}
                         <button
                             onClick={toggleMode}
-                            className="bg-transparent border-none text-emerald-600 font-black hover:underline cursor-pointer p-0"
+                            style={{ background: 'transparent', border: 'none', padding: 0, textDecoration: 'underline' }}
+                            className="text-emerald-600 font-black hover:underline cursor-pointer"
                         >
                             {isSignUp ? 'Login' : 'Sign Up'}
                         </button>
