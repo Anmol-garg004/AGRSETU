@@ -24,29 +24,15 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
         setIsLoading(true);
 
         setTimeout(() => {
-            if (isSignUp) {
-                if (email && password && name) {
-                    onLogin({ email, name: name }, rememberMe);
-                    onClose();
-                } else {
-                    setError('Please fill all fields to register.');
-                    setIsLoading(false);
-                }
-            } else {
-                if (email === 'agrsetu@gmail.com' && password === 'agrsetu@2026') {
-                    onLogin({ email, name: 'Admin User' }, rememberMe);
-                    onClose();
-                } else {
-                    if (email && password.length >= 6) {
-                        onLogin({ email, name: 'Demo User' }, rememberMe);
-                        onClose();
-                    } else {
-                        setError('Invalid credentials. Please try again.');
-                        setIsLoading(false);
-                    }
-                }
-            }
-        }, 1000);
+            // BYPASS LOGIN: Allow empty credentials for demo
+            const userData = {
+                email: email || 'demo@agrsetu.com',
+                name: name || (email === 'agrsetu@gmail.com' ? 'Admin User' : 'Kishan Kumar')
+            };
+
+            onLogin(userData, rememberMe);
+            onClose();
+        }, 800);
     };
 
     const toggleMode = () => {
