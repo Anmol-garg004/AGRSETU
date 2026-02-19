@@ -174,14 +174,17 @@ const Dashboard = ({ user, onLogout }) => {
 
                             <div className="flex items-center gap-3">
                                 <div className="relative hide-mobile group">
-                                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-800 transition-colors">
+                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-600 transition-colors pointer-events-none">
                                         <Search size={18} />
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder="Search..."
-                                        className="pl-10 pr-4 h-11 w-64 bg-slate-100 border-0 rounded-full text-sm font-bold text-slate-700 focus:w-80 focus:bg-white focus:ring-2 focus:ring-slate-900 transition-all outline-none placeholder:text-slate-400 shadow-inner"
+                                        placeholder="Search for crops, loans..."
+                                        className="pl-11 pr-4 h-11 w-72 bg-white border border-slate-200 rounded-full text-sm font-bold text-slate-700 focus:w-96 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none placeholder:text-slate-400 shadow-sm hover:shadow-md hover:border-emerald-200"
                                     />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 border border-slate-200 rounded px-1.5 py-0.5 pointer-events-none group-focus-within:hidden">
+                                        /
+                                    </div>
                                 </div>
 
                                 <button className="relative w-11 h-11 flex items-center justify-center bg-white border border-slate-100 rounded-full text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-all cursor-pointer shadow-sm hover:shadow-md active:scale-95">
