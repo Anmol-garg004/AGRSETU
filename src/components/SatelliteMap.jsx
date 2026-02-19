@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import { Compass, Navigation, Activity, Target, Battery, Signal, Maximize2 } from 'lucide-react';
 
-// Custom Hook to update map view if location changes
-function MapView({ coords }) {
-    const map = useMap();
-    map.setView(coords, map.getZoom());
-    return null;
-}
-
-
-
 const SatelliteMap = ({ lat, lon }) => {
-    const position = [lat, lon];
+
     const [telemetry, setTelemetry] = useState({
         alt: 120.5,
         speed: 0.0,
@@ -36,47 +25,34 @@ const SatelliteMap = ({ lat, lon }) => {
         return () => clearInterval(interval);
     }, []);
 
+    // Google Maps Embed URL (Satellite View)
+    // q=lat,lon
+    // t=k (Satellite)
+    // z=19 (Zoom level)
+    const googleMapsUrl = `https://maps.google.com/maps?q=${lat},${lon}&t=k&z=19&ie=UTF8&iwloc=&output=embed`;
+
     return (
         <div className="relative w-full h-[400px] rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-900 bg-black group">
 
-            {/* Map Container */}
-            <MapContainer
-                center={position}
-                zoom={18}
-                scrollWheelZoom={false}
-                style={{ height: '100%', width: '100%' }}
-                zoomControl={false}
-                attributionControl={false}
-            >
-                {/* Esri World Imagery (Satellite) */}
-                <TileLayer
-                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    attribution='Tiles &copy; Esri &mdash; &copy; OpenStreetMap contributors'
-                />
-
-                {/* Optional Hybrid Labels */}
-                <TileLayer
-                    url="https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png"
-                    opacity={0.4}
-                />
-
-                <CircleMarker center={position} pathOptions={{ color: '#10b981', fillColor: '#10b981', fillOpacity: 0.8 }} radius={10}>
-                    <Popup>
-                        <div className="text-center font-sans text-xs">
-                            <strong>KR Mangalam University</strong><br />
-                            Field Cluster A
-                        </div>
-                    </Popup>
-                </CircleMarker>
-
-                <MapView coords={position} />
-            </MapContainer>
+            {/* Google Maps Embed Iframe */}
+            <iframe
+                width="100%"
+                height="100%"
+                src={googleMapsUrl}
+                frameBorder="0"
+                scrolling="no"
+                marginHeight="0"
+                marginWidth="0"
+                title="Satellite View"
+                className="absolute inset-0 w-full h-full grayscale-[20%] contrast-125 brightness-90"
+                style={{ filter: 'hue-rotate(-10deg) contrast(1.1) saturate(1.2)' }}
+            ></iframe>
 
             {/* Drone HUD Overlay - Mission Planner Style */}
-            <div className="absolute inset-0 pointer-events-none z-[1000] flex flex-col justify-between p-4 mix-blend-screen text-green-400 font-mono text-xs select-none">
+            <div className="absolute inset-0 pointer-events-none z-[20] flex flex-col justify-between p-4 mix-blend-screen text-green-400 font-mono text-xs select-none">
 
                 {/* Top HUD Bar */}
-                <div className="flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent p-2 -m-4 mb-0 pt-4 px-6 rounded-t-3xl backdrop-blur-sm">
+                <div className="flex justify-between items-start bg-gradient-to-b from-black/80 to-transparent p-2 -m-4 mb-0 pt-4 px-6 rounded-t-3xl backdrop-blur-sm">
                     <div className="flex items-center gap-4">
                         <div className="flex flex-col items-center">
                             <span className="text-xl font-bold font-sans text-white drop-shadow-md tracking-wider">DISARMED</span>
@@ -137,9 +113,9 @@ const SatelliteMap = ({ lat, lon }) => {
 
                     {/* Right Panel: Map Controls */}
                     <div className="flex flex-col gap-2 pointer-events-auto">
-                        <button className="p-2 bg-black/60 border border-white/10 rounded-lg text-white hover:bg-emerald-600 hover:border-emerald-500 transition-colors shadow-lg">
+                        <a href={`https://www.google.com/maps/search/?api=1&query=${lat},${lon}`} target="_blank" rel="noreferrer" className="p-2 bg-black/60 border border-white/10 rounded-lg text-white hover:bg-emerald-600 hover:border-emerald-500 transition-colors shadow-lg flex items-center justify-center">
                             <Maximize2 size={16} />
-                        </button>
+                        </a>
                         <button className="p-2 bg-black/60 border border-white/10 rounded-lg text-white hover:bg-emerald-600 hover:border-emerald-500 transition-colors shadow-lg">
                             <Navigation size={16} />
                         </button>
@@ -149,7 +125,7 @@ const SatelliteMap = ({ lat, lon }) => {
             </div>
 
             {/* Scanlines Effect */}
-            <div className="absolute inset-0 pointer-events-none bg-[url('https://upload.wikimedia.org/wikipedia/commons/3/3a/Transparent_scanlines_pattern.png')] opacity-10 mix-blend-overlay z-[900]"></div>
+            <div className="absolute inset-0 pointer-events-none bg-[url('https://upload.wikimedia.org/wikipedia/commons/3/3a/Transparent_scanlines_pattern.png')] opacity-10 mix-blend-overlay z-[25]"></div>
         </div>
     );
 };
