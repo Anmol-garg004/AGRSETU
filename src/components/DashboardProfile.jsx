@@ -14,7 +14,6 @@ import {
     Tractor,
     Leaf,
     Fingerprint,
-    Copy,
     Calendar,
     Mail
 } from 'lucide-react';
@@ -75,11 +74,6 @@ const DashboardProfile = ({ user, onUpdate }) => {
                     />
                 ) : (
                     <span className="text-sm font-bold text-slate-800 truncate select-all">{value}</span>
-                )}
-                {!isEditing && editable && (
-                    <button className="text-slate-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer">
-                        <Copy size={12} />
-                    </button>
                 )}
             </div>
         </div>
