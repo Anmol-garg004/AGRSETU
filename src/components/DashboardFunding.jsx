@@ -1,15 +1,28 @@
 import React from 'react';
 import { IndianRupee, Building, Landmark, Percent, ArrowRight, ShieldCheck, Sprout, FileText } from 'lucide-react';
 
-const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
+const DashboardFunding = ({ trustScore = 942, searchQuery = '' }) => {
+    const [applicationStatus, setApplicationStatus] = React.useState({}); // { [idx]: 'idle' | 'processing' | 'applied' }
+    const [notification, setNotification] = React.useState(null);
+
+    const handleApply = (idx, type) => {
+        setApplicationStatus(prev => ({ ...prev, [idx]: 'processing' }));
+
+        setTimeout(() => {
+            setApplicationStatus(prev => ({ ...prev, [idx]: 'applied' }));
+            setNotification(`Application for ${type} submitted successfully!`);
+
+            setTimeout(() => setNotification(null), 4000);
+        }, 1800);
+    };
+
     // Mock Data based on Indian Agri Context
     const loans = [
-        // ... (data remains same, assume it's static in component or moved out)
         {
             bank: "State Bank of India",
             type: "Kisan Credit Card (KCC)",
             interest: "7% p.a.",
-            amount: "₹3,00,000",
+            amount: "₹5,00,000",
             minScore: 650,
             features: ["No collateral up to ₹1.6 Lakh", "Flexible repayment", "Crop insurance coverage"],
             logo: "SBI"
@@ -69,7 +82,20 @@ const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
     );
 
     return (
-        <div className="space-y-8 fade-in pb-12">
+        <div className="space-y-8 fade-in pb-12 relative">
+            {/* Notification Toast */}
+            {notification && (
+                <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300 border border-slate-700">
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-slate-900">
+                        <ShieldCheck size={18} fill="currentColor" className="text-emerald-500 bg-white rounded-full" />
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm">Application Sent</h4>
+                        <p className="text-xs text-slate-300">{notification}</p>
+                    </div>
+                </div>
+            )}
+
             {/* Header Section */}
             <div className="flex flex-col gap-2">
                 <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -88,7 +114,7 @@ const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
                         </div>
                         <h3 className="text-3xl font-black mb-1">Excellent Credit Profile</h3>
                         <p className="text-slate-300 max-w-xl text-sm leading-relaxed">
-                            Your current score of <span className="text-white font-black text-lg">780</span> makes you eligible for <span className="text-emerald-400 font-bold">Premium Tier</span> loans with preferential interest rates starting at just 4%.
+                            Your current score of <span className="text-white font-black text-lg">{trustScore}</span> makes you eligible for <span className="text-emerald-400 font-bold">Premium Tier</span> loans with preferential interest rates starting at just 4%.
                         </p>
                     </div>
                     <button className="whitespace-nowrap bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 py-3 rounded-xl font-black text-sm flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20">
@@ -141,8 +167,20 @@ const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
                                 ))}
                             </ul>
 
-                            <button className="w-full py-3 bg-slate-900 text-white rounded-xl text-sm font-bold group-hover:bg-emerald-600 transition-colors shadow-lg shadow-slate-900/10">
-                                Apply Now
+                            <button
+                                onClick={() => handleApply(idx, loan.type)}
+                                disabled={applicationStatus[idx] === 'processing' || applicationStatus[idx] === 'applied'}
+                                className={`w-full py-3 rounded-xl text-sm font-bold transition-all shadow-lg flex items-center justify-center gap-2
+                                    ${applicationStatus[idx] === 'applied'
+                                        ? 'bg-emerald-600 text-white cursor-default'
+                                        : applicationStatus[idx] === 'processing'
+                                            ? 'bg-slate-700 text-slate-300 cursor-wait'
+                                            : 'bg-slate-900 text-white hover:bg-emerald-600 shadow-slate-900/10'
+                                    }`}
+                            >
+                                {applicationStatus[idx] === 'processing' ? 'Processing...' :
+                                    applicationStatus[idx] === 'applied' ? <>Applied <ShieldCheck size={16} /></> :
+                                        'Apply Now'}
                             </button>
                         </div>
                     )) : (
@@ -174,8 +212,20 @@ const DashboardFunding = ({ trustScore = 780, searchQuery = '' }) => {
                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-4">
                                     <FileText size={14} /> Eligibility: <span className="text-slate-700">{scheme.eligibility}</span>
                                 </div>
-                                <button className="text-xs font-black text-slate-900 uppercase tracking-wide border-b-2 border-slate-200 hover:border-emerald-500 hover:text-emerald-600 transition-all pb-0.5">
-                                    Check Eligibility & Apply
+                                <button
+                                    onClick={() => handleApply(`scheme-${idx}`, scheme.name)}
+                                    disabled={applicationStatus[`scheme-${idx}`] === 'processing' || applicationStatus[`scheme-${idx}`] === 'applied'}
+                                    className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wide transition-all shadow-md flex items-center justify-center gap-2
+                                         ${applicationStatus[`scheme-${idx}`] === 'applied'
+                                            ? 'bg-emerald-600 text-white cursor-default'
+                                            : applicationStatus[`scheme-${idx}`] === 'processing'
+                                                ? 'bg-slate-700 text-slate-300 cursor-wait'
+                                                : 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-900 hover:text-white hover:border-slate-900'
+                                        }`}
+                                >
+                                    {applicationStatus[`scheme-${idx}`] === 'processing' ? 'Processing...' :
+                                        applicationStatus[`scheme-${idx}`] === 'applied' ? <>Enrolled <ShieldCheck size={14} /></> :
+                                            'Check & Apply'}
                                 </button>
                             </div>
                         </div>
