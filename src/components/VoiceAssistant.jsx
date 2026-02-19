@@ -250,20 +250,51 @@ const VoiceAssistant = () => {
     }
 
     return (
-        <div className="fixed bottom-8 right-8 w-[360px] bg-white rounded-3xl shadow-2xl z-[9999] overflow-hidden font-sans border border-slate-100 flex flex-col animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div style={{
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            width: '360px',
+            backgroundColor: '#ffffff',
+            borderRadius: '24px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05)',
+            zIndex: 9999,
+            overflow: 'hidden',
+            fontFamily: "'Outfit', sans-serif",
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+        }}>
             {/* Header */}
-            <div className="bg-slate-900 text-white p-4 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <div className="bg-emerald-500/20 p-1.5 rounded-full">
-                        <Mic size={16} className="text-emerald-400" />
+            <div style={{
+                backgroundColor: '#0f172a', /* slate-900 */
+                color: 'white',
+                padding: '16px 20px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.2)', padding: '6px', borderRadius: '50%' }}>
+                        <Mic size={16} color="#34d399" />
                     </div>
-                    <span className="font-bold">Agri Assistant</span>
+                    <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>Agri Assistant</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button onClick={() => setShowSettings(!showSettings)} className="text-slate-400 hover:text-white transition-colors">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                        onClick={() => setShowSettings(!showSettings)}
+                        style={{ color: '#94a3b8', background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px' }}
+                        onMouseEnter={(e) => e.target.style.color = 'white'}
+                        onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                    >
                         <Settings size={18} />
                     </button>
-                    <button onClick={() => { setIsOpen(false); stopListening(); window.speechSynthesis.cancel(); audioRef.current.pause(); }} className="text-slate-400 hover:text-white">
+                    <button
+                        onClick={() => { setIsOpen(false); stopListening(); window.speechSynthesis.cancel(); audioRef.current.pause(); }}
+                        style={{ color: '#94a3b8', background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px' }}
+                        onMouseEnter={(e) => e.target.style.color = 'white'}
+                        onMouseLeave={(e) => e.target.style.color = '#94a3b8'}
+                    >
                         <X size={20} />
                     </button>
                 </div>
@@ -271,27 +302,58 @@ const VoiceAssistant = () => {
 
             {/* Settings Panel */}
             {showSettings && (
-                <div className="p-4 bg-slate-50 border-b border-slate-100">
-                    <p className="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1"><Key size={12} /> ElevenLabs API Key</p>
+                <div style={{ padding: '16px', backgroundColor: '#f8fafc', borderBottom: '1px solid #f1f5f9' }}>
+                    <p style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Key size={12} /> ElevenLabs API Key
+                    </p>
                     <input
                         type="password"
                         value={apiKey}
                         onChange={(e) => saveApiKey(e.target.value)}
                         placeholder="Enter your API Key..."
-                        className="w-full text-xs p-2 rounded border border-slate-200 focus:outline-none focus:border-emerald-500 mb-2"
+                        style={{
+                            width: '100%',
+                            fontSize: '0.75rem',
+                            padding: '8px',
+                            borderRadius: '4px',
+                            border: '1px solid #e2e8f0',
+                            outline: 'none',
+                            marginBottom: '4px'
+                        }}
                     />
-                    <p className="text-[10px] text-slate-400">Required for generic high-quality multilingual voice. Without this, browser default voice is used.</p>
+                    <p style={{ fontSize: '10px', color: '#94a3b8', margin: 0 }}>Required for generic high-quality multilingual voice. Without this, browser default voice is used.</p>
                 </div>
             )}
 
             {/* Language Selector */}
-            <div className="px-4 py-2 bg-slate-50 border-b flex items-center gap-2 overflow-x-auto no-scrollbar">
-                <Globe size={14} className="text-slate-400 shrink-0" />
+            <div style={{
+                padding: '8px 16px',
+                backgroundColor: '#f8fafc',
+                borderBottom: '1px solid #e2e8f0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                overflowX: 'auto',
+                whiteSpace: 'nowrap',
+                scrollbarWidth: 'none'
+            }}>
+                <Globe size={14} color="#94a3b8" style={{ flexShrink: 0 }} />
                 {languages.map(lang => (
                     <button
                         key={lang.code}
                         onClick={() => { setSelectedLang(lang.code); }}
-                        className={`text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all font-medium ${selectedLang === lang.code ? 'bg-emerald-600 text-white shadow-md' : 'bg-white border text-slate-600 hover:bg-slate-100'}`}
+                        style={{
+                            fontSize: '0.75rem',
+                            padding: '4px 12px',
+                            borderRadius: '999px',
+                            transition: 'all 0.2s',
+                            cursor: 'pointer',
+                            border: selectedLang === lang.code ? 'none' : '1px solid #e2e8f0',
+                            backgroundColor: selectedLang === lang.code ? '#059669' : 'white',
+                            color: selectedLang === lang.code ? 'white' : '#475569',
+                            boxShadow: selectedLang === lang.code ? '0 2px 5px rgba(5,150,105,0.2)' : 'none',
+                            fontWeight: '500'
+                        }}
                     >
                         {lang.label}
                     </button>
@@ -299,53 +361,139 @@ const VoiceAssistant = () => {
             </div>
 
             {/* Chat Area */}
-            <div className="p-6 min-h-[200px] flex flex-col items-center justify-center text-center bg-white relative">
+            <div style={{
+                padding: '24px',
+                minHeight: '200px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                backgroundColor: 'white',
+                position: 'relative'
+            }}>
                 {isListening ? (
-                    <div className="mb-4">
-                        <div className="flex gap-1.5 h-8 items-center justify-center">
+                    <div style={{ marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', gap: '6px', height: '32px', alignItems: 'center', justifyContent: 'center' }}>
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-1.5 bg-emerald-500 rounded-full animate-voice-wave" style={{ animationDelay: `${i * 0.1}s`, height: '10px' }}></div>
+                                <div key={i} className="animate-voice-wave" style={{
+                                    width: '6px',
+                                    borderRadius: '999px',
+                                    backgroundColor: '#10b981',
+                                    animationDelay: `${i * 0.1}s`,
+                                    height: '10px'
+                                }}></div>
                             ))}
                         </div>
-                        <p className="mt-4 text-emerald-600 font-bold text-sm animate-pulse">{getResponseText('listening', selectedLang)}</p>
+                        <p style={{ marginTop: '16px', color: '#059669', fontWeight: '700', fontSize: '0.875rem' }}>
+                            {getResponseText('listening', selectedLang)}
+                        </p>
                     </div>
                 ) : (
-                    <div className="mb-4 relative">
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isSpeaking ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-300'}`}>
-                            {isSpeaking ? <Volume2 size={32} className="animate-pulse" /> : <Mic size={32} />}
+                    <div style={{ marginBottom: '16px', position: 'relative' }}>
+                        <div style={{
+                            width: '64px',
+                            height: '64px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: isSpeaking ? '#ecfdf5' : '#f8fafc',
+                            color: isSpeaking ? '#059669' : '#cbd5e1'
+                        }}>
+                            {isSpeaking ? <Volume2 size={32} /> : <Mic size={32} />}
                         </div>
-                        {isSpeaking && <div className="absolute inset-0 rounded-full border-2 border-emerald-500/30 animate-ping"></div>}
+                        {isSpeaking && <div style={{
+                            position: 'absolute',
+                            inset: 0,
+                            borderRadius: '50%',
+                            border: '2px solid rgba(16, 185, 129, 0.3)',
+                            animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite'
+                        }}></div>}
                     </div>
                 )}
 
-                <p className="text-slate-800 font-medium text-lg leading-relaxed">
+                <p style={{
+                    color: '#1e293b',
+                    fontWeight: '500',
+                    fontSize: '1.125rem',
+                    lineHeight: '1.6',
+                    margin: 0
+                }}>
                     {transcript || text}
                 </p>
             </div>
 
             {/* Controls */}
-            <div className="p-4 border-t bg-slate-50 flex justify-center gap-4">
+            <div style={{
+                padding: '16px',
+                borderTop: '1px solid #f1f5f9',
+                backgroundColor: '#f8fafc',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '16px'
+            }}>
                 <button
                     onClick={isListening ? stopListening : startListening}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 ${isListening ? 'bg-rose-500 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+                    style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                        transition: 'transform 0.1s',
+                        cursor: 'pointer',
+                        border: 'none',
+                        backgroundColor: isListening ? '#f43f5e' : '#059669',
+                        color: 'white'
+                    }}
+                    onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                    onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
                     {isListening ? <StopCircle size={24} /> : <Mic size={24} />}
                 </button>
 
                 {(!isListening && transcript) && (
-                    <button onClick={() => { setTranscript(""); startListening(); }} className="w-12 h-12 rounded-full bg-white border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-100 transition-colors">
+                    <button
+                        onClick={() => { setTranscript(""); startListening(); }}
+                        style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            backgroundColor: 'white',
+                            border: '1px solid #e2e8f0',
+                            color: '#64748b',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'background-color 0.2s'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'white'}
+                    >
                         <RefreshCw size={20} />
                     </button>
                 )}
             </div>
 
             <style>{`
+                @keyframes slideUp {
+                    from { transform: translateY(50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
                 @keyframes voice-wave {
                     0%, 100% { height: 10px; }
                     50% { height: 24px; }
                 }
                 .animate-voice-wave {
                     animation: voice-wave 1s ease-in-out infinite;
+                }
+                /* Hide Scrollbar for language selector */
+                div::-webkit-scrollbar {
+                    display: none; 
                 }
             `}</style>
         </div>
