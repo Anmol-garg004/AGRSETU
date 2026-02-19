@@ -73,146 +73,151 @@ const VoiceAssistant = () => {
     const getLocalizedTemplate = (lang, key) => {
         const templates = {
             'en-IN': {
-                welcome: "Hello Kishan Ji! I am your Agri Assistant. Ask me about your crops, loan, weather, or money.",
+                welcome: "Hello Kishan Ji! I am your Agri Assistant. Ask me about your Wheat, Mustard, Potato, loans, or weather.",
                 listening: "Listening...",
-                error: "Sorry, I didn't understand that. Please try again.",
+                error: "Sorry, I didn't understand that. Please try asking about specific crops or your bank balance.",
                 identity: `You are Kishan Kumar from Rampur. You farm on ${farmerData.profile.landSize} of land.`,
                 farm_info: `You have ${farmerData.profile.landSize} of land with ${farmerData.profile.soil} soil. Irrigation source is ${farmerData.profile.irrigation}.`,
-                crop_status: `You are currently growing Wheat, Mustard, and Potato. Your Wheat is in Vegetative stage and looks Excellent.`,
-                financial_summary: `You have an active KCC Loan limit of ${farmerData.financials.kccLimit}. Your current earnings this season are ${farmerData.financials.totalEarnings}.`,
+                crop_status: `You are currently growing Wheat (Vegetative), Mustard (Flowering), and Potato (Planting). All crops are healthy.`,
+                crop_wheat: `Your Wheat crop is in the Vegetative stage and looks Excellent. Expected harvest is ${farmerData.crops[0].harvest}.`,
+                crop_mustard: `Your Mustard crop is currently Flowering with Good health. Harvest is expected by ${farmerData.crops[1].harvest}.`,
+                crop_potato: `Your Potato crop is in the Planting phase and is in Excellent condition. Harvest due in ${farmerData.crops[2].harvest}.`,
+                financial_summary: `You have an active KCC Loan limit of ${farmerData.financials.kccLimit}. Your total earnings this season are ${farmerData.financials.totalEarnings}.`,
                 transaction_last: `Your last transaction was a ${farmerData.transactions[0].source} of ${farmerData.transactions[0].amount} on ${farmerData.transactions[0].date}.`,
                 weather_current: `It is currently ${farmerData.weather.temp} and ${farmerData.weather.condition}. Rain chance is ${farmerData.weather.rainChance}.`,
-                trust_score: `Your Agri Trust Score is ${farmerData.trustScore.score}, which is ${farmerData.trustScore.status}. Banks trust you highly.`
+                trust_score: `Your Agri Trust Score is ${farmerData.trustScore.score}, which is ${farmerData.trustScore.status}. Banks are ready to lend.`,
+                market_price: "Wheat mandate price is ₹2,125/quintal. Potato is trading at ₹800-900/quintal in local Mandi."
             },
             'hi-IN': {
-                welcome: "नमस्ते किशन जी! मैं आपका कृषि सहायक हूँ। आप मुझसे अपनी फसल, लोन, मौसम या पैसों के बारे में पूछें।",
+                welcome: "नमस्ते किशन जी! मैं आपका कृषि सहायक हूँ। आप मुझसे गेहूं, सरसों, आलू, लोन या मौसम के बारे में पूछें।",
                 listening: "सुन रहा हूँ...",
-                error: "माफ़ कीजिये, मैं समझ नहीं पाया। कृपया दोबारा बोलें।",
+                error: "माफ़ कीजिये, मैं समझ नहीं पाया। कृपया फसल या बैंक के बारे में स्पष्ट पूछें।",
                 identity: `आप किशन कुमार हैं, रामपुर से। आपके पास ${farmerData.profile.landSize} ज़मीन है।`,
-                farm_info: `आपकी ज़मीन ${farmerData.profile.landSize} है और मिट्टी ${farmerData.profile.soil} है। सिंचाई का साधन ${farmerData.profile.irrigation} है।`,
-                crop_status: `अभी आप गेहूं, सरसों और आलू उगा रहे हैं। आपका गेहूं अच्छी स्थिति में है।`,
-                financial_summary: `आपका KCC लोन लिमिट ${farmerData.financials.kccLimit} है। इस सीज़न की कमाई ${farmerData.financials.totalEarnings} है।`,
+                farm_info: `आपकी ज़मीन ${farmerData.profile.landSize} है और मिट्टी ${farmerData.profile.soil} है। सिंचाई ${farmerData.profile.irrigation} से होती है।`,
+                crop_status: `अभी आप गेहूं, सरसों और आलू उगा रहे हैं। तीनों फसलें स्वस्थ हैं।`,
+                crop_wheat: `आपका गेहूं अभी बढ़ने की अवस्था (Vegetative) में है और बहुत अच्छा दिख रहा है। कटाई ${farmerData.crops[0].harvest} में होगी।`,
+                crop_mustard: `आपकी सरसों में फूल आ रहे हैं (Flowering) और स्थिति अच्छी है। कटाई ${farmerData.crops[1].harvest} तक हो जाएगी।`,
+                crop_potato: `आलू की बुवाई (Planting) अभी चल रही है और स्थिति बेहतरीन है। ${farmerData.crops[2].harvest} में तैयार होगा।`,
+                financial_summary: `आपका KCC लोन लिमिट ${farmerData.financials.kccLimit} है। इस सीज़न की कुल कमाई ${farmerData.financials.totalEarnings} है।`,
                 transaction_last: `आपका पिछला लेन-देन ${farmerData.transactions[0].source} से ${farmerData.transactions[0].amount} का था, ${farmerData.transactions[0].date} को।`,
-                weather_current: `अभी तापमान ${farmerData.weather.temp} है और मौसम साफ़ है। बारिश की संभावना ${farmerData.weather.rainChance} है।`,
-                trust_score: `आपका एग्री ट्रस्ट स्कोर ${farmerData.trustScore.score} है, जो बहुत अच्छा है। बैंक आप पर भरोसा करते हैं।`
+                weather_current: `अभी तापमान ${farmerData.weather.temp} है और मौसम ${farmerData.weather.condition} है। बारिश की संभावना ${farmerData.weather.rainChance} है।`,
+                trust_score: `आपका एग्री ट्रस्ट स्कोर ${farmerData.trustScore.score} है, जो बहुत अच्छा है। बैंक आपको लोन देने को तैयार हैं।`,
+                market_price: "गेहूं का मंडी भाव ₹2,125/क्विंटल है। आलू स्थानीय मंडी में ₹800-900/क्विंटल चल रहा है।"
             },
             'pa-IN': {
-                welcome: "ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਕਿਸ਼ਨ ਜੀ! ਕਿਵੇਂ ਹੋ? ਤੁਸੀਂ ਮੇਰੇ ਤੋਂ ਫਸਲ, ਲੋਨ, ਮੌਸਮ ਜਾਂ ਪੈਸੇ ਬਾਰੇ ਪੁੱਛ ਸਕਦੇ ਹੋ।",
+                welcome: "ਸਤਿ ਸ਼੍ਰੀ ਅਕਾਲ ਕਿਸ਼ਨ ਜੀ! ਤੁਸੀਂ ਮੇਰੇ ਤੋਂ ਕਣਕ, ਸਰ੍ਹੋਂ, ਆਲੂ, ਲੋਨ ਜਾਂ ਮੌਸਮ ਬਾਰੇ ਪੁੱਛ ਸਕਦੇ ਹੋ।",
                 listening: "ਸੁਣ ਰਿਹਾ ਹਾਂ...",
-                error: "ਮਾਫ ਕਰਨਾ, ਮੈਨੂੰ ਸਮਝ ਨਹੀਂ ਆਇਆ।",
+                error: "ਮਾਫ ਕਰਨਾ, ਮੈਨੂੰ ਸਮਝ ਨਹੀਂ ਆਇਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
                 identity: `ਤੁਸੀਂ ਰਾਮਪੁਰ ਤੋਂ ਕਿਸ਼ਨ ਕੁਮਾਰ ਹੋ। ਤੁਹਾਡੇ ਕੋਲ ${farmerData.profile.landSize} ਜ਼ਮੀਨ ਹੈ।`,
                 farm_info: `ਤੁਹਾਡੀ ਜ਼ਮੀਨ ${farmerData.profile.landSize} ਹੈ। ਮਿੱਟੀ ${farmerData.profile.soil} ਹੈ।`,
-                crop_status: `ਤੁਸੀਂ ਕਣਕ, ਸਰ੍ਹੋਂ ਅਤੇ ਆਲੂ ਦੀ ਖੇਤੀ ਕਰ ਰਹੇ ਹੋ। ਕਣਕ ਬਹੁਤ ਵਧੀਆ ਹੈ।`,
+                crop_status: `ਤੁਸੀਂ ਕਣਕ, ਸਰ੍ਹੋਂ ਅਤੇ ਆਲੂ ਦੀ ਖੇਤੀ ਕਰ ਰਹੇ ਹੋ। ਸਭ ਠੀਕ ਹੈ।`,
+                crop_wheat: `ਤੁਹਾਡੀ ਕਣਕ ਵਧ ਰਹੀ ਹੈ (Vegetative) ਅਤੇ ਬਹੁਤ ਵਧੀਆ ਹੈ। ਵਾਢੀ ${farmerData.crops[0].harvest} ਵਿੱਚ ਹੋਵੇਗੀ।`,
+                crop_mustard: `ਸਰ੍ਹੋਂ ਨੂੰ ਫੁੱਲ ਪੈ ਰਹੇ ਹਨ (Flowering)। ਹਾਲਤ ਚੰਗੀ ਹੈ। ${farmerData.crops[1].harvest} ਤੱਕ ਤਿਆਰ ਹੋ ਜਾਵੇਗੀ।`,
+                crop_potato: `ਆਲੂ ਦੀ ਬਿਜਾਈ (Planting) ਚੱਲ ਰਹੀ ਹੈ। ${farmerData.crops[2].harvest} ਵਿੱਚ ਪੁਟਾਈ ਹੋਵੇਗੀ।`,
                 financial_summary: `ਤੁਹਾਡੀ KCC ਲਿਮਿਟ ${farmerData.financials.kccLimit} ਹੈ। ਕੁੱਲ ਕਮਾਈ ${farmerData.financials.totalEarnings} ਹੈ।`,
-                transaction_last: `ਆਖਰੀ ਵਾਰ ਤੁਸੀਂ ${farmerData.transactions[0].source} ਤੋਂ ${farmerData.transactions[0].amount} ਕਮਾਏ।`,
-                weather_current: `ਤਾਪਮਾਨ ${farmerData.weather.temp} ਹੈ। ਮੌਸਮ ਸਾਫ ਹੈ।`,
-                trust_score: `ਤੁਹਾਡਾ ਟਰੱਸਟ ਸਕੋਰ ${farmerData.trustScore.score} ਹੈ। ਬਹੁਤ ਵਧੀਆ!`
+                transaction_last: `ਆਖਰੀ ਵਾਰ ਤੁਸੀਂ ${farmerData.transactions[0].source} ਤੋਂ ${farmerData.transactions[0].amount} ਕਮਾਏ (${farmerData.transactions[0].date})।`,
+                weather_current: `ਤਾਪਮਾਨ ${farmerData.weather.temp} ਹੈ। ਮੌਸਮ ਸਾਫ ਹੈ। ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ ${farmerData.weather.rainChance} ਹੈ।`,
+                trust_score: `ਤੁਹਾਡਾ ਟਰੱਸਟ ਸਕੋਰ ${farmerData.trustScore.score} ਹੈ। ਬੈਂਕ ਤੁਹਾਡੇ 'ਤੇ ਭਰੋਸਾ ਕਰਦੇ ਹਨ।`,
+                market_price: "ਕਣਕ ਦਾ ਭਾਅ ₹2,125/ਕਵਿੰਟਲ ਹੈ। ਆਲੂ ₹800-900/ਕਵਿੰਟਲ ਵਿਕ ਰਿਹਾ ਹੈ।"
             },
             'gu-IN': {
-                welcome: "નમસ્તે કિશન જી! હું તમારો કૃષિ સહાયક છું. પાક, લોન કે હવામાન વિશે પૂછો.",
+                welcome: "નમસ્તે કિશન જી! ઘઉં, સરસવ, બટાકા અથવા લોન વિશે પૂછો.",
                 listening: "હું સાંભળી રહ્યો છું...",
-                error: "માફ કરશો, હું સમજી શક્યો નહીં.",
-                identity: `તમે રામપુરના કિશન કુમાર છો.`,
-                farm_info: `તમારી જમીન ${farmerData.profile.landSize} છે.`,
-                crop_status: `તમે ઘઉં, સરસવ અને બટાકા વાવ્યા છે. પાક સારો છે.`,
+                crop_status: `તમે ઘઉં, સરસવ અને બટાકા વાવ્યા છે.`,
+                crop_wheat: `તમારા ઘઉંનો પાક સારો છે. કાપણી ${farmerData.crops[0].harvest} માં થશે.`,
+                crop_mustard: `સરસવમાં ફૂલ આવી રહ્યા છે. કાપણી ${farmerData.crops[1].harvest} માં થશે.`,
+                crop_potato: `બટાકાનું વાવેતર ચાલુ છે. ${farmerData.crops[2].harvest} માં તૈયાર થશે.`,
                 financial_summary: `તમારી KCC મર્યાદા ${farmerData.financials.kccLimit} છે.`,
                 transaction_last: `છેલ્લો વ્યવહાર ${farmerData.transactions[0].amount} નો હતો.`,
-                weather_current: `તાપમાન ${farmerData.weather.temp} છે.`,
+                weather_current: `તાપમાન ${farmerData.weather.temp} છે. વરસાદની શક્યતા ${farmerData.weather.rainChance} છે.`,
                 trust_score: `તમારો ટ્રસ્ટ સ્કોર ${farmerData.trustScore.score} છે.`
             },
             'mr-IN': {
-                welcome: "नमस्कार किशन जी! मी तुमचा कृषी मित्र आहे. पिकाबद्दल किंवा कर्जाबद्दल विचारा.",
+                welcome: "नमस्कार किशन जी! गहू, मोहरी, बटाटा किंवा हवामानाबद्दल विचारा.",
                 listening: "मी ऐकत आहे...",
-                error: "क्षमस्व, मला समजले नाही.",
-                identity: `तुम्ही रामपूरचे किशन कुमार आहात.`,
-                farm_info: `तुमची जमीन ${farmerData.profile.landSize} आहे.`,
                 crop_status: `तुम्ही गहू, मोहरी आणि बटाटा लावला आहे.`,
+                crop_wheat: `गव्हाचे पीक उत्तम आहे. कापणी ${farmerData.crops[0].harvest} मध्ये होईल.`,
+                crop_mustard: `मोहरीला फुले येत आहेत. ${farmerData.crops[1].harvest} मध्ये तयार होईल.`,
+                crop_potato: `बटाटा लागवड सुरू आहे.`,
                 financial_summary: `तुमची KCC मर्यादा ${farmerData.financials.kccLimit} आहे.`,
-                transaction_last: `शेवटचा व्यवहार ${farmerData.transactions[0].amount} चा होता.`,
                 weather_current: `तापमान ${farmerData.weather.temp} आहे.`,
                 trust_score: `तुमचा ट्रस्ट स्कोर ${farmerData.trustScore.score} आहे.`
             },
             'ta-IN': {
-                welcome: "வணக்கம் கிஷன் ஜி! பயிர், கடன் அல்லது வானிலை பற்றி கேளுங்கள்.",
-                listening: "கேட்கிறது...",
-                error: "மன்னிக்கவும், புரியவில்லை.",
-                identity: "நீங்கள் ராம்பூரைச் சேர்ந்த கிஷன் குமார்.",
-                farm_info: `உங்களிடம் ${farmerData.profile.landSize} நிலம் உள்ளது.`,
+                welcome: "வணக்கம்! கோதுமை, கடுகு அல்லது உருளைக்கிழங்கு பற்றி கேளுங்கள்.",
                 crop_status: "நீங்கள் கோதுமை, கடுகு மற்றும் உருளைக்கிழங்கு பயிரிடுகிறீர்கள்.",
-                financial_summary: `உங்கள் KCC வரம்பு ${farmerData.financials.kccLimit}.`,
-                transaction_last: `கடைசி பரிவர்த்தனை ${farmerData.transactions[0].amount}.`,
-                weather_current: `வெப்பநிலை ${farmerData.weather.temp}.`,
-                trust_score: `உங்கள் நம்பிக்கை மதிப்பெண் ${farmerData.trustScore.score}.`
+                crop_wheat: `கோதுமை நன்றாக வளர்கிறது. அறுவடை ${farmerData.crops[0].harvest}.`,
+                crop_mustard: `கடுகு பூக்கும் பருவத்தில் உள்ளது.`,
+                crop_potato: `உருளைக்கிழங்கு நடவு நடக்கிறது.`,
+                financial_summary: `KCC வரம்பு ${farmerData.financials.kccLimit}. வருமானம் ${farmerData.financials.totalEarnings}.`,
+                weather_current: `வெப்பநிலை ${farmerData.weather.temp}. மழை வாய்ப்பு ${farmerData.weather.rainChance}.`
             },
             'te-IN': {
-                welcome: "నమస్కారం కిషన్ జీ! పంటలు, రుణాలు లేదా వాతావరణం గురించి అడగండి.",
-                listening: "వింటున్నాను...",
-                error: "క్షమించండి, అర్థం కాలేదు.",
-                identity: "మీరు రాంపూర్‌కు చెందిన కిషన్ కుమార్.",
-                farm_info: `మీకు ${farmerData.profile.landSize} భూమి ఉంది.`,
+                welcome: "నమస్కారం! గోధుమలు, ఆవాలు లేదా బంగాళాదుంపల గురించి అడగండి.",
                 crop_status: "మీరు గోధుమలు, ఆవాలు మరియు బంగాళాదుంపలు పండిస్తున్నారు.",
-                financial_summary: `మీ KCC పరిమితి ${farmerData.financials.kccLimit}.`,
-                transaction_last: `చివరి లావాదేవీ ${farmerData.transactions[0].amount}.`,
-                weather_current: `ఉష్ణోగ్రత ${farmerData.weather.temp}.`,
-                trust_score: `మీ ట్రస్ట్ స్కోర్ ${farmerData.trustScore.score}.`
+                crop_wheat: `గోధుమ పంట బాగుంది. ${farmerData.crops[0].harvest}లో కోత వస్తుంది.`,
+                crop_mustard: `ఆవాలు పూత దశలో ఉన్నాయి.`,
+                crop_potato: `బంగాళాదుంప నాటడం జరుగుతోంది.`,
+                financial_summary: `KCC పరిమితి ${farmerData.financials.kccLimit}.`,
+                weather_current: `ఉష్ణోగ్రత ${farmerData.weather.temp}.`
             },
             'bn-IN': {
-                welcome: "নমস্কার কিষাণ জি! ফসল, ঋণ বা আবহাওয়া সম্পর্কে জিজ্ঞাসা করুন।",
-                listening: "শুনছি...",
-                error: "দুঃখিত, বুঝতে পারিনি।",
-                identity: "আপনি রামপুরের কিষাণ কুমার।",
-                farm_info: `আপনার ${farmerData.profile.landSize} জমি আছে।`,
+                welcome: "নমস্কার! গম, সরিষা বা আলুর ব্যাপারে জিজ্ঞাসা করুন।",
                 crop_status: "আপনি গম, সরিষা এবং আলু চাষ করছেন।",
-                financial_summary: `আপনার কেসিসি সীমা ${farmerData.financials.kccLimit}।`,
-                transaction_last: `শেষ লেনদেন ${farmerData.transactions[0].amount}।`,
-                weather_current: `তাপমাত্রা ${farmerData.weather.temp}।`,
-                trust_score: `আপনার ট্রাস্ট স্কোর ${farmerData.trustScore.score}।`
+                crop_wheat: `গম খুব ভালো আছে। ${farmerData.crops[0].harvest}-এ কাটা হবে।`,
+                crop_mustard: `সরিষায় ফুল এসেছে।`,
+                crop_potato: `আলু বোনা হচ্ছে।`,
+                financial_summary: `KCC সীমা ${farmerData.financials.kccLimit}। আয় ${farmerData.financials.totalEarnings}।`,
+                weather_current: `তাপমাত্রা ${farmerData.weather.temp}।`
             },
             'kn-IN': {
-                welcome: "ನಮಸ್ಕಾರ ಕಿಶನ್ ಜಿ! ಬೆಳೆ, ಸಾಲ ಅಥವಾ ಹವಾಮಾನದ ಬಗ್ಗೆ ಕೇಳಿ.",
-                listening: "ಕೇಳಿಸಿಕೊಳ್ಳುತ್ತಿದ್ದೇನೆ...",
-                error: "ಕ್ಷಮಿಸಿ, ಅರ್ಥವಾಗಲಿಲ್ಲ.",
-                identity: "ನೀವು ರಾಮ್‌ಪುರದ ಕಿಶನ್ ಕುಮಾರ್.",
-                farm_info: `ನಿಮ್ಮ ಬಳಿ ${farmerData.profile.landSize} ಭೂಮಿ ಇದೆ.`,
+                welcome: "ನಮಸ್ಕಾರ! ಗೋಧಿ, ಸಾಸಿವೆ ಅಥವಾ ಆಲೂಗಡ್ಡೆ ಬಗ್ಗೆ ಕೇಳಿ.",
                 crop_status: "ನೀವು ಗೋಧಿ, ಸಾಸಿವೆ ಮತ್ತು ಆಲೂಗಡ್ಡೆ ಬೆಳೆಯುತ್ತಿದ್ದೀರಿ.",
-                financial_summary: `ನಿಮ್ಮ KCC ಮಿತಿ ${farmerData.financials.kccLimit}.`,
-                transaction_last: `ಕೊನೆಯ ವಹಿವಾಟು ${farmerData.transactions[0].amount}.`,
-                weather_current: `ತಾಪಮಾನ ${farmerData.weather.temp}.`,
-                trust_score: `ನಿಮ್ಮ ಟ್ರಸ್ಟ್ ಸ್ಕೋರ್ ${farmerData.trustScore.score}.`
+                crop_wheat: `ಗೋಧಿ ಬೆಳೆ ಚೆನ್ನಾಗಿದೆ. ${farmerData.crops[0].harvest} ರಲ್ಲಿ ಕಟಾವು.`,
+                crop_mustard: `ಸಾಸಿವೆ ಹೂ ಬಿಡುತ್ತಿದೆ.`,
+                crop_potato: `ಆಲೂಗಡ್ಡೆ ನಾಟಿ ನಡೆಯುತ್ತಿದೆ.`,
+                financial_summary: `KCC ಮಿತಿ ${farmerData.financials.kccLimit}.`,
+                weather_current: `ತಾಪಮಾನ ${farmerData.weather.temp}.`
             }
         };
-        return templates[lang]?.[key] || templates['en-IN'][key];
+        return templates[lang]?.[key] || templates['en-IN'][key] || templates['en-IN']['error'];
     };
 
-    // --- INTENT CLASSIFICSTION LOGIC ---
+    // --- INTENT CLASSIFICATION LOGIC ---
     const identifyIntent = (query, lang) => {
         const q = query.toLowerCase();
 
-        // Universal keywords (work across many Indian languages via generic sounds or common English terms)
+        // 0. SPECIFIC CROP CHECKS (Priority)
+        if (q.match(/(wheat|gehu|kanak|godhumai|godhuma|gom)/)) return 'crop_wheat';
+        if (q.match(/(mustard|sarso|rai|kadugu|aavalu)/)) return 'crop_mustard';
+        if (q.match(/(potato|aloo|batata|urulakizhangu|bangaladumpa)/)) return 'crop_potato';
 
         // 1. Identity / Profile
-        if (q.match(/(name|naam|who am i|parichay|mera naam|identity|नाम|parichay|hesaru|peru)/)) return 'identity';
+        if (q.match(/(name|naam|who am i|parichay|mera naam|identity|नाम|hesaru|peru|profile)/)) return 'identity';
 
         // 2. Financials / Money / Bank
-        if (q.match(/(money|paisa|rupaye|bank|account|khata|balance|udhaar|financial|dhan|income|kamai|paise|panam|dabbu|taka|huna)/)) return 'financial_summary';
+        if (q.match(/(money|paisa|rupaye|bank|account|khata|balance|udhaar|financial|dhan|income|kamai|earnings|loan|kcc|limit|credit)/)) return 'financial_summary';
 
         // 3. Transactions / Last Sale
-        if (q.match(/(sold|sale|becha|last transaction|amount|len den|byapar|khatoni|transaction|spending|kharch|vitta|vyavhar)/)) return 'transaction_last';
+        if (q.match(/(sold|sale|becha|last transaction|amount|len den|byapar|khatoni|transaction|spending|kharch|history|statement)/)) return 'transaction_last';
 
-        // 4. Crop / Farming
-        if (q.match(/(crop|fasal|kheti|wheat|gehu|sarso|mustard|potato|aloo|yield|harvest|ugaya|shashya|pairu|panta|krishi)/)) return 'crop_status';
+        // 4. General Crop / Farming (Fallback)
+        if (q.match(/(crop|fasal|kheti|yield|harvest|ugaya|shashya|pairu|panta|krishi|farm|status|health)/)) return 'crop_status';
 
         // 5. Land / Farm Info
-        if (q.match(/(land|jameen|khet|mitti|soil|acre|bigha|zamin|bhumi|nela|jami)/)) return 'farm_info';
+        if (q.match(/(land|jameen|khet|mitti|soil|acre|bigha|zamin|bhumi|nela|jami|area)/)) return 'farm_info';
 
         // 6. Weather
-        if (q.match(/(weather|mausam|rain|barish|dhup|temp|garmi|sardi|hawaman|kalam|vatavaram|abhawa)/)) return 'weather_current';
+        if (q.match(/(weather|mausam|rain|barish|dhup|temp|garmi|sardi|hawaman|forecast|pani)/)) return 'weather_current';
 
         // 7. Trust Score
-        if (q.match(/(score|trust|vishwas|rating|grade|level|nambikkai)/)) return 'trust_score';
+        if (q.match(/(score|trust|vishwas|rating|grade|level|bharo|credit score)/)) return 'trust_score';
 
-        // 8. Greeting
-        if (q.match(/(hello|hi|namaste|sat sri akal|vannakam|kemon|kem cho|hola|hey)/)) return 'welcome';
+        // 8. Market Price check
+        if (q.match(/(price|bhav|rate|dam|mandi|market)/)) return 'market_price';
+
+        // 9. Greeting
+        if (q.match(/(hello|hi|namaste|sat sri akal|vannakam|kaise|how are you|hey)/)) return 'welcome';
 
         return 'error';
     };
