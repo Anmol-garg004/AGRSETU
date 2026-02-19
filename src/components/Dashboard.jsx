@@ -39,14 +39,48 @@ const Dashboard = ({ user, onLogout }) => {
         switch (activeTab) {
             case 'Overview':
                 return (
-                    <div className="grid grid-cols-12 gap-8 lg-grid-cols-1">
-                        <div className="col-span-8 lg-col-span-12 space-y-8">
-                            <DashboardFarm />
-
+                    <div className="overview-container space-y-8">
+                        {/* Welcome Section */}
+                        <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-8">
+                            <div>
+                                <h1 className="text-3xl font-black text-slate-800 tracking-tight">Overview</h1>
+                                <p className="text-slate-500 font-medium mt-1">
+                                    Welcome back, <span className="text-emerald-600 font-bold">{user?.name || 'Kishan Kumar'}</span>
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                </span>
+                                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">System Live</span>
+                            </div>
                         </div>
-                        <div className="col-span-4 lg-col-span-12 space-y-8">
-                            <AgriTrustScore />
-                            <DashboardProfile user={user} />
+
+                        <div className="grid grid-cols-12 gap-8">
+                            {/* Main Farm Data Section - Left Column */}
+                            <div className="col-span-12 xl:col-span-8 space-y-8">
+                                <DashboardFarm />
+                            </div>
+
+                            {/* Right Column - Trust Score & Quick Profile */}
+                            <div className="col-span-12 xl:col-span-4 space-y-8">
+                                <AgriTrustScore />
+                                <div className="card p-6 border-slate-100 shadow-sm bg-indigo-900 text-white relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 p-16 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                                    <div className="relative z-10">
+                                        <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
+                                        <div className="space-y-3">
+                                            <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold transition-all flex items-center justify-between px-4">
+                                                Update Land Record <ChevronRight size={16} />
+                                            </button>
+                                            <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold transition-all flex items-center justify-between px-4">
+                                                Apply for KCC Loan <ChevronRight size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
