@@ -81,44 +81,61 @@ const DashboardFarm = ({ searchQuery = '' }) => {
     ];
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700 pb-20">
+        <div className="space-y-12 animate-in fade-in duration-700 pb-28">
 
-            {/* 1. TOP HERO: PROFESSIONAL SATELLITE FEED */}
-            <div className="relative group overflow-hidden rounded-[2.5rem] bg-slate-900 shadow-2xl border border-slate-800 h-[450px]">
+            {/* 1. TOP HERO: PROFESSIONAL SATELLITE FEED - FULL LANDING EXPERIENCE */}
+            <div className="relative group overflow-hidden rounded-[3rem] bg-slate-950 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-slate-800 h-[650px] w-full">
                 <iframe
                     src="https://agrsetumap.vercel.app/"
-                    className="absolute inset-0 w-full h-full border-0 opacity-80 group-hover:opacity-100 transition-opacity duration-1000"
+                    className="absolute inset-0 w-full h-full border-0 opacity-85 group-hover:opacity-100 transition-opacity duration-1000 scale-[1.01]"
                     title="Live Satellite Map"
                     loading="lazy"
                 />
 
-                {/* Overlay UI - Glossy Feed Badge */}
-                <div className="absolute top-8 left-8 z-10 flex flex-col gap-2">
-                    <div className="flex items-center gap-3 bg-slate-950/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-2xl">
-                        <div className="relative">
-                            <Satellite className="text-emerald-400 group-hover:rotate-12 transition-transform" size={18} />
-                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                {/* Visual Gradient for better text readability */}
+                <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-950/80 to-transparent pointer-events-none"></div>
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none"></div>
+
+                {/* Overlay UI - Top Left Labels */}
+                <div className="absolute top-10 left-10 z-20 flex flex-col gap-3">
+                    <div className="flex items-center gap-3 bg-emerald-500 text-white px-4 py-2 rounded-2xl shadow-lg shadow-emerald-500/20 w-fit">
+                        <div className="relative flex items-center justify-center">
+                            <Satellite className="animate-spin-slow" size={18} />
                         </div>
-                        <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Live Satellite Interface</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em]">Live Satellite Interface</span>
                     </div>
-                    <div className="bg-slate-950/60 backdrop-blur-xl border border-white/10 px-5 py-3 rounded-[1.5rem] w-fit shadow-2xl">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Primary Asset</p>
-                        <h2 className="text-xl font-black text-white leading-none mb-1">Sector 12-B | Sohna</h2>
-                        <p className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                            <MapPin size={12} /> KR Mangalam Campus Grounds
+
+                    <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 p-6 rounded-[2rem] w-[300px] shadow-2xl transform transition-transform group-hover:scale-105 duration-500">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="w-1.5 h-10 bg-emerald-500 rounded-full"></div>
+                            <div>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Land Asset</p>
+                                <h2 className="text-2xl font-black text-white tracking-tight">Sohna Sector 12</h2>
+                            </div>
+                        </div>
+                        <p className="text-xs font-bold text-slate-300 flex items-center gap-2 leading-relaxed">
+                            <MapPin size={14} className="text-emerald-400" /> KR Mangalam University Grounds, Haryana, India
                         </p>
                     </div>
                 </div>
 
-                {/* Bottom Overlay - Land Stats */}
-                <div className="absolute bottom-8 right-8 z-10 grid grid-cols-2 gap-3">
-                    <div className="bg-slate-950/60 backdrop-blur-xl border border-white/10 p-5 rounded-3xl text-right min-w-[140px]">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Coverage</p>
-                        <p className="text-2xl font-black text-white leading-none">28.4 <span className="text-xs font-bold text-slate-500">AC</span></p>
+                {/* Bottom Stats Grid */}
+                <div className="absolute bottom-10 inset-x-10 z-20 flex justify-between items-end">
+                    <div className="flex gap-4">
+                        <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 p-5 rounded-3xl min-w-[160px] shadow-2xl">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 text-center">Calculated Coverage</p>
+                            <p className="text-3xl font-black text-white leading-none text-center">28.43 <span className="text-xs font-bold text-slate-500">AC</span></p>
+                        </div>
+                        <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 p-5 rounded-3xl min-w-[160px] shadow-2xl">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 text-center">NDVI Health Index</p>
+                            <p className="text-3xl font-black text-emerald-400 leading-none text-center">84.2<span className="text-xs font-bold text-emerald-700">%</span></p>
+                        </div>
                     </div>
-                    <div className="bg-emerald-500/80 backdrop-blur-xl border border-white/20 p-5 rounded-3xl text-right min-w-[140px] shadow-lg shadow-emerald-500/20">
-                        <p className="text-[9px] font-black text-emerald-100 uppercase tracking-widest mb-1">Soil Index</p>
-                        <p className="text-2xl font-black text-white leading-none">84.2<span className="text-xs font-bold text-emerald-200">%</span></p>
+
+                    {/* Scroll Hint */}
+                    <div className="hidden lg:flex flex-col items-center gap-2 text-white/40">
+                        <span className="text-[9px] font-black uppercase tracking-[0.3em]">Insights Below</span>
+                        <div className="w-px h-12 bg-gradient-to-b from-white/40 to-transparent"></div>
                     </div>
                 </div>
             </div>
