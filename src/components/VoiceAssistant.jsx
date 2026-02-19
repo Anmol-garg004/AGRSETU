@@ -99,26 +99,29 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
     const identifyIntent = (query, lang) => {
         const q = query.toLowerCase();
 
-        // 1. IDENTITY: "mera naam kya h"
-        if (q.match(/(naam|name|who am i|parichay|identity|kaun hun)/)) return 'identity';
+        // 1. IDENTITY: "mera naam kya h" -> "मेरा नाम क्या है"
+        if (q.match(/(naam|name|who am i|parichay|identity|kaun hun|नाम|कौन|परिचय|पहचान)/)) return 'identity';
 
-        // 2. LAND / FARM INFO: "mere pass kitne aked jameen h"
-        if (q.match(/(jameen|zameen|land|aked|acre|bigha|khet|area|size)/)) return 'farm_info';
+        // 2. LAND / FARM INFO: "mere pass kitne aked jameen h" -> "मेरे पास कितने एकड़ जमीन है"
+        if (q.match(/(jameen|zameen|land|aked|acre|bigha|khet|area|size|जमीन|ज़मीन|खेत|एकड़|एकर|बीघा|रकबा)/)) return 'farm_info';
 
-        // 3. LOAN / FINANCIAL: "mujhe kitna ka loan mil skta h"
-        if (q.match(/(loan|udhaar|kcc|limit|credit|bank|paisa|money|rupaye)/)) return 'financial_summary';
+        // 3. LOAN / FINANCIAL: "mujhe kitna ka loan mil skta h" -> "मुझे कितना लोन मिल सकता है"
+        if (q.match(/(loan|udhaar|kcc|limit|credit|bank|paisa|money|rupaye|karz|लोन|उधार|बैंक|पैसे|केसीसी|रुपये|कर्ज|क्रेडिट)/)) return 'financial_summary';
 
-        // 4. TRANSACTIONS / SALES: "fasal kitne me biki", "pichle mahine ki kamai"
-        if (q.match(/(biki|bechi|becha|sold|sell|kamai|earnings|income|transaction|kimat|bhaav|rate)/)) return 'transaction_last';
+        // 4. TRANSACTIONS / SALES: "fasal kitne me biki" -> "फसल कितने में बिकी"
+        if (q.match(/(biki|bechi|becha|sold|sell|kamai|earnings|income|transaction|kimat|bhaav|rate|बिकी|बेची|बेचा|कमाई|भाव|रेट|आमदनी)/)) return 'transaction_last';
 
-        // 5. WEATHER
-        if (q.match(/(mausam|weather|barish|rain|dhup|temp|garmi|sardi|pani)/)) return 'weather_current';
+        // 5. WEATHER: "mausam kaisa h" -> "मौसम कैसा है"
+        if (q.match(/(mausam|weather|barish|rain|dhup|temp|garmi|sardi|pani|forecast|मौसम|बारिश|धूप|तापमान|गर्मी|सर्दी|पाए|वर्षा)/)) return 'weather_current';
 
         // 6. TRUST SCORE
-        if (q.match(/(score|trust|vishwas|rating)/)) return 'trust_score';
+        if (q.match(/(score|trust|vishwas|rating|grade|level|bharo|credit score|स्कोर|विश्वास|रेटिंग|क्रेडिट)/)) return 'trust_score';
 
         // 7. GREETING
-        if (q.match(/(hello|hi|namaste|kaise|hey)/)) return 'welcome';
+        if (q.match(/(hello|hi|namaste|kaise|hey|नमस्ते|हेलो|कैसे|नमस्कार|pranam|ram ram|राम राम)/)) return 'welcome';
+
+        // 8. CROP STATUS (General fallback for crop names)
+        if (q.match(/(wheat|gehu|kanak|mustard|sarso|potato|aloo|crop|fasal|गेहूं|कनक|सरसों|आलू|फसल|खेती)/)) return 'crop_status';
 
         return 'error';
     };
