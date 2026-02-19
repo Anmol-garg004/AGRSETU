@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CloudRain, Sun, Sprout, Droplets, Wind, Map, AlertCircle, Calendar, Thermometer, ChevronRight } from 'lucide-react';
+import SatelliteMap from './SatelliteMap';
 
 const DashboardFarm = () => {
     // Real-time Weather Data Integration
@@ -199,26 +200,8 @@ const DashboardFarm = () => {
                 </div>
             </div>
 
-            {/* 5. SATELLITE WIDGET */}
-            <div className="bg-slate-900 rounded-3xl overflow-hidden relative min-h-[160px] flex items-center p-6 group cursor-pointer shadow-lg">
-                {/* Simulated Map Background */}
-                <div className="absolute inset-0 bg-[url('https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/77.0678,28.2711,15,0/800x200?access_token=pk.eyJ1IjoidGVtcCIsImEiOiJjbHExcCJ9')] bg-cover bg-center opacity-40 group-hover:opacity-60 transition-all duration-700 transform group-hover:scale-105"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
-
-                <div className="relative z-10 w-full flex justify-between items-center">
-                    <div>
-                        <div className="flex items-center gap-2 mb-2">
-                            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                            <span className="text-xs font-bold text-red-400 uppercase tracking-widest">Live Satellite Feed</span>
-                        </div>
-                        <h3 className="text-2xl font-black text-white mb-1">Field Monitoring</h3>
-                        <p className="text-slate-400 text-sm">NDVI Index: <span className="text-emerald-400 font-bold">0.78 (Healthy)</span></p>
-                    </div>
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center border border-white/20 group-hover:bg-emerald-500 group-hover:border-emerald-500 transition-colors text-white">
-                        <ChevronRight size={24} />
-                    </div>
-                </div>
-            </div>
+            {/* 5. SATELLITE WIDGET - Live Map */}
+            <SatelliteMap lat={location.lat} lon={location.lon} />
 
         </div>
     );
