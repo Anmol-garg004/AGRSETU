@@ -187,36 +187,53 @@ const VoiceAssistant = () => {
     const identifyIntent = (query, lang) => {
         const q = query.toLowerCase();
 
-        // 0. SPECIFIC CROP CHECKS (Priority)
+        // HELPER LEXICON FOR ROBUST MATCHING
+        const terms = {
+            crop: /(wheat|gehu|kanak|godhumai|mustard|sarso|rai|potato|aloo|batata|fasal|kheti|crop|yield|harvest)/,
+            transaction: /(sold|sale|sell|becha|bechi|beche|bikri|transaction|amount|len|den|byapar|kharch|history|statement|kamai|earnings|income)/,
+            price: /(price|rate|bhav|bhaav|dam|daam|kimat|mandi|market|value|paisa|kitne|how much)/,
+            money: /(money|rupaye|bank|account|khata|balance|udhaar|financial|loan|kcc|limit|credit)/,
+            identity: /(name|naam|who am i|parichay|mera naam|identity|hesaru|peru|profile)/,
+            weather: /(weather|mausam|rain|barish|dhup|temp|garmi|sardi|hawaman|forecast|pani)/
+        };
+
+        // 0. SPECIFIC CROP STATUS (Priority High - Direct Crop Queries)
+        // If user asks "How is wheat?" -> crop_wheat
+        // BUT if user asks "How much did wheat sell for?" -> transaction_last (Handled below)
+
+        // 1. TRANSACTION / SALES / EARNINGS (Critical for "Kitne me bechi")
+        // Checks for: (Sold/Bechi) OR (Crop + Price words together)
+        if (q.match(terms.transaction) || (q.match(terms.crop) && q.match(terms.price)) || q.match(/(sarkar|government|msp|procurement)/)) {
+            return 'transaction_last';
+        }
+
+        // 2. SPECIFIC CROP HEALTH/STATUS
         if (q.match(/(wheat|gehu|kanak|godhumai|godhuma|gom)/)) return 'crop_wheat';
         if (q.match(/(mustard|sarso|rai|kadugu|aavalu)/)) return 'crop_mustard';
         if (q.match(/(potato|aloo|batata|urulakizhangu|bangaladumpa)/)) return 'crop_potato';
 
-        // 1. Identity / Profile
-        if (q.match(/(name|naam|who am i|parichay|mera naam|identity|नाम|hesaru|peru|profile)/)) return 'identity';
+        // 3. MARKET PRICING (If not a past transaction)
+        if (q.match(terms.price)) return 'market_price';
 
-        // 2. Financials / Money / Bank
-        if (q.match(/(money|paisa|rupaye|bank|account|khata|balance|udhaar|financial|dhan|income|kamai|earnings|loan|kcc|limit|credit)/)) return 'financial_summary';
+        // 4. FINANCIAL / BANKING
+        if (q.match(terms.money)) return 'financial_summary';
 
-        // 3. Transactions / Last Sale
-        if (q.match(/(sold|sale|becha|last transaction|amount|len den|byapar|khatoni|transaction|spending|kharch|history|statement)/)) return 'transaction_last';
+        // 5. IDENTITY
+        if (q.match(terms.identity)) return 'identity';
 
-        // 4. General Crop / Farming (Fallback)
-        if (q.match(/(crop|fasal|kheti|yield|harvest|ugaya|shashya|pairu|panta|krishi|farm|status|health)/)) return 'crop_status';
+        // 6. GENERAL CROP STATUS (Fallback)
+        if (q.match(terms.crop)) return 'crop_status';
 
-        // 5. Land / Farm Info
+        // 7. LAND INFO
         if (q.match(/(land|jameen|khet|mitti|soil|acre|bigha|zamin|bhumi|nela|jami|area)/)) return 'farm_info';
 
-        // 6. Weather
-        if (q.match(/(weather|mausam|rain|barish|dhup|temp|garmi|sardi|hawaman|forecast|pani)/)) return 'weather_current';
+        // 8. WEATHER
+        if (q.match(terms.weather)) return 'weather_current';
 
-        // 7. Trust Score
+        // 9. TRUST SCORE
         if (q.match(/(score|trust|vishwas|rating|grade|level|bharo|credit score)/)) return 'trust_score';
 
-        // 8. Market Price check
-        if (q.match(/(price|bhav|rate|dam|mandi|market)/)) return 'market_price';
-
-        // 9. Greeting
+        // 10. GREETING
         if (q.match(/(hello|hi|namaste|sat sri akal|vannakam|kaise|how are you|hey)/)) return 'welcome';
 
         return 'error';
