@@ -32,6 +32,8 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
 
     // --- CENTRALIZED FARMER DATA (Single Source of Truth) ---
     // Use user data if available, fallback to defaults
+    // --- CENTRALIZED FARMER DATA (Single Source of Truth) ---
+    // Use user data if available, fallback to defaults
     const farmerData = {
         profile: {
             name: user?.name || "Kishan Kumar",
@@ -41,7 +43,7 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
             irrigation: "Tube Well (Electric)"
         },
         financials: {
-            kccLimit: "₹3.0 Lakhs",
+            kccLimit: "₹5.0 Lakhs",
             totalEarnings: "₹39,300"
         },
         crops: [
@@ -58,7 +60,7 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
             rainChance: "20%"
         },
         trustScore: {
-            score: 840,
+            score: 942,
             status: "Excellent"
         }
     };
@@ -69,28 +71,31 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
     const getLocalizedTemplate = (lang, key) => {
         const templates = {
             'en-IN': {
-                welcome: `Hello ${farmerData.profile.name}! Ask me about crops, loans, or weather.`,
+                welcome: `Hello ${farmerData.profile.name}! Ask me about your crops, last sale, or trust score.`,
                 listening: "Listening...",
-                error: "Sorry, didn't catch that. Try asking 'What represents my land size?' or 'My loan limit?'",
+                error: "Sorry, I didn't get that. Try asking 'What was my last crop sale?' or 'My Trust Score?'",
                 identity: `You are ${farmerData.profile.name}. You farm on ${farmerData.profile.landSize} in ${farmerData.profile.location}.`,
                 farm_info: `You own ${farmerData.profile.landSize} of land. Soil type is ${farmerData.profile.soil}.`,
                 financial_summary: `Your KCC Loan limit is ${farmerData.financials.kccLimit}. Total earnings: ${farmerData.financials.totalEarnings}.`,
-                transaction_last: `Your last crop sale was for ${farmerData.transactions[0].amount} on ${farmerData.transactions[0].date}.`,
+                transaction_last: `Your last crop (Wheat) was sold for ${farmerData.transactions[0].amount} on ${farmerData.transactions[0].date}.`,
                 weather_current: `It's ${farmerData.weather.temp} and ${farmerData.weather.condition}. Rain chance: ${farmerData.weather.rainChance}.`,
-                trust_score: `Your Trust Score is ${farmerData.trustScore.score} (${farmerData.trustScore.status}).`
+                trust_score: `Your AI Trust Score is ${farmerData.trustScore.score} (${farmerData.trustScore.status}). This is excellent!`,
+                crop_advice: "Based on your soil, Wheat and Mustard are best for this season. Check the Market tab for rates.",
+                crop_status: `Your crops are healthy. Wheat harvest is in ${farmerData.crops[0].harvest}.`
             },
             'hi-IN': {
-                welcome: `नमस्ते ${farmerData.profile.name} जी! अपनी फसल, लोन या मौसम के बारे में पूछें।`,
+                welcome: `नमस्ते ${farmerData.profile.name} जी! मैं आपकी क्या सहायता कर सकता हूँ?`,
                 listening: "सुन रहा हूँ...",
-                error: "माफ़ कीजिये, मैं समझ नहीं पाया। कृपया 'मेरी ज़मीन कितनी है' या 'लोन कितना मिलेगा' पूछें।",
-                identity: `आपका नाम ${farmerData.profile.name} है।`,
-                farm_info: `आपके पास कुल ${farmerData.profile.landSize} ज़मीन है। मिट्टी ${farmerData.profile.soil} है।`,
-                financial_summary: `आपको ${farmerData.financials.kccLimit} तक का लोन मिल सकता है। कुल कमाई ${farmerData.financials.totalEarnings} है।`,
-                transaction_last: `आपकी पिछली फसल ${farmerData.transactions[0].amount} में बिकी थी (${farmerData.transactions[0].date} को)।`,
-                weather_current: `अभी तापमान ${farmerData.weather.temp} है और मौसम साफ़ है।`,
-                trust_score: `आपका ट्रस्ट स्कोर ${farmerData.trustScore.score} है, जो बहुत अच्छा है।`
+                error: "माफ़ कीजिये, दोबारा बोलें। आप पूछ सकते हैं 'मेरी आखिरी फसल कितने की बिकी?' या 'मेरा ट्रस्ट स्कोर क्या है?'",
+                identity: `आपका नाम ${farmerData.profile.name} है। आप ${farmerData.profile.location} में खेती करते हैं।`,
+                farm_info: `आपके पास ${farmerData.profile.landSize} ज़मीन है।`,
+                financial_summary: `आपकी कुल कमाई ${farmerData.financials.totalEarnings} है। लोन लिमिट ${farmerData.financials.kccLimit} है।`,
+                transaction_last: `आपकी आखिरी फसल (गेहूँ) ${farmerData.transactions[0].amount} में बिकी थी (${farmerData.transactions[0].date} को)।`,
+                weather_current: `अभी तापमान ${farmerData.weather.temp} है। मौसम साफ़ है।`,
+                trust_score: `आपका ट्रस्ट स्कोर ${farmerData.trustScore.score} है (${farmerData.trustScore.status})। बैंक आपको आसानी से लोन देंगे।`,
+                crop_advice: "आपकी मिट्टी के लिए गेहूँ और सरसों सबसे अच्छे हैं। मंडी भाव अच्छे चल रहे हैं।",
+                crop_status: `आपकी फसलें स्वस्थ हैं। गेहूं की कटाई ${farmerData.crops[0].harvest} में होगी।`
             }
-            // Add other languages as needed with similar structure
         };
         return templates[lang]?.[key] || templates['hi-IN'][key] || templates['en-IN'][key];
     };
@@ -99,29 +104,30 @@ const VoiceAssistant = ({ user }) => { // Accept user prop
     const identifyIntent = (query, lang) => {
         const q = query.toLowerCase();
 
-        // 1. IDENTITY: "mera naam kya h" -> "मेरा नाम क्या है"
+        // 1. TRANSACTIONS / SALES (High Priority match for specific "last crop" queries)
+        // Matches: "meri aakhri fasal kitne ki biki", "last crop sale", "pichli fasal", "sold"
+        if (q.match(/(biki|bechi|becha|sold|sell|sale|aakhri fasal|pichli fasal|last crop|transaction|kimat|bhaav|rate|बिकी|बेची|बेचा|आखिरी फसल|पिछली फसल|भाव|रेट)/)) return 'transaction_last';
+
+        // 2. IDENTITY
         if (q.match(/(naam|name|who am i|parichay|identity|kaun hun|नाम|कौन|परिचय|पहचान)/)) return 'identity';
 
-        // 2. LAND / FARM INFO: "mere pass kitne aked jameen h" -> "मेरे पास कितने एकड़ जमीन है"
+        // 3. LAND / FARM INFO
         if (q.match(/(jameen|zameen|land|aked|acre|bigha|khet|area|size|जमीन|ज़मीन|खेत|एकड़|एकर|बीघा|रकबा)/)) return 'farm_info';
 
-        // 3. LOAN / FINANCIAL: "mujhe kitna ka loan mil skta h" -> "मुझे कितना लोन मिल सकता है"
-        if (q.match(/(loan|udhaar|kcc|limit|credit|bank|paisa|money|rupaye|karz|लोन|उधार|बैंक|पैसे|केसीसी|रुपये|कर्ज|क्रेडिट)/)) return 'financial_summary';
+        // 4. LOAN / FINANCIAL (Earnings also mapped here if vague, but "sale" goes to transaction)
+        if (q.match(/(loan|udhaar|kcc|limit|credit|bank|paisa|money|rupaye|karz|kamai|earnings|income|लोन|उधार|बैंक|पैसे|केसीसी|रुपये|कर्ज|क्रेडिट|कमाई|आमदनी)/)) return 'financial_summary';
 
-        // 4. TRANSACTIONS / SALES: "fasal kitne me biki" -> "फसल कितने में बिकी"
-        if (q.match(/(biki|bechi|becha|sold|sell|kamai|earnings|income|transaction|kimat|bhaav|rate|बिकी|बेची|बेचा|कमाई|भाव|रेट|आमदनी)/)) return 'transaction_last';
-
-        // 5. WEATHER: "mausam kaisa h" -> "मौसम कैसा है"
+        // 5. WEATHER
         if (q.match(/(mausam|weather|barish|rain|dhup|temp|garmi|sardi|pani|forecast|मौसम|बारिश|धूप|तापमान|गर्मी|सर्दी|पाए|वर्षा)/)) return 'weather_current';
 
         // 6. TRUST SCORE
         if (q.match(/(score|trust|vishwas|rating|grade|level|bharo|credit score|स्कोर|विश्वास|रेटिंग|क्रेडिट)/)) return 'trust_score';
 
-        // 7. GREETING
-        if (q.match(/(hello|hi|namaste|kaise|hey|नमस्ते|हेलो|कैसे|नमस्कार|pranam|ram ram|राम राम)/)) return 'welcome';
+        // 7. CROP ADVICE / WHAT TO GROW
+        if (q.match(/(grow|uga|kheti|best crop|suggest|advice|ugana|fayda|गायें|उगाएं|खेती|सलाह|सुझाव)/)) return 'crop_advice';
 
-        // 8. CROP STATUS (General fallback for crop names)
-        if (q.match(/(wheat|gehu|kanak|mustard|sarso|potato|aloo|crop|fasal|गेहूं|कनक|सरसों|आलू|फसल|खेती)/)) return 'crop_status';
+        // 8. GREETING
+        if (q.match(/(hello|hi|namaste|kaise|hey|नमस्ते|हेलो|कैसे|नमस्कार|pranam|ram ram|राम राम|sat sri akal)/)) return 'welcome';
 
         return 'error';
     };
