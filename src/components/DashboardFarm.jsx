@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CloudRain, Sun, Sprout, Droplets, Wind, Map, AlertCircle, Calendar, Thermometer, ChevronRight } from 'lucide-react';
+import { CloudRain, Sun, Sprout, Droplets, Wind, Map, AlertCircle, Calendar, Thermometer, ChevronRight, Satellite } from 'lucide-react';
 import SatelliteMap from './SatelliteMap';
 
 const DashboardFarm = ({ searchQuery = '' }) => {
@@ -84,7 +84,7 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] -ml-10 -mb-10 pointer-events-none"></div>
 
                 {/* Left: Location & Main Temp */}
-                <div className="p-8 flex flex-col justify-between w-full md:w-1/2 relative z-10">
+                <div className="p-8 flex flex-col justify-between w-full md:w-1/3 relative z-10">
                     <div>
                         <div className="flex items-center gap-2 mb-3">
                             <span className="px-2 py-1 rounded-md bg-white/10 text-[10px] font-bold uppercase tracking-widest border border-white/10 flex items-center gap-2">
@@ -96,8 +96,8 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                     </div>
                 </div>
 
-                {/* Right: Weather Details Grid */}
-                <div className="p-8 w-full md:w-1/2 bg-white/5 backdrop-blur-sm border-l border-white/5 flex flex-col justify-center">
+                {/* Center: Weather Details Grid */}
+                <div className="p-8 w-full md:w-1/3 bg-white/5 backdrop-blur-sm border-l border-white/5 flex flex-col justify-center">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="p-3 bg-white/5 rounded-2xl">
                             <div className="flex items-center gap-2 mb-1 text-slate-300">
@@ -123,6 +123,33 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                             </div>
                             <p className="text-xl font-bold">{loading ? '--' : weather.temp}</p>
                         </div>
+                    </div>
+                </div>
+
+                {/* Right: Satellite Image */}
+                <div className="w-full md:w-1/3 min-h-[200px] relative bg-black/40 border-l border-white/5 overflow-hidden group">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        src={`https://maps.google.com/maps?q=${location.lat},${location.lon}&t=k&z=17&ie=UTF8&iwloc=&output=embed`}
+                        frameBorder="0"
+                        scrolling="no"
+                        marginHeight="0"
+                        marginWidth="0"
+                        title="Satellite View"
+                        className="absolute inset-0 w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-700 grayscale-[20%] group-hover:grayscale-0"
+                        style={{ filter: 'contrast(1.2)' }}
+                    ></iframe>
+
+                    <div className="absolute top-4 left-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl pointer-events-none">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                                <Satellite size={12} /> Satellite Feed
+                            </span>
+                            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        </div>
+                        <p className="text-sm font-bold text-white">Total Land Area</p>
+                        <p className="text-lg font-black text-white/90">28 Acres</p>
                     </div>
                 </div>
             </div>
