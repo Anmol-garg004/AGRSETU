@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { CloudRain, Sun, Sprout, Droplets, Wind, Map, AlertCircle, Calendar, Thermometer, ChevronRight, Satellite } from 'lucide-react';
-import SatelliteMap from './SatelliteMap';
+import {
+    CloudRain,
+    Sun,
+    Sprout,
+    Droplets,
+    Wind,
+    AlertCircle,
+    Calendar,
+    Thermometer,
+    Satellite,
+    MapPin
+} from 'lucide-react';
 
 const DashboardFarm = ({ searchQuery = '' }) => {
     // Real-time Weather Data Integration
@@ -189,7 +199,7 @@ const DashboardFarm = ({ searchQuery = '' }) => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {crops.map((crop, i) => (
+                        {crops.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map((crop, i) => (
                             <div key={i} className="p-5 bg-slate-50 rounded-3xl border border-slate-100 hover:border-emerald-200 transition-colors group">
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="p-2 bg-white rounded-xl shadow-sm group-hover:bg-emerald-500 group-hover:text-white transition-colors">
